@@ -53,14 +53,22 @@ class mod_learningmap_mod_form extends moodleform_mod {
             array_push($activitysel, $s);
         }
 
-        $mform->addElement('text', 'name', get_string('mapname', 'learningmap'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('name', 'learningmap'), array('size' => '64'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
+        $mform->addHelpButton('name', 'name', 'learningmap');
 
-        $mform->addElement('html', $OUTPUT->render_from_template('mod_learningmap/formitem', ['sections' => $s]));
+        $mform->addElement(
+            'html',
+            $OUTPUT->render_from_template(
+                'mod_learningmap/formitem',
+                ['sections' => $s, 'help' => $OUTPUT->help_icon('intro', 'learningmap', '')]
+            )
+        );
 
-        $mform->addElement('checkbox', 'showdescription', get_string('showoncoursepage', 'learningmap'));
+        $mform->addElement('checkbox', 'showdescription', get_string('showdescription', 'learningmap'));
         $mform->setType('showdescription', PARAM_INT);
+        $mform->addHelpButton('showdescription', 'showdescription', 'learningmap');
 
         $mform->addElement(
             'filemanager',
