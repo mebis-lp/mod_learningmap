@@ -34,3 +34,4 @@ $string['svgcode'] = 'SVG code';
 $string['learningmap'] = 'Learning map';
 $string['editplace'] = 'Edit place';
 $string['startingplace'] = 'Starting place';
+$string['showoncoursepage'] = 'Show map on course page';

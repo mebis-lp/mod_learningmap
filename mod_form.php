@@ -59,6 +59,9 @@ class mod_learningmap_mod_form extends moodleform_mod {
 
         $mform->addElement('html', $OUTPUT->render_from_template('mod_learningmap/formitem', ['sections' => $s]));
 
+        $mform->addElement('checkbox', 'showdescription', get_string('showoncoursepage', 'learningmap'));
+        $mform->setType('showdescription', PARAM_INT);
+
         $mform->addElement(
             'filemanager',
             'introeditor[itemid]',
@@ -77,9 +80,6 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->addElement('hidden', 'introeditor[format]', FORMAT_HTML);
         $mform->setType('introeditor[format]', PARAM_INT);
 
-        $mform->addElement('hidden', 'showdescription', 1);
-        $mform->setType('showdescription', PARAM_INT);
-
         $PAGE->requires->js_call_amd('mod_learningmap/learningmap', 'init');
 
         $this->standard_coursemodule_elements();
@@ -95,6 +95,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 'mod_learningmap/svgskeleton',
                 ['placecolor' => 'red', 'strokecolor' => 'white', 'editmode' => true]
             );
+            $defaultvalues['showdescription'] = 1;
         } else {
             $defaultvalues['intro'] = preg_replace(
                 '/<style[\s\S]*style>/i',

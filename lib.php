@@ -69,8 +69,6 @@ function learningmap_supports($feature) {
             return false;
         case FEATURE_GRADE_OUTCOMES:
             return false;
-        case FEATURE_NO_VIEW_LINK:
-            return true;
         case FEATURE_SHOW_DESCRIPTION:
             return true;
         default:
@@ -105,7 +103,18 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
     send_stored_file($file, 0, 0, $forcedownload, $options);
 }
 
-function learningmap_cm_info_view(cm_info $cm) {
+function learningmap_cm_info_dynamic(cm_info $cm) {
+    // Decides whether to display the map on course page or via view.php.
+    if ($cm->showdescription == 1) {
+        $cm->set_no_view_link(true);
+
+        $cm->set_content(output_learningmap($cm), true);
+
+        $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
+    }
+}
+
+function output_learningmap(cm_info $cm) {
     global $DB, $USER;
 
     $context = context_module::instance($cm->id);
@@ -178,7 +187,5 @@ function learningmap_cm_info_view(cm_info $cm) {
         }
     }
 
-    $cm->set_content($dom->saveXML(), true);
-
-    $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
+    return($dom->saveXML());
 }

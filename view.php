@@ -39,4 +39,6 @@ $PAGE->set_heading($map->name);
 
 echo $OUTPUT->header();
 
+echo $OUTPUT->box(output_learningmap($cm));
+
 echo $OUTPUT->footer();
