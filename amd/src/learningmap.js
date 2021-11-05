@@ -184,6 +184,12 @@ export const init = () => {
         updateCode();
     }
 
+    function title(id) {
+        let title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        title.setAttribute('id', id);
+        return title;
+    }
+
     function circle(x, y, r, classes, id) {
         let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('class', classes);
@@ -191,6 +197,7 @@ export const init = () => {
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
         circle.setAttribute('r', r);
+        circle.appendChild(title('title' + id));
         return circle;
     }
 
@@ -202,6 +209,7 @@ export const init = () => {
         line.setAttribute('y1', y1);
         line.setAttribute('x2', x2);
         line.setAttribute('y2', y2);
+        line.appendChild(title('title' + id));
         return line;
     }
 

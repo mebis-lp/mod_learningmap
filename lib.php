@@ -149,6 +149,10 @@ function output_learningmap(cm_info $cm) {
                         'xlink:href',
                         new moodle_url('/mod/'.$placecm->modname.'/view.php', array('id' => $placecm->id))
                     );
+                    $title = $dom->getElementById('title' . $place->id);
+                    if ($title) {
+                        $title->nodeValue = $placecm->name;
+                    }
                 }
                 if (in_array($place->id, $placestore->startingplaces)) {
                     array_push($active, $place->id);
