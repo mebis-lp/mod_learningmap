@@ -19,8 +19,8 @@
 }}
 <div id="learningmap-activity-setting"class="card" draggable="true" hidden>
     <div class="card-body">
-    <div class="card-title">Ort bearbeiten</div>
-    <div class="card-text">Aktivität:
+    <div class="card-title">{{#str}} editplace, learningmap {{/str}}</div>
+    <div class="card-text">{{#str}} activity, core {{/str}}
     <select id="learningmap-activity-selector">
     {{#sections}}
         <option disabled>{{name}}</option>
@@ -29,7 +29,7 @@
         {{/coursemodules}}
     {{/sections}}
     </select><br/>
-    <input type="checkbox" id="learningmap-activity-starting"/> Start-Ort
+    <input type="checkbox" id="learningmap-activity-starting"/> {{#str}} startingplace, learningmap {{/str}}
     </div>
 </div>
 </div>

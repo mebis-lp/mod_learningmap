@@ -32,3 +32,5 @@ $string['pluginadministration'] = 'Learning map administration';
 $string['backgroundfile'] = 'Background image';
 $string['svgcode'] = 'SVG code';
 $string['learningmap'] = 'Learning map';
+$string['editplace'] = 'Edit place';
+$string['startingplace'] = 'Starting place';

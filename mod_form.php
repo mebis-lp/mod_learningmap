@@ -40,8 +40,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
         foreach ($cm->sections as $sectionnum => $section) {
             $sectioninfo = $cm->get_section_info($sectionnum);
             $s['name'] = $sectioninfo->name;
-            if (empty($sectionname)) {
-                $sectionname = get_string('section') . ' ' . $sectionnum;
+            if (empty($s['name'])) {
+                $s['name'] = get_string('section') . ' ' . $sectionnum;
             }
             $s['coursemodules'] = [];
             foreach ($section as $cmid) {
