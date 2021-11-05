@@ -70,6 +70,8 @@ export const init = () => {
                     document.getElementById('learningmap-activity-starting').removeAttribute('checked', '');
                 }
                 elementForActivitySelector = e.target.id;
+            } else {
+                hideContextMenu();
             }
         }
     }
