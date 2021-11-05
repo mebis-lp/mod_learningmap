@@ -1,0 +1,12 @@
+.learningmap-mapcontainer {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    height: 600px;
+    width: 800px;
+}
+
+#learningmap-activity-setting {
+    position: absolute;
+    z-index: 1;
+}

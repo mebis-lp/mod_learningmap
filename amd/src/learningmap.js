@@ -1,0 +1,376 @@
+/* eslint-disable require-jsdoc */
+export const init = () => {
+    var selectedElement, offset;
+
+    var firstPlace = null,
+        secondPlace = null,
+        lastTarget = null;
+
+    var elementForActivitySelector = null;
+
+    let mapdiv = document.getElementById('learningmap-editor-map');
+    let code = document.getElementById('id_introeditor_text');
+    let activitySetting = document.getElementById('learningmap-activity-setting');
+    let activitySelector = document.getElementById('learningmap-activity-selector');
+    let activityStarting = document.getElementById('learningmap-activity-starting');
+    if (activitySelector) {
+        activitySelector.addEventListener('change', function() {
+            setActivityIdInPlacestore(elementForActivitySelector, activitySelector.value);
+        });
+        activityStarting.addEventListener('change', function() {
+            if (activityStarting.checked) {
+                placestore.startingplaces.push(elementForActivitySelector);
+            } else {
+                placestore.startingplaces = placestore.startingplaces.filter(function(e) {
+                    return e != elementForActivitySelector;
+                });
+            }
+            updateCode();
+        });
+    }
+
+    var placestore;
+    try {
+        placestore = JSON.parse(document.getElementsByName('placestore')[0].value);
+    } catch {
+        placestore = {
+            id: 0,
+            places: [],
+            paths: [],
+            startingplaces: ['p0'], //for testing
+            placecolor: 'red',
+            strokecolor: 'white'
+        };
+    }
+
+    mapdiv.innerHTML = code.value;
+
+    mapdiv.addEventListener('dblclick', dblclickHandler);
+    mapdiv.addEventListener('click', clickHandler);
+
+    mapdiv.addEventListener('contextmenu', function(e) {
+        showContextMenu(e);
+        e.preventDefault();
+    }, false);
+
+    function showContextMenu(e) {
+        if (elementForActivitySelector) {
+            document.getElementById(elementForActivitySelector).classList.remove('selected2');
+        }
+        if (activitySetting) {
+            if (e.target.classList.contains('place')) {
+                e.target.classList.add('selected2');
+                let activityId = getActivityIdFromPlacestore(e.target.id);
+                activitySetting.setAttribute('style', 'top: ' + e.offsetY + 'px; left: ' + e.offsetX + 'px;');
+                activitySetting.removeAttribute('hidden');
+                document.getElementById('learningmap-activity-selector').value = activityId;
+                if (placestore.startingplaces.includes(e.target.id)) {
+                    document.getElementById('learningmap-activity-starting').setAttribute('checked', '');
+                } else {
+                    document.getElementById('learningmap-activity-starting').removeAttribute('checked', '');
+                }
+                elementForActivitySelector = e.target.id;
+            }
+        }
+    }
+
+    function hideContextMenu() {
+        let e = document.getElementById(elementForActivitySelector);
+        if (e) {
+            e.classList.remove('selected2');
+        }
+        activitySetting.setAttribute('hidden', '');
+    }
+
+    let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
+    let observer = new MutationObserver(refreshBackgroundImage);
+
+    observer.observe(backgroundfileNode, { attributes: true, childList: true, subtree: true });
+
+    makeDraggable(document.getElementById('learningmap_svgmap'));
+
+    function makeDraggable(el) {
+        el.addEventListener('mousedown', startDrag);
+        el.addEventListener('mousemove', drag);
+        el.addEventListener('mouseup', endDrag);
+        el.addEventListener('mouseleave', endDrag);
+        el.addEventListener('touchstart', startDrag);
+        el.addEventListener('touchmove', drag);
+        el.addEventListener('touchend', endDrag);
+        el.addEventListener('touchleave', endDrag);
+        el.addEventListener('touchcancel', endDrag);
+
+        function getMousePosition(evt) {
+            var CTM = el.getScreenCTM();
+            if (evt.touches) {
+                evt = evt.touches[0];
+            }
+            return {
+                x: (evt.clientX - CTM.e) / CTM.a,
+                y: (evt.clientY - CTM.f) / CTM.d
+            };
+        }
+
+        function startDrag(evt) {
+            if (evt.target.classList.contains('draggable')) {
+                selectedElement = evt.target;
+                offset = getMousePosition(evt);
+                offset.x -= parseFloat(selectedElement.getAttributeNS(null, "cx"));
+                offset.y -= parseFloat(selectedElement.getAttributeNS(null, "cy"));
+            }
+        }
+
+        function drag(evt) {
+            if (selectedElement) {
+                evt.preventDefault();
+                var coord = getMousePosition(evt);
+                let cx = coord.x - offset.x;
+                let cy = coord.y - offset.y;
+                selectedElement.setAttributeNS(null, "cx", cx);
+                selectedElement.setAttributeNS(null, "cy", cy);
+                let upd1 = placestore.paths.filter(function(p) {
+                    return p.fid == selectedElement.id;
+                });
+                upd1.forEach(function(p) {
+                    let d = document.getElementById(p.id);
+                    if (!(d === null)) {
+                        d.setAttribute('x1', cx);
+                        d.setAttribute('y1', cy);
+                    }
+                });
+                let upd2 = placestore.paths.filter(function(p) {
+                    return p.sid == selectedElement.id;
+                });
+                upd2.forEach(function(p) {
+                    let d = document.getElementById(p.id);
+                    if (!(d === null)) {
+                        d.setAttribute('x2', cx);
+                        d.setAttribute('y2', cy);
+                    }
+                });
+            }
+        }
+
+        function endDrag() {
+            selectedElement = false;
+            updateCode();
+        }
+    }
+
+    function updateCode() {
+        let mapdiv = document.getElementById('learningmap-editor-map');
+        let code = document.getElementById('id_introeditor_text');
+        code.value = mapdiv.innerHTML;
+        document.getElementsByName('placestore')[0].value = JSON.stringify(placestore);
+    }
+
+    function dblclickHandler(event) {
+        hideContextMenu();
+        if (event.target.classList.contains('learningmap-mapcontainer') ||
+            event.target.classList.contains('learningmap-background-image')) {
+            addPlace(event);
+        } else if (event.target.classList.contains('place')) {
+            if (lastTarget == event.target.id) {
+                lastTarget = null;
+                clickHandler(event);
+            } else {
+                removePlace(event);
+            }
+        } else if (event.target.classList.contains('path')) {
+            removePath(event.target.id);
+        }
+        updateCode();
+    }
+
+    function circle(x, y, r, classes, id) {
+        let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', classes);
+        circle.setAttribute('id', id);
+        circle.setAttribute('cx', x);
+        circle.setAttribute('cy', y);
+        circle.setAttribute('r', r);
+        return circle;
+    }
+
+    function line(x1, y1, x2, y2, classes, id) {
+        let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('class', classes);
+        line.setAttribute('id', id);
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        return line;
+    }
+
+    function link(child, id) {
+        let link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+        link.setAttribute('id', id);
+        link.setAttribute('xlink:href', '');
+        link.appendChild(child);
+        return link;
+    }
+
+    function addPlace(event) {
+        let placesgroup = document.getElementById('placesGroup');
+        let placeId = 'p' + placestore.id;
+        let linkId = 'a' + placestore.id;
+        placesgroup.appendChild(
+            link(
+                circle(event.offsetX, event.offsetY, 10, 'place draggable', placeId),
+                linkId
+            )
+        );
+        placestore.places[placestore.id] = {
+            id: placeId,
+            linkId: linkId,
+            linkedActivity: null,
+            paths: []
+        };
+        placestore.id++;
+    }
+
+    function clickHandler(event) {
+        hideContextMenu();
+        if (event.target.classList.contains('place')) {
+            event.preventDefault();
+            if (firstPlace === null) {
+                firstPlace = event.target.id;
+                document.getElementById(firstPlace).classList.add('selected');
+            } else {
+                secondPlace = event.target.id;
+                let fid = parseInt(firstPlace.replace('p', ''));
+                let sid = parseInt(secondPlace.replace('p', ''));
+                if (sid == fid) {
+                    return;
+                }
+                if (sid < fid) {
+                    let z = sid;
+                    sid = fid;
+                    fid = z;
+                }
+                addPath(fid, sid);
+                document.getElementById(firstPlace).classList.remove('selected');
+                firstPlace = null;
+                lastTarget = secondPlace;
+                secondPlace = null;
+            }
+        } else {
+            let p = document.getElementById(firstPlace);
+            if (!(p === null)) {
+                p.classList.remove('selected');
+            }
+            firstPlace = null;
+        }
+    }
+
+    function addPath(fid, sid) {
+        let pid = 'p' + fid + '_' + sid;
+        if (document.getElementById(pid) === null) {
+            let pathsgroup = document.getElementById('pathsGroup');
+            pathsgroup.appendChild(
+                line(
+                    document.getElementById('p' + fid).cx.baseVal.value,
+                    document.getElementById('p' + fid).cy.baseVal.value,
+                    document.getElementById('p' + sid).cx.baseVal.value,
+                    document.getElementById('p' + sid).cy.baseVal.value,
+                    'path',
+                    pid
+                )
+            );
+            placestore.places[fid].paths.push(pid);
+            placestore.places[sid].paths.push(pid);
+            placestore.paths.push({
+                id: pid,
+                fid: 'p' + fid,
+                sid: 'p' + sid
+            });
+        }
+    }
+
+    function removePlace(event) {
+        let place = document.getElementById(event.target.id);
+        let parent = place.parentNode;
+        let placeId = parseInt(place.id.replace('p', ''));
+        let paths = placestore.places[placeId].paths;
+        (paths).forEach(path => {
+            removePath(path);
+        });
+        placestore.places = placestore.places.filter(
+            function(p) {
+                return p.id != placeId;
+            }
+        );
+        placestore.startingplaces.remove(event.target.id);
+        parent.removeChild(place);
+        parent.parentNode.removeChild(parent);
+
+        updateCode();
+    }
+
+    function removePath(id) {
+        let path = document.getElementById(id);
+        if (!(path === null)) {
+            path.parentNode.removeChild(path);
+            removePathFromPlacestore(id);
+        }
+    }
+
+    function removePathFromPlacestore(pid) {
+        let pathentry = placestore.paths.filter(
+            function(e) {
+                return pid == e.id;
+            }
+        )[0];
+        placestore.places[pathentry.fid].paths = placestore.places[pathentry.fid].paths.filter(
+            function(p) {
+                return pid != p;
+            }
+        );
+        placestore.places[pathentry.sid].paths = placestore.places[pathentry.sid].paths.filter(
+            function(p) {
+                return pid != p;
+            }
+        );
+        placestore.paths = placestore.paths.filter(
+            function(e) {
+                return pid != e.id;
+            }
+        );
+    }
+
+    function getActivityIdFromPlacestore(id) {
+        let place = placestore.places.filter(
+            function(e) {
+                return id == e.id;
+            }
+        );
+        if (place.length > 0) {
+            return place[0].linkedActivity;
+        } else {
+            return null;
+        }
+    }
+
+    function setActivityIdInPlacestore(id, linkedActivity) {
+        let place = placestore.places.filter(
+            function(e) {
+                return id == e.id;
+            }
+        );
+        if (place.length > 0) {
+            place[0].linkedActivity = linkedActivity;
+        }
+        updateCode();
+    }
+
+    function refreshBackgroundImage() {
+        let previewimage = document.getElementsByClassName('realpreview');
+        if (previewimage.length > 0) {
+            let background = document.getElementById('learningmap-background-image');
+            background.setAttribute('xlink:href', previewimage[0].getAttribute('src').split('?')[0]);
+            updateCode();
+        }
+    }
+
+};
