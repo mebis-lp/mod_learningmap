@@ -53,6 +53,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
             array_push($activitysel, $s);
         }
 
+        $mform->addElement('header', 'general', get_string('general', 'form'));
+
         $mform->addElement('text', 'name', get_string('name', 'learningmap'), array('size' => '64'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
@@ -87,6 +89,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
 
         $mform->addElement('hidden', 'introeditor[format]', FORMAT_HTML);
         $mform->setType('introeditor[format]', PARAM_INT);
+
+        $mform->closeHeaderBefore('header');
 
         $PAGE->requires->js_call_amd('mod_learningmap/learningmap', 'init');
 
