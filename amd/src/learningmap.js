@@ -37,7 +37,7 @@ export const init = () => {
             id: 0,
             places: [],
             paths: [],
-            startingplaces: ['p0'], //for testing
+            startingplaces: [],
             placecolor: 'red',
             strokecolor: 'white'
         };
@@ -65,7 +65,7 @@ export const init = () => {
                 activitySetting.removeAttribute('hidden');
                 document.getElementById('learningmap-activity-selector').value = activityId;
                 if (placestore.startingplaces.includes(e.target.id)) {
-                    document.getElementById('learningmap-activity-starting').setAttribute('checked', '');
+                    document.getElementById('learningmap-activity-starting').setAttribute('checked', 'on');
                 } else {
                     document.getElementById('learningmap-activity-starting').removeAttribute('checked', '');
                 }
@@ -87,7 +87,7 @@ export const init = () => {
     let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
     let observer = new MutationObserver(refreshBackgroundImage);
 
-    observer.observe(backgroundfileNode, { attributes: true, childList: true, subtree: true });
+    observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
 
     makeDraggable(document.getElementById('learningmap_svgmap'));
 
@@ -231,12 +231,14 @@ export const init = () => {
                 linkId
             )
         );
-        placestore.places[placestore.id] = {
+        placestore.places.push({
             id: placeId,
             linkId: linkId,
-            linkedActivity: null,
-            paths: []
-        };
+            linkedActivity: null
+        });
+        if (placestore.places.length == 1) {
+            placestore.startingplaces.push(placeId);
+        }
         placestore.id++;
     }
 
@@ -260,7 +262,10 @@ export const init = () => {
                     fid = z;
                 }
                 addPath(fid, sid);
-                document.getElementById(firstPlace).classList.remove('selected');
+                let first = document.getElementById(firstPlace);
+                if (first) {
+                    first.classList.remove('selected');
+                }
                 firstPlace = null;
                 lastTarget = secondPlace;
                 secondPlace = null;
@@ -278,44 +283,56 @@ export const init = () => {
         let pid = 'p' + fid + '_' + sid;
         if (document.getElementById(pid) === null) {
             let pathsgroup = document.getElementById('pathsGroup');
-            pathsgroup.appendChild(
-                line(
-                    document.getElementById('p' + fid).cx.baseVal.value,
-                    document.getElementById('p' + fid).cy.baseVal.value,
-                    document.getElementById('p' + sid).cx.baseVal.value,
-                    document.getElementById('p' + sid).cy.baseVal.value,
-                    'path',
-                    pid
-                )
-            );
-            placestore.places[fid].paths.push(pid);
-            placestore.places[sid].paths.push(pid);
-            placestore.paths.push({
-                id: pid,
-                fid: 'p' + fid,
-                sid: 'p' + sid
-            });
+            let first = document.getElementById('p' + fid);
+            let second = document.getElementById('p' + sid);
+            if (first && second) {
+                pathsgroup.appendChild(
+                    line(
+                        first.cx.baseVal.value,
+                        first.cy.baseVal.value,
+                        second.cx.baseVal.value,
+                        second.cy.baseVal.value,
+                        'path',
+                        pid
+                    )
+                );
+                placestore.paths.push({
+                    id: pid,
+                    fid: 'p' + fid,
+                    sid: 'p' + sid
+                });
+            }
         }
     }
 
     function removePlace(event) {
         let place = document.getElementById(event.target.id);
         let parent = place.parentNode;
-        let placeId = parseInt(place.id.replace('p', ''));
-        let paths = placestore.places[placeId].paths;
-        (paths).forEach(path => {
-            removePath(path);
-        });
+        removePathsTouchingPlace(event.target.id);
         placestore.places = placestore.places.filter(
             function(p) {
-                return p.id != placeId;
+                return p.id != event.target.id;
             }
         );
-        placestore.startingplaces.remove(event.target.id);
+        placestore.startingplaces = placestore.startingplaces.filter(
+            function(e) {
+                return e != event.target.id;
+            }
+        );
         parent.removeChild(place);
         parent.parentNode.removeChild(parent);
 
         updateCode();
+    }
+
+    function removePathsTouchingPlace(id) {
+        placestore.paths.forEach(
+            function(e) {
+                if (e.fid == id || e.sid == id) {
+                    removePath(e.id);
+                }
+            }
+        );
     }
 
     function removePath(id) {
@@ -327,21 +344,6 @@ export const init = () => {
     }
 
     function removePathFromPlacestore(pid) {
-        let pathentry = placestore.paths.filter(
-            function(e) {
-                return pid == e.id;
-            }
-        )[0];
-        placestore.places[pathentry.fid].paths = placestore.places[pathentry.fid].paths.filter(
-            function(p) {
-                return pid != p;
-            }
-        );
-        placestore.places[pathentry.sid].paths = placestore.places[pathentry.sid].paths.filter(
-            function(p) {
-                return pid != p;
-            }
-        );
         placestore.paths = placestore.paths.filter(
             function(e) {
                 return pid != e.id;
