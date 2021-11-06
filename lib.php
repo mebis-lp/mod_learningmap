@@ -128,6 +128,8 @@ function output_learningmap(cm_info $cm) {
 
     $dom = new DOMDocument('1.0', 'UTF-8');
     $dom->validateOnParse = true;
+    $dom->preserveWhiteSpace = false;
+    $dom->formatOutput = true;
     $dom->loadXML('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "'.new moodle_url('/mod/learningmap/svg11.dtd').'">'.$svg);
     $active = [];
     $completedplaces = [];
@@ -151,7 +153,7 @@ function output_learningmap(cm_info $cm) {
                     );
                     $title = $dom->getElementById('title' . $place->id);
                     if ($title) {
-                        $title->nodeValue = $placecm->name;
+                        $title->nodeValue = format_string($placecm->name);
                     }
                 }
                 if (in_array($place->id, $placestore->startingplaces)) {
@@ -192,6 +194,7 @@ function output_learningmap(cm_info $cm) {
             $domplace->setAttribute('style', 'visibility: hidden;');
         }
     }
-
-    return($dom->saveXML());
+    $remove = ['<?xml version="1.0"?>',
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://mbsmoodle.localhost/mod/learningmap/svg11.dtd">'];
+    return(str_replace($remove, '', $dom->saveXML()));
 }

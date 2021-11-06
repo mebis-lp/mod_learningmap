@@ -197,7 +197,6 @@ export const init = () => {
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
         circle.setAttribute('r', r);
-        circle.appendChild(title('title' + id));
         return circle;
     }
 
@@ -209,15 +208,17 @@ export const init = () => {
         line.setAttribute('y1', y1);
         line.setAttribute('x2', x2);
         line.setAttribute('y2', y2);
-        line.appendChild(title('title' + id));
         return line;
     }
 
-    function link(child, id) {
+    function link(child, id, title = null) {
         let link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
         link.setAttribute('id', id);
         link.setAttribute('xlink:href', '');
         link.appendChild(child);
+        if (!(title === null)) {
+            link.appendChild(title);
+        }
         return link;
     }
 
@@ -228,7 +229,8 @@ export const init = () => {
         placesgroup.appendChild(
             link(
                 circle(event.offsetX, event.offsetY, 10, 'place draggable', placeId),
-                linkId
+                linkId,
+                title('title' + placeId)
             )
         );
         placestore.places.push({
