@@ -162,13 +162,15 @@ function output_learningmap(cm_info $cm) {
                     array_push($active, $place->id);
                 }
             }
+        } else {
+            array_push($notavailable, $place->id);
         }
     }
     foreach ($placestore->paths as $path) {
-        if (in_array($path->sid, $completedplaces)) {
+        if (in_array($path->sid, $completedplaces) && !in_array($path->fid, $notavailable)) {
             array_push($active, $path->id, $path->fid);
         }
-        if (in_array($path->fid, $completedplaces)) {
+        if (in_array($path->fid, $completedplaces) && !in_array($path->sid, $notavailable)) {
             array_push($active, $path->id, $path->sid);
         }
     }
