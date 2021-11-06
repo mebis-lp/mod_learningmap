@@ -31,6 +31,7 @@ $string['name'] = 'Learning map name';
 $string['name_help'] = 'The name of the learning map is only displayed if the "Show map on course page" is not checked.';
 $string['pluginadministration'] = 'Learning map administration';
 $string['backgroundfile'] = 'Background image';
+$string['backgroundfile_help'] = 'This file will be used as background for the map.';
 $string['svgcode'] = 'SVG code';
 $string['learningmap'] = 'Learning map';
 $string['editplace'] = 'Edit place';

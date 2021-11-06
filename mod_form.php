@@ -80,8 +80,9 @@ class mod_learningmap_mod_form extends moodleform_mod {
             array('accepted_types' => 'image', 'maxfiles' => 1)
         );
         $mform->addRule('introeditor[itemid]', null, 'required', null, 'client');
+        $mform->addHelpButton('introeditor[itemid]', 'backgroundfile', 'learningmap');
 
-        $mform->addElement('textarea', 'introeditor[text]', get_string('svgcode', 'learningmap'), array("width" => 100));
+        $mform->addElement('textarea', 'introeditor[text]', get_string('svgcode', 'learningmap'));
         $mform->setType('introeditor[text]', PARAM_RAW);
 
         $mform->addElement('hidden', 'placestore');
