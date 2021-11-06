@@ -162,7 +162,7 @@ export const init = () => {
     function updateCode() {
         let mapdiv = document.getElementById('learningmap-editor-map');
         let code = document.getElementById('id_introeditor_text');
-        code.value = mapdiv.innerHTML;
+        code.innerHTML = mapdiv.innerHTML;
         document.getElementsByName('placestore')[0].value = JSON.stringify(placestore);
     }
 
