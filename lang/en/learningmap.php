@@ -40,3 +40,5 @@ $string['showdescription'] = 'Show map on course page';
 $string['showdescription_help'] = 'If checked, the learning map will be displayed on the course page (like a label). Else there will be a link and the map will bei displayed on a separate page.';
 $string['intro'] = $string['learningmap'];
 $string['intro_help'] = 'By double clicking on the background image you add a new place. For adding a new path click once on the starting place and then on the target place. If you double click on a place or a path, it is removed. Right click on a place to modify the activity it is linked to and to set / unset it as a starting place.';
+$string['learningmap:addinstance'] = 'Add a new learning map';
+$string['learningmap:view'] = 'View learning map';
