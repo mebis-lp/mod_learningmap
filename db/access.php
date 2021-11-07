@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = array(
 
     'mod/learningmap:addinstance' => array(
-        'riskbitmask' => 0,
+        'riskbitmask' => RISK_XSS,
         'captype' => 'write',
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
@@ -42,7 +42,9 @@ $capabilities = array(
         'contextlevel' => CONTEXT_MODULE,
         'archetypes' => array(
             'user' => CAP_ALLOW,
-            'guest' => CAP_ALLOW
+            'guest' => CAP_ALLOW,
+            'editingteacher' => CAP_ALLOW,
+            'manager' => CAP_ALLOW
         )
     ),
 );
