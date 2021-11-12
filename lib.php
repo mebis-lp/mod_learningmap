@@ -71,6 +71,8 @@ function learningmap_supports($feature) {
             return false;
         case FEATURE_SHOW_DESCRIPTION:
             return true;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
         default:
             return null;
     }
@@ -153,7 +155,7 @@ function output_learningmap(cm_info $cm) {
                     );
                     $title = $dom->getElementById('title' . $place->id);
                     if ($title) {
-                        $title->nodeValue = format_string($placecm->name);
+                        $title->nodeValue = $placecm->get_formatted_name();
                     }
                 }
                 if (in_array($place->id, $placestore->startingplaces)) {
