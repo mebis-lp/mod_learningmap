@@ -23,6 +23,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die();
+global $CFG;
+require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/backup_learningmap_stepslib.php');
 
 class backup_learningmap_activity_task extends backup_activity_task {
 
