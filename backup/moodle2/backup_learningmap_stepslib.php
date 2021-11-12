@@ -31,7 +31,7 @@ class backup_learningmap_activity_structure_step extends backup_activity_structu
         $learningmap = new backup_nested_element(
             'learningmap',
             array('id'),
-            array('name', 'intro', 'introformat', 'timemodified', 'placestore')
+            array('course', 'name', 'intro', 'introformat', 'timemodified', 'placestore')
         );
 
         $learningmap->set_source_table('learningmap', array('id' => backup::VAR_ACTIVITYID));
