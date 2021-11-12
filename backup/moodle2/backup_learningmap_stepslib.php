@@ -38,8 +38,6 @@ class backup_learningmap_activity_structure_step extends backup_activity_structu
 
         $learningmap->annotate_files('mod_learningmap', 'intro', null);
 
-        $learningmap->annotate_ids('course_modules', 'placestore');
-
         return $this->prepare_activity_structure($learningmap);
     }
 }
