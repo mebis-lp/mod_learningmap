@@ -35,7 +35,8 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $this->add_step(new restore_learningmap_activity_structure_step('learningmap_structure', 'learningmap.xml'));
     }
 
-    public static function define_decode_contents() { // Defining this to make SVG hacks possible.
+    // Defining this to make SVG hacks possible.
+    public static function define_decode_contents() {
         $contents = array();
         $contents[] = new restore_decode_content('learningmap', array('intro'), 'learningmap');
         return $contents;
@@ -59,7 +60,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $placestore = json_decode($item->placestore);
 
         foreach ($placestore->places as $place) {
-            if($place->linkedActivity) {
+            if ($place->linkedActivity) {
                 $moduleid = restore_dbops::get_backup_ids_record($this->get_restoreid(), 'course_module', $place->linkedActivity);
                 if ($moduleid) {
                     $place->linkedActivity = $moduleid['newitemid'];
@@ -74,5 +75,4 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $DB->update_record('learningmap', $item);
 
     }
-
 }

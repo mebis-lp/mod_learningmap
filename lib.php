@@ -146,7 +146,7 @@ function output_learningmap(cm_info $cm) {
                 $placecm = false;
             }
             if (!$placecm) {
-                array_push($notavailable, $place);
+                array_push($notavailable, $place->id);
             } else {
                 if ($link) {
                     $link->setAttribute(
