@@ -63,16 +63,16 @@ class restore_learningmap_activity_task extends restore_activity_task {
             if ($place->linkedActivity) {
                 $moduleid = restore_dbops::get_backup_ids_record($this->get_restoreid(), 'course_module', $place->linkedActivity);
                 if ($moduleid) {
-                    $place->linkedActivity = $moduleid['newitemid'];
+                    $place->linkedActivity = $moduleid->newitemid;
                 } else {
                     $place->linkedActivity = null;
                 }
             }
         }
 
-        $item->placestore = json_encode($placestore);
+        $json = json_encode($placestore);
 
-        $DB->update_record('learningmap', $item);
+        $DB->set_field('learningmap', 'placestore', $json, array('id' => $this->get_activityid()));
 
     }
 }
