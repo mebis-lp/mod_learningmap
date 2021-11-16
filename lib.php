@@ -117,7 +117,7 @@ function learningmap_cm_info_dynamic(cm_info $cm) {
 }
 
 function output_learningmap(cm_info $cm) {
-    global $DB, $USER;
+    global $DB, $USER, $OUTPUT;
 
     $context = context_module::instance($cm->id);
 
@@ -198,5 +198,10 @@ function output_learningmap(cm_info $cm) {
     }
     $remove = ['<?xml version="1.0"?>',
     '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://mbsmoodle.localhost/mod/learningmap/svg11.dtd">'];
-    return(str_replace($remove, '', $dom->saveXML()));
+    return(
+        $OUTPUT->render_from_template(
+            'learningmap/mapcontainer',
+            ['mapcode' => str_replace($remove, '', $dom->saveXML())]
+        )
+    );
 }

@@ -113,6 +113,7 @@ export const init = () => {
             };
         }
 
+
         function startDrag(evt) {
             if (evt.target.classList.contains('draggable')) {
                 selectedElement = evt.target;
@@ -125,7 +126,7 @@ export const init = () => {
         function drag(evt) {
             if (selectedElement) {
                 evt.preventDefault();
-                var coord = getMousePosition(evt);
+                var coord = getMousePosition(evt, el);
                 let cx = coord.x - offset.x;
                 let cy = coord.y - offset.y;
                 selectedElement.setAttributeNS(null, "cx", cx);
@@ -226,9 +227,15 @@ export const init = () => {
         let placesgroup = document.getElementById('placesGroup');
         let placeId = 'p' + placestore.id;
         let linkId = 'a' + placestore.id;
+        var CTM = event.target.getScreenCTM();
+        if (event.touches) {
+            event = event.touches[0];
+        }
+        let cx = (event.clientX - CTM.e) / CTM.a;
+        let cy = (event.clientY - CTM.f) / CTM.d;
         placesgroup.appendChild(
             link(
-                circle(event.offsetX, event.offsetY, 10, 'place draggable', placeId),
+                circle(cx, cy, 10, 'place draggable', placeId),
                 linkId,
                 title('title' + placeId)
             )

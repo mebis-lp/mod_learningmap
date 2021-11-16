@@ -14,3 +14,25 @@
 #fitem_id_introeditor_text {
     display: none;
 }
+
+#l-earningmap_svgmap {
+    width: 100%;
+    padding-bottom: 92%;
+    height: 1px;
+    overflow: visible;
+}
+
+.scaling-svg-container {
+    position: relative;
+    height: 0;
+    width: 100%;
+    padding: 0;
+    padding-bottom: 100%;
+}
+.scaling-svg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
