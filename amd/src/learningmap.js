@@ -60,11 +60,11 @@ export const init = () => {
 
     function showContextMenu(e) {
         if (elementForActivitySelector) {
-            document.getElementById(elementForActivitySelector).classList.remove('selected2');
+            document.getElementById(elementForActivitySelector).classList.remove('learningmap-selected-activity-selector');
         }
         if (activitySetting) {
-            if (e.target.classList.contains('place')) {
-                e.target.classList.add('selected2');
+            if (e.target.classList.contains('learningmap-place')) {
+                e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = getActivityIdFromPlacestore(e.target.id);
                 activitySetting.setAttribute('style', 'top: ' + e.offsetY + 'px; left: ' + e.offsetX + 'px;');
                 activitySetting.removeAttribute('hidden');
@@ -84,7 +84,7 @@ export const init = () => {
     function hideContextMenu() {
         let e = document.getElementById(elementForActivitySelector);
         if (e) {
-            e.classList.remove('selected2');
+            e.classList.remove('learningmap-selected-activity-selector');
         }
         activitySetting.setAttribute('hidden', '');
     }
@@ -130,7 +130,7 @@ export const init = () => {
         }
 
         function startDrag(evt) {
-            if (evt.target.classList.contains('draggable')) {
+            if (evt.target.classList.contains('learningmap-draggable')) {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
                 offset.x -= parseFloat(selectedElement.getAttributeNS(null, "cx"));
@@ -187,14 +187,14 @@ export const init = () => {
         if (event.target.classList.contains('learningmap-mapcontainer') ||
             event.target.classList.contains('learningmap-background-image')) {
             addPlace(event);
-        } else if (event.target.classList.contains('place')) {
+        } else if (event.target.classList.contains('learningmap-place')) {
             if (lastTarget == event.target.id) {
                 lastTarget = null;
                 clickHandler(event);
             } else {
                 removePlace(event);
             }
-        } else if (event.target.classList.contains('path')) {
+        } else if (event.target.classList.contains('learningmap-path')) {
             removePath(event.target.id);
         }
         updateCode();
@@ -250,7 +250,7 @@ export const init = () => {
         let cy = (event.clientY - CTM.f) / CTM.d;
         placesgroup.appendChild(
             link(
-                circle(cx, cy, 10, 'place draggable', placeId),
+                circle(cx, cy, 10, 'learningmap-place learningmap-draggable', placeId),
                 linkId,
                 title('title' + placeId)
             )
@@ -272,7 +272,7 @@ export const init = () => {
             event.preventDefault();
             if (firstPlace === null) {
                 firstPlace = event.target.id;
-                document.getElementById(firstPlace).classList.add('selected');
+                document.getElementById(firstPlace).classList.add('learningmap-selected');
             } else {
                 secondPlace = event.target.id;
                 let fid = parseInt(firstPlace.replace('p', ''));
@@ -288,7 +288,7 @@ export const init = () => {
                 addPath(fid, sid);
                 let first = document.getElementById(firstPlace);
                 if (first) {
-                    first.classList.remove('selected');
+                    first.classList.remove('learningmap-selected');
                 }
                 firstPlace = null;
                 lastTarget = secondPlace;
@@ -297,7 +297,7 @@ export const init = () => {
         } else {
             let p = document.getElementById(firstPlace);
             if (!(p === null)) {
-                p.classList.remove('selected');
+                p.classList.remove('learningmap-selected');
             }
             firstPlace = null;
         }
@@ -309,14 +309,14 @@ export const init = () => {
             let pathsgroup = document.getElementById('pathsGroup');
             let first = document.getElementById('p' + fid);
             let second = document.getElementById('p' + sid);
-            if (first && second) {
+            if (pathsgroup && first && second) {
                 pathsgroup.appendChild(
                     line(
                         first.cx.baseVal.value,
                         first.cy.baseVal.value,
                         second.cx.baseVal.value,
                         second.cy.baseVal.value,
-                        'path',
+                        'learningmap-path',
                         pid
                     )
                 );

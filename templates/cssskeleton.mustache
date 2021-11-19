@@ -18,7 +18,7 @@
     @template mod_learningmap/cssskeleton
 }}
 <style id="svgstyle" type="text/css">
-.place {
+.learningmap-place {
     fill: {{ placecolor }};
     stroke-width: 3px;
     stroke: {{ strokecolor }};
@@ -26,7 +26,7 @@
     visibility: hidden;
     {{/editmode}}
 }
-.path {
+.learningmap-path {
     stroke: {{ strokecolor }};
     stroke-width: 3px;
     {{^editmode}}
@@ -34,17 +34,17 @@
     {{/editmode}}
 }
 {{#editmode}}
-.place:hover {
+.learningmap-place:hover {
     fill: blue;
 }
-.path:hover {
+.learningmap-path:hover {
     stroke: blue;
     stroke-width: 6px;
 }
-.selected {
+.learningmap-selected {
     stroke: green;
 }
-.selected2 {stroke-dasharray: 10; animation: dashdraw 4s linear infinite;}
+.learningmap-selected-activity-selector {stroke-dasharray: 10; animation: dashdraw 4s linear infinite;}
        @keyframes dashdraw {to {stroke-dashoffset: 200;}}
 {{/editmode}}
 </style>
