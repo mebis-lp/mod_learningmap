@@ -13,13 +13,13 @@
     display: none;
 }
 
-.scaling-svg-container {
+.learningmap-scaling-svg-container {
     position: relative;
-    height: 100%;
     min-height: 100px;
     width: 100%;
 }
-.scaling-svg {
+
+.learningmap-scaling-svg {
     vertical-align: top;
     width: 100%;
     left: 0;

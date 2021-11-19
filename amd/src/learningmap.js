@@ -268,7 +268,7 @@ export const init = () => {
 
     function clickHandler(event) {
         hideContextMenu();
-        if (event.target.classList.contains('place')) {
+        if (event.target.classList.contains('learningmap-place')) {
             event.preventDefault();
             if (firstPlace === null) {
                 firstPlace = event.target.id;
@@ -410,11 +410,7 @@ export const init = () => {
 
     function processPlacestore() {
         let svg = document.getElementById('learningmap_svgmap');
-        // svg.setAttribute('width', placestore.width);
-        // svg.setAttribute('height', placestore.height);
         svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
-        //let container = document.getElementById('learningmap-editor-map');
-        //container.setAttribute('style', 'height: ' + (placestore.height + 4) + 'px');
     }
 
 };
