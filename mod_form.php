@@ -77,7 +77,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
             'introeditor[itemid]',
             get_string('backgroundfile', 'learningmap'),
             null,
-            array('accepted_types' => 'image', 'maxfiles' => 1)
+            array(
+                'accepted_types' => 'web_image',
+                'maxfiles' => 1,
+                'subdirs' => 0)
         );
         $mform->addRule('introeditor[itemid]', null, 'required', null, 'client');
         $mform->addHelpButton('introeditor[itemid]', 'backgroundfile', 'learningmap');
