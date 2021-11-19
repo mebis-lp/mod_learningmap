@@ -208,8 +208,8 @@ function output_learningmap(cm_info $cm) {
     return(
         $OUTPUT->render_from_template(
             'mod_learningmap/mapcontainer',
-            ['mapcode' => str_replace($remove, '', $dom->saveXML()),
-            'style' => 'height: ' . $placestore->height . 'px;']
+            ['mapcode' => str_replace($remove, '', $dom->saveXML())]
+            //, 'style' => 'height: ' . $placestore->height . 'px;']
         )
     );
 }
