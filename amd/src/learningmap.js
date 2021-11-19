@@ -32,6 +32,7 @@ export const init = () => {
     var placestore;
     try {
         placestore = JSON.parse(document.getElementsByName('placestore')[0].value);
+        refreshBackgroundImage();
     } catch {
         placestore = {
             id: 0,
@@ -39,11 +40,15 @@ export const init = () => {
             paths: [],
             startingplaces: [],
             placecolor: 'red',
-            strokecolor: 'white'
+            strokecolor: 'white',
+            height: 100,
+            width: 800
         };
     }
 
     mapdiv.innerHTML = code.value;
+
+    refreshBackgroundImage();
 
     mapdiv.addEventListener('dblclick', dblclickHandler);
     mapdiv.addEventListener('click', clickHandler);
@@ -91,6 +96,17 @@ export const init = () => {
 
     makeDraggable(document.getElementById('learningmap_svgmap'));
 
+    let background = document.getElementById('learningmap-background-image');
+
+    background.addEventListener('load', function() {
+        let height = parseInt(background.getBBox().height);
+        let width = background.getBBox().width;
+        placestore.height = height;
+        placestore.width = width;
+        updateCode();
+        processPlacestore();
+    });
+
     function makeDraggable(el) {
         el.addEventListener('mousedown', startDrag);
         el.addEventListener('mousemove', drag);
@@ -113,7 +129,6 @@ export const init = () => {
             };
         }
 
-
         function startDrag(evt) {
             if (evt.target.classList.contains('draggable')) {
                 selectedElement = evt.target;
@@ -126,7 +141,7 @@ export const init = () => {
         function drag(evt) {
             if (selectedElement) {
                 evt.preventDefault();
-                var coord = getMousePosition(evt, el);
+                var coord = getMousePosition(evt);
                 let cx = coord.x - offset.x;
                 let cy = coord.y - offset.y;
                 selectedElement.setAttributeNS(null, "cx", cx);
@@ -390,8 +405,16 @@ export const init = () => {
         if (previewimage.length > 0) {
             let background = document.getElementById('learningmap-background-image');
             background.setAttribute('xlink:href', previewimage[0].getAttribute('src').split('?')[0]);
-            updateCode();
         }
+    }
+
+    function processPlacestore() {
+        let svg = document.getElementById('learningmap_svgmap');
+        svg.setAttribute('width', placestore.width);
+        svg.setAttribute('height', placestore.height);
+        svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
+        let container = document.getElementById('learningmap-editor-map');
+        container.setAttribute('style', 'height: ' + (placestore.height + 4) + 'px');
     }
 
 };

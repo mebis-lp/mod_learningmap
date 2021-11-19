@@ -102,7 +102,7 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
         return false;
     }
 
-    send_stored_file($file, 0, 0, $forcedownload, $options);
+    send_stored_file($file, 0, 0, false, $options);
 }
 
 function learningmap_cm_info_dynamic(cm_info $cm) {
@@ -125,7 +125,14 @@ function output_learningmap(cm_info $cm) {
 
     $completion = new completion_info($cm->get_course());
 
-    $svg = file_rewrite_pluginfile_URLS($map->intro, 'pluginfile.php', $context->id, 'mod_learningmap', 'intro', null);
+    $svg = file_rewrite_pluginfile_URLS(
+        $map->intro,
+        'pluginfile.php',
+        $context->id,
+        'mod_learningmap',
+        'intro',
+        null
+    );
     $placestore = json_decode($map->placestore);
 
     $dom = new DOMDocument('1.0', 'UTF-8');
@@ -197,11 +204,12 @@ function output_learningmap(cm_info $cm) {
         }
     }
     $remove = ['<?xml version="1.0"?>',
-    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://mbsmoodle.localhost/mod/learningmap/svg11.dtd">'];
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "'. new moodle_url('/mod/learningmap/svg11.dtd').'">'];
     return(
         $OUTPUT->render_from_template(
-            'learningmap/mapcontainer',
-            ['mapcode' => str_replace($remove, '', $dom->saveXML())]
+            'mod_learningmap/mapcontainer',
+            ['mapcode' => str_replace($remove, '', $dom->saveXML()),
+            'style' => 'height: ' . $placestore->height . 'px;']
         )
     );
 }
