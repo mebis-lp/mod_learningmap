@@ -13,6 +13,7 @@ export const init = () => {
     let activitySetting = document.getElementById('learningmap-activity-setting');
     let activitySelector = document.getElementById('learningmap-activity-selector');
     let activityStarting = document.getElementById('learningmap-activity-starting');
+    let activityTarget = document.getElementById('learningmap-activity-target');
     if (activitySelector) {
         activitySelector.addEventListener('change', function() {
             setActivityIdInPlacestore(elementForActivitySelector, activitySelector.value);
@@ -22,6 +23,16 @@ export const init = () => {
                 placestore.startingplaces.push(elementForActivitySelector);
             } else {
                 placestore.startingplaces = placestore.startingplaces.filter(function(e) {
+                    return e != elementForActivitySelector;
+                });
+            }
+            updateCode();
+        });
+        activityTarget.addEventListener('change', function() {
+            if (activityTarget.checked) {
+                placestore.targetplaces.push(elementForActivitySelector);
+            } else {
+                placestore.targetplaces = placestore.targetplaces.filter(function(e) {
                     return e != elementForActivitySelector;
                 });
             }
@@ -39,6 +50,7 @@ export const init = () => {
             places: [],
             paths: [],
             startingplaces: [],
+            targetplaces: [],
             placecolor: 'red',
             strokecolor: 'white',
             height: 100,
@@ -73,6 +85,11 @@ export const init = () => {
                     document.getElementById('learningmap-activity-starting').setAttribute('checked', 'on');
                 } else {
                     document.getElementById('learningmap-activity-starting').removeAttribute('checked', '');
+                }
+                if (placestore.targetplaces.includes(e.target.id)) {
+                    document.getElementById('learningmap-activity-target').setAttribute('checked', 'on');
+                } else {
+                    document.getElementById('learningmap-activity-target').removeAttribute('checked', '');
                 }
                 elementForActivitySelector = e.target.id;
             } else {
@@ -339,6 +356,11 @@ export const init = () => {
             }
         );
         placestore.startingplaces = placestore.startingplaces.filter(
+            function(e) {
+                return e != event.target.id;
+            }
+        );
+        placestore.targetplaces = placestore.targetplaces.filter(
             function(e) {
                 return e != event.target.id;
             }

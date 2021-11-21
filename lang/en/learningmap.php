@@ -36,6 +36,7 @@ $string['svgcode'] = 'SVG code';
 $string['learningmap'] = 'Learning map';
 $string['editplace'] = 'Edit place';
 $string['startingplace'] = 'Starting place';
+$string['targetplace'] = 'Target place';
 $string['showdescription'] = 'Show map on course page';
 $string['showdescription_help'] = 'If checked, the learning map will be displayed on the course page (like a label). Else there will be a link and the map will bei displayed on a separate page.';
 $string['intro'] = $string['learningmap'];
