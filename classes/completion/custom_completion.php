@@ -86,7 +86,11 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     }
                 }
             }
-            return COMPLETION_COMPLETE;
+            if ($map->completiontype == 1) {
+                return COMPLETION_INCOMPLETE;
+            } else {
+                return COMPLETION_COMPLETE;
+            }
         }
     }
 
@@ -94,7 +98,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         return [
             'completion_with_one_target',
             'completion_with_all_targets',
-            'completion_with_allplaces'
+            'completion_with_all_places'
         ];
     }
 
@@ -111,7 +115,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
             'completionview',
             'completion_with_one_target',
             'completion_with_all_targets',
-            'completion_with_allplaces'
+            'completion_with_all_places'
         ];
     }
 }
