@@ -68,14 +68,20 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         $placecm = false;
                     }
 
-                    if (!$placecm || $completion->get_data($placecm, false, $this->userid)->completionstate == COMPLETION_INCOMPLETE) {
+                    if (
+                        !$placecm ||
+                        $completion->get_data($placecm, false, $this->userid)->completionstate == COMPLETION_INCOMPLETE
+                    ) {
                         // No way to fulfill condition.
                         if ($map->completiontype > 1) {
                             return COMPLETION_INCOMPLETE;
                         }
                     } else {
                         // We need only one.
-                        if ($map->completiontype == 1 && $completion->get_data($placecm, false, $this->userid)->completionstate != COMPLETION_INCOMPLETE) {
+                        if (
+                            $map->completiontype == 1 &&
+                            $completion->get_data($placecm, false, $this->userid)->completionstate != COMPLETION_INCOMPLETE
+                        ) {
                             return COMPLETION_COMPLETE;
                         }
                     }
