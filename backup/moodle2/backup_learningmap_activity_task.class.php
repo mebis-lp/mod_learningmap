@@ -41,7 +41,7 @@ class backup_learningmap_activity_task extends backup_activity_task {
         $this->add_step(new backup_learningmap_activity_structure_step('learningmap_structure', 'learningmap.xml'));
     }
 
-    static public function encode_content_links($content) {
+    public static function encode_content_links($content) {
         global $CFG;
 
         $base = preg_quote($CFG->wwwroot.'/mod/learningmap', '#');

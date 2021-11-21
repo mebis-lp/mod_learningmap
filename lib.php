@@ -66,7 +66,7 @@ function learningmap_supports($feature) {
         case FEATURE_COMPLETION_TRACKS_VIEWS:
             return true;
         case FEATURE_COMPLETION_HAS_RULES:
-            return false;
+            return true;
         case FEATURE_GRADE_HAS_GRADE:
             return false;
         case FEATURE_GRADE_OUTCOMES:
@@ -105,6 +105,29 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
     }
 
     send_stored_file($file, 0, 0, false, $options);
+}
+
+function learningmap_get_coursemodule_info($cm) {
+    global $DB;
+
+    if (!$map = $DB->get_record('learningmap', ['id' => $cm->instance], 'completiontype')) {
+        return false;
+    }
+
+    $result = new cached_cm_info();
+
+    $completiontypes = [
+        'nocompletion',
+        'completion_with_one_target',
+        'completion_with_all_targets',
+        'completion_with_all_places'
+    ];
+
+    if ($cm->completion == COMPLETION_TRACKING_AUTOMATIC && $map->completiontype > 0) {
+        $result->customdata['customcompletionrules'][$completiontypes[$map->completiontype]] = 1;
+    }
+
+    return $result;
 }
 
 function learningmap_cm_info_dynamic(cm_info $cm) {
@@ -214,7 +237,6 @@ function output_learningmap(cm_info $cm) {
         $OUTPUT->render_from_template(
             'mod_learningmap/mapcontainer',
             ['mapcode' => str_replace($remove, '', $dom->saveXML())]
-            //, 'style' => 'height: ' . $placestore->height . 'px;']
         )
     );
 }

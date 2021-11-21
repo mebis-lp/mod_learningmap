@@ -15,17 +15,33 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Version information for mod_learningmap
+ * Autoupdate class for mod_learningmap
  *
  * @package mod_learningmap
  * @copyright  2021 Stefan Hanauska <stefan.hanauska@altmuehlnet.de>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_learningmap;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_learningmap';
-$plugin->release = '0.1';
-$plugin->version = 2021112101;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_ALPHA;
+class autoupdate {
+    public static function update_from_event(\core\event\base $event) {
+        $data = $event->get_data();
+        if (isset($data['courseid']) && $data['courseid'] > 0) {
+            $modinfo = get_fast_modinfo($data['courseid']);
+            $instances = $modinfo->get_instances_of('learningmap');
+            if (count($instances) > 0) {
+                $completion = new \completion_info($modinfo->get_course());
+                foreach ($instances as $i) {
+                    $instance = $i->get_course_module_record();
+                    if ($instance->id == $data['contextinstanceid']) {
+                        continue;
+                    }
+                    $completion->update_state($i, COMPLETION_UNKNOWN, $data['userid']);
+                }
+            }
+        }
+    }
+}

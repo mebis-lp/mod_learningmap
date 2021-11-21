@@ -103,6 +103,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $this->add_action_buttons(true, false, null);
     }
 
+    public function completion_rule_enabled($data) {
+        return (!empty($data['completiontype']) && $data['completiontype'] > 0);
+    }
+
     public function add_completion_rules() {
         $mform = $this->_form;
 
@@ -113,13 +117,18 @@ class mod_learningmap_mod_form extends moodleform_mod {
             get_string('completion_with_all_places', 'mod_learningmap')
         ];
 
-        $mform->createElement(
+        $mform->addElement(
             'select',
             'completiontype',
             get_string('completiontype', 'learningmap'),
             $completionoptions,
             []
         );
+
+        $mform->setType('completiontype', PARAM_INT);
+        $mform->hideIf('completiontype', 'completion', 'neq', COMPLETION_TRACKING_AUTOMATIC);
+
+        return(['completiontype']);
     }
 
     public function data_preprocessing(&$defaultvalues) {

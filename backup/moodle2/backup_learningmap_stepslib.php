@@ -25,9 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 class backup_learningmap_activity_structure_step extends backup_activity_structure_step {
-
     protected function define_structure() {
-
         $learningmap = new backup_nested_element(
             'learningmap',
             array('id'),

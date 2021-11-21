@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,10 +12,10 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for mod_learningmap
+ * Events for mod_learningmap
  *
  * @package mod_learningmap
  * @copyright  2021 Stefan Hanauska <stefan.hanauska@altmuehlnet.de>
@@ -24,8 +24,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_learningmap';
-$plugin->release = '0.1';
-$plugin->version = 2021112101;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_ALPHA;
+$observers = array(
+    array(
+        'eventname' => '*',
+        'target' => 'course_module_completion',
+        'action' => 'updated',
+        'callback' => '\mod_learningmap\autoupdate::update_from_event'
+    )
+);

@@ -48,4 +48,7 @@ $string['nocompletion'] = 'No completion with map items';
 $string['completion_with_one_target'] = 'Reaching one target place is necessary for completion';
 $string['completion_with_all_targets'] = 'Reaching all target places is necessary for completion';
 $string['completion_with_all_places'] = 'Reaching all places is necessary for completion';
+$string['completiondetail:one_target'] = 'Reach one target place';
+$string['completiondetail:all_targets'] = 'Reach all target places';
+$string['completiondetail:all_places'] = 'Reach all places';
 $string['privacy:metadata'] = '';
