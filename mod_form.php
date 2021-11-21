@@ -103,6 +103,25 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $this->add_action_buttons(true, false, null);
     }
 
+    public function add_completion_rules() {
+        $mform = $this->_form;
+
+        $completionoptions = [
+            get_string('nocompletion', 'learningmap'),
+            get_string('completion_with_one_target', 'learningmap'),
+            get_string('completion_with_all_targets', 'learningmap'),
+            get_string('completion_with_all_places', 'mod_learningmap')
+        ];
+
+        $mform->createElement(
+            'select',
+            'completiontype',
+            get_string('completiontype', 'learningmap'),
+            $completionoptions,
+            []
+        );
+    }
+
     public function data_preprocessing(&$defaultvalues) {
         global $OUTPUT;
 
