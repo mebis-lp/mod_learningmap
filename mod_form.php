@@ -46,7 +46,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $s['coursemodules'] = [];
             foreach ($section as $cmid) {
                 $module = $cm->get_cm($cmid);
-                if ($module->completion > 0) {
+                if ($module->completion > 0 && $module->deletioninprogress == 0) {
                     array_push($s['coursemodules'], ['id' => $cmid, 'name' => $module->name]);
                 }
             }
