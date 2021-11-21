@@ -64,6 +64,8 @@ function learningmap_supports($feature) {
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
+            return true;
+        case FEATURE_COMPLETION_HAS_RULES:
             return false;
         case FEATURE_GRADE_HAS_GRADE:
             return false;
@@ -109,6 +111,9 @@ function learningmap_cm_info_dynamic(cm_info $cm) {
     // Decides whether to display the map on course page or via view.php.
     if ($cm->showdescription == 1) {
         $cm->set_no_view_link(true);
+
+        $completion = new completion_info($cm->get_course());
+        $completion->set_module_viewed($cm);
 
         $cm->set_content(output_learningmap($cm), true);
 

@@ -39,6 +39,9 @@ $PAGE->set_url(new moodle_url('/mod/learningmap/view.php', array('id' => $id)));
 $PAGE->set_title(get_string('pluginname', 'mod_learningmap') . ' ' . $map->name);
 $PAGE->set_heading($map->name);
 
+$completion = new completion_info($course);
+$completion->set_module_viewed($cm);
+
 echo $OUTPUT->header();
 
 echo $OUTPUT->box(output_learningmap($cm));
