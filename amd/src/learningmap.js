@@ -46,53 +46,50 @@ export const init = () => {
         });
     }
 
-    var placestore;
+    var placestore = {
+        id: 0,
+        places: [],
+        paths: [],
+        startingplaces: [],
+        targetplaces: [],
+        placecolor: '#c01c28',
+        strokecolor: '#ffffff',
+        visitedcolor: '#26a269',
+        height: 100,
+        width: 800,
+        editmode: true // This will be removed by data_postprocessing.
+    };
     try {
-        placestore = JSON.parse(document.getElementsByName('placestore')[0].value);
+        let fromjson = JSON.parse(document.getElementsByName('placestore')[0].value);
+        placestore = {placestore, fromjson};
         refreshBackgroundImage();
-    } catch {
-        placestore = {
-            id: 0,
-            places: [],
-            paths: [],
-            startingplaces: [],
-            targetplaces: [],
-            placecolor: 'red',
-            strokecolor: 'white',
-            visitedcolor: 'green',
-            height: 100,
-            width: 800
-        };
-    }
-
-    // This will be removed by data_postprocessing.
-    placestore.editmode = true;
+    } catch {}
 
     if (colorChooserPath) {
-        colorChooserPath.value = placestore.strokecolor;
         colorChooserPath.addEventListener('change', function() {
             placestore.strokecolor = colorChooserPath.value;
             updateCSS();
             updateCode();
         });
+        colorChooserPath.value = placestore.strokecolor;
     }
 
     if (colorChooserPlace) {
-        colorChooserPlace.value = placestore.placecolor;
         colorChooserPlace.addEventListener('change', function() {
             placestore.placecolor = colorChooserPlace.value;
             updateCSS();
             updateCode();
         });
+        colorChooserPlace.value = placestore.placecolor;
     }
 
     if (colorChooserVisited) {
-        colorChooserVisited.value = placestore.visited;
         colorChooserVisited.addEventListener('change', function() {
-            placestore.visited = colorChooserVisited.value;
+            placestore.visitedcolor = colorChooserVisited.value;
             updateCSS();
             updateCode();
         });
+        colorChooserVisited.value = placestore.visitedcolor;
     }
 
     mapdiv.innerHTML = code.value;

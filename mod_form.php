@@ -137,7 +137,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
         if (!$this->current->instance) {
             $defaultvalues['introeditor[text]'] = $OUTPUT->render_from_template(
                 'mod_learningmap/svgskeleton',
-                ['placecolor' => 'red', 'strokecolor' => 'white', 'editmode' => true]
+                ['editmode' => true]
             );
             $defaultvalues['showdescription'] = 1;
         } else {
