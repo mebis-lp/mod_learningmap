@@ -1,4 +1,8 @@
 /* eslint-disable require-jsdoc */
+
+import {exception as displayException} from 'core/notification';
+import Templates from 'core/templates';
+
 export const init = () => {
     var selectedElement, offset;
 
@@ -14,6 +18,10 @@ export const init = () => {
     let activitySelector = document.getElementById('learningmap-activity-selector');
     let activityStarting = document.getElementById('learningmap-activity-starting');
     let activityTarget = document.getElementById('learningmap-activity-target');
+    let colorChooserPlace = document.getElementById('learningmap-color-place');
+    let colorChooserVisited = document.getElementById('learningmap-color-visited');
+    let colorChooserPath = document.getElementById('learningmap-color-path');
+
     if (activitySelector) {
         activitySelector.addEventListener('change', function() {
             setActivityIdInPlacestore(elementForActivitySelector, activitySelector.value);
@@ -53,9 +61,40 @@ export const init = () => {
             targetplaces: [],
             placecolor: 'red',
             strokecolor: 'white',
+            visitedcolor: 'green',
             height: 100,
             width: 800
         };
+    }
+
+    // This will be removed by data_postprocessing.
+    placestore.editmode = true;
+
+    if (colorChooserPath) {
+        colorChooserPath.value = placestore.strokecolor;
+        colorChooserPath.addEventListener('change', function() {
+            placestore.strokecolor = colorChooserPath.value;
+            updateCSS();
+            updateCode();
+        });
+    }
+
+    if (colorChooserPlace) {
+        colorChooserPlace.value = placestore.placecolor;
+        colorChooserPlace.addEventListener('change', function() {
+            placestore.placecolor = colorChooserPlace.value;
+            updateCSS();
+            updateCode();
+        });
+    }
+
+    if (colorChooserVisited) {
+        colorChooserVisited.value = placestore.visited;
+        colorChooserVisited.addEventListener('change', function() {
+            placestore.visited = colorChooserVisited.value;
+            updateCSS();
+            updateCode();
+        });
     }
 
     mapdiv.innerHTML = code.value;
@@ -435,4 +474,15 @@ export const init = () => {
         svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
     }
 
+    function updateCSS() {
+        Templates.renderForPromise('mod_learningmap/cssskeleton', placestore)
+            .then(({html, js}) => {
+                mapdiv.innerHTML = mapdiv.innerHTML.replace(
+                    /<style[\s\S]*style>/i,
+                    html
+                );
+                return true;
+            }).catch(ex => displayException(ex)
+        );
+    }
 };

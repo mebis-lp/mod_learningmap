@@ -222,7 +222,7 @@ function output_learningmap(cm_info $cm) {
     foreach ($completedplaces as $place) {
         $domplace = $dom->getElementById($place);
         if ($domplace) {
-            $domplace->setAttribute('style', 'visibility: visible; fill: green;');
+            $domplace->setAttribute('style', 'visibility: visible; fill: ' . $placestore->visitedcolor . ';');
         }
     }
     foreach ($notavailable as $place) {
