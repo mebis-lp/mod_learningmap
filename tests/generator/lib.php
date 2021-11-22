@@ -31,7 +31,7 @@ class mod_learningmap_generator extends testing_module_generator {
 
         $record = (array)$record + array(
             'name' => 'test map',
-            'intro' => '<svg id="learningmap_svgmap" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="800" height="600">
+            'intro' => '<svg id="learningmap-svgmap" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="800" height="600">
             <style id="svgstyle" type="text/css">
             .place {
                 fill: red;

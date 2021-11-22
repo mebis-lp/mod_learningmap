@@ -150,7 +150,7 @@ export const init = () => {
 
     observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
 
-    makeDraggable(document.getElementById('learningmap_svgmap'));
+    makeDraggable(document.getElementById('learningmap-svgmap'));
 
     let background = document.getElementById('learningmap-background-image');
 
@@ -470,13 +470,13 @@ export const init = () => {
     }
 
     function processPlacestore() {
-        let svg = document.getElementById('learningmap_svgmap');
+        let svg = document.getElementById('learningmap-svgmap');
         svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
     }
 
     function updateCSS() {
         Templates.renderForPromise('mod_learningmap/cssskeleton', placestore)
-            .then(({html, js}) => {
+            .then(({html}) => {
                 mapdiv.innerHTML = mapdiv.innerHTML.replace(
                     /<style[\s\S]*style>/i,
                     html
