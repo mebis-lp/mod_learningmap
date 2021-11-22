@@ -49,7 +49,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
             foreach ($placestore->places as $place) {
                 // Prevent infinite loop.
-                if ($place->linkedActivity == $this->cm->instance) {
+                if ($place->linkedActivity == $this->cm->id) {
                     continue;
                 }
                 // Skip non-target places when there is no condition to visit all places.
