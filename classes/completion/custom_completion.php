@@ -39,8 +39,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
             // Return COMPLETION_INCOMPLETE if there are no target places and condition requires to have one.
             if (
-                ($map->completiontype == 2 ||
-                $map->completiontype == 3) &&
+                ($map->completiontype > 1) &&
                 count($placestore->targetplaces) == 0
             ) {
                 return COMPLETION_INCOMPLETE;
