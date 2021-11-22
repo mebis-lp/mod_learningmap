@@ -61,9 +61,10 @@ export const init = () => {
         width: 800,
         editmode: true // This will be removed by data_postprocessing.
     };
+
     try {
         let fromjson = JSON.parse(document.getElementsByName('placestore')[0].value);
-        placestore = {placestore, fromjson};
+        Object.assign(placestore, fromjson);
         refreshBackgroundImage();
     } catch {}
 
@@ -94,6 +95,8 @@ export const init = () => {
     mapdiv.innerHTML = code.value;
 
     refreshBackgroundImage();
+    registerBackgroundListener();
+    makeDraggable(document.getElementById('learningmap-svgmap'));
 
     updateCSS();
 
@@ -150,7 +153,6 @@ export const init = () => {
 
     let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
     let observer = new MutationObserver(refreshBackgroundImage);
-
     observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
 
     /**
@@ -591,21 +593,13 @@ export const init = () => {
 
     /**
      * Updates CSS code inside the SVG (called, when one of the colors is changed).
-     * This function also calls
-     * - updateCode()
-     * - registerBackgroundListener()
-     * - makeDraggable()
+     * Calls updateCode() when completed.
      */
     function updateCSS() {
         Templates.renderForPromise('mod_learningmap/cssskeleton', placestore)
-            .then(({html}) => {
-                mapdiv.innerHTML = mapdiv.innerHTML.replace(
-                    /<style[\s\S]*style>/i,
-                    html
-                );
+            .then(({html, js}) => {
+                Templates.replaceNode('#learningmap-svgstyle', html, js);
                 updateCode();
-                registerBackgroundListener();
-                makeDraggable(document.getElementById('learningmap-svgmap'));
                 return true;
             })
             .catch(ex => displayException(ex));
