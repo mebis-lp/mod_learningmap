@@ -2,6 +2,8 @@ import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 
 export const init = () => {
+    Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
+
     var selectedElement, offset;
 
     var firstPlace = null,
@@ -69,7 +71,6 @@ export const init = () => {
         colorChooserPath.addEventListener('change', function() {
             placestore.strokecolor = colorChooserPath.value;
             updateCSS();
-            updateCode();
         });
         colorChooserPath.value = placestore.strokecolor;
     }
@@ -78,7 +79,6 @@ export const init = () => {
         colorChooserPlace.addEventListener('change', function() {
             placestore.placecolor = colorChooserPlace.value;
             updateCSS();
-            updateCode();
         });
         colorChooserPlace.value = placestore.placecolor;
     }
@@ -87,7 +87,6 @@ export const init = () => {
         colorChooserVisited.addEventListener('change', function() {
             placestore.visitedcolor = colorChooserVisited.value;
             updateCSS();
-            updateCode();
         });
         colorChooserVisited.value = placestore.visitedcolor;
     }
@@ -95,6 +94,8 @@ export const init = () => {
     mapdiv.innerHTML = code.value;
 
     refreshBackgroundImage();
+
+    updateCSS();
 
     mapdiv.addEventListener('dblclick', dblclickHandler);
     mapdiv.addEventListener('click', clickHandler);
@@ -151,19 +152,6 @@ export const init = () => {
     let observer = new MutationObserver(refreshBackgroundImage);
 
     observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
-
-    makeDraggable(document.getElementById('learningmap-svgmap'));
-
-    let background = document.getElementById('learningmap-background-image');
-
-    background.addEventListener('load', function() {
-        let height = parseInt(background.getBBox().height);
-        let width = background.getBBox().width;
-        placestore.height = height;
-        placestore.width = width;
-        updateCode();
-        processPlacestore();
-    });
 
     /**
      * Enables dragging on an DOM node
@@ -578,6 +566,22 @@ export const init = () => {
     }
 
     /**
+     * Adds an eventListener to the background image for watching file changes and updating
+     * height and width of the image.
+     */
+    function registerBackgroundListener() {
+        let background = document.getElementById('learningmap-background-image');
+        background.addEventListener('load', function() {
+            let height = parseInt(background.getBBox().height);
+            let width = background.getBBox().width;
+            placestore.height = height;
+            placestore.width = width;
+            updateCode();
+            processPlacestore();
+        });
+    }
+
+    /**
      * Updates the viewBox attribute of the SVG to the dimensions of the background image.
      */
     function processPlacestore() {
@@ -587,7 +591,10 @@ export const init = () => {
 
     /**
      * Updates CSS code inside the SVG (called, when one of the colors is changed).
-     * This function does not call updateCode()!
+     * This function also calls
+     * - updateCode()
+     * - registerBackgroundListener()
+     * - makeDraggable()
      */
     function updateCSS() {
         Templates.renderForPromise('mod_learningmap/cssskeleton', placestore)
@@ -596,8 +603,11 @@ export const init = () => {
                     /<style[\s\S]*style>/i,
                     html
                 );
+                updateCode();
+                registerBackgroundListener();
+                makeDraggable(document.getElementById('learningmap-svgmap'));
                 return true;
-            }).catch(ex => displayException(ex)
-        );
+            })
+            .catch(ex => displayException(ex));
     }
 };
