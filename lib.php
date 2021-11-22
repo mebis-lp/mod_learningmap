@@ -190,7 +190,13 @@ function output_learningmap(cm_info $cm) {
                     );
                     $title = $dom->getElementById('title' . $place->id);
                     if ($title) {
-                        $title->nodeValue = $placecm->get_formatted_name();
+                        $title->nodeValue =
+                            $placecm->get_formatted_name() .
+                            (
+                                in_array($place->id, $placestore->targetplaces)?
+                                ' (' . get_string('targetplace', 'learningmap') . ')':
+                                ''
+                            );
                     }
                 }
                 if (in_array($place->id, $placestore->startingplaces)) {

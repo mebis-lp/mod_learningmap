@@ -1,5 +1,3 @@
-/* eslint-disable require-jsdoc */
-
 import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 
@@ -109,6 +107,10 @@ export const init = () => {
         e.preventDefault();
     }, false);
 
+    /**
+     * Shows the context menu at the current mouse position
+     * @param {*} e
+     */
     function showContextMenu(e) {
         if (elementForActivitySelector) {
             document.getElementById(elementForActivitySelector).classList.remove('learningmap-selected-activity-selector');
@@ -137,6 +139,9 @@ export const init = () => {
         }
     }
 
+    /**
+     * Hides the context menu
+     */
     function hideContextMenu() {
         let e = document.getElementById(elementForActivitySelector);
         if (e) {
@@ -163,6 +168,10 @@ export const init = () => {
         processPlacestore();
     });
 
+    /**
+     * Enables dragging on an DOM node
+     * @param {*} el
+     */
     function makeDraggable(el) {
         el.addEventListener('mousedown', startDrag);
         el.addEventListener('mousemove', drag);
@@ -174,6 +183,11 @@ export const init = () => {
         el.addEventListener('touchleave', endDrag);
         el.addEventListener('touchcancel', endDrag);
 
+        /**
+         * Helper function for getting the right coordinates from the mouse
+         * @param {*} evt
+         * @returns {object}
+         */
         function getMousePosition(evt) {
             var CTM = el.getScreenCTM();
             if (evt.touches) {
@@ -185,6 +199,10 @@ export const init = () => {
             };
         }
 
+        /**
+         * Function called whenn dragging starts.
+         * @param {*} evt
+         */
         function startDrag(evt) {
             if (evt.target.classList.contains('learningmap-draggable')) {
                 selectedElement = evt.target;
@@ -194,6 +212,11 @@ export const init = () => {
             }
         }
 
+        /**
+         * Function called during dragging. Continuously updates circles center coordinates and the
+         * coordinates of the touching paths.
+         * @param {*} evt
+         */
         function drag(evt) {
             if (selectedElement) {
                 evt.preventDefault();
@@ -225,12 +248,18 @@ export const init = () => {
             }
         }
 
+        /**
+         * Function called when dragging ends.
+         */
         function endDrag() {
             selectedElement = false;
             updateCode();
         }
     }
 
+    /**
+     * Updates the form fields for the SVG code and the placestore from the editor.
+     */
     function updateCode() {
         let mapdiv = document.getElementById('learningmap-editor-map');
         let code = document.getElementById('id_introeditor_text');
@@ -238,6 +267,10 @@ export const init = () => {
         document.getElementsByName('placestore')[0].value = JSON.stringify(placestore);
     }
 
+    /**
+     * Handles double clicks on the map
+     * @param {*} event
+     */
     function dblclickHandler(event) {
         hideContextMenu();
         if (event.target.classList.contains('learningmap-mapcontainer') ||
@@ -256,12 +289,26 @@ export const init = () => {
         updateCode();
     }
 
+    /**
+     * Returns an empty title tag with the given id.
+     * @param {*} id id for the title
+     * @returns {any}
+     */
     function title(id) {
         let title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
         title.setAttribute('id', id);
         return title;
     }
 
+    /**
+     * Returns a circle tag with the given dimensions.
+     * @param {*} x x coordinate of the center
+     * @param {*} y y coordinate of the center
+     * @param {*} r radius
+     * @param {*} classes classes to add
+     * @param {*} id id of the circle
+     * @returns {any}
+     */
     function circle(x, y, r, classes, id) {
         let circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('class', classes);
@@ -272,6 +319,16 @@ export const init = () => {
         return circle;
     }
 
+    /**
+     * Returns a line between two points.
+     * @param {*} x1 x coordinate of the first point
+     * @param {*} y1 y coordinate of the first point
+     * @param {*} x2 x coordinate of the second point
+     * @param {*} y2 y coordinate of the second point
+     * @param {*} classes CSS classes to set
+     * @param {*} id id of the line
+     * @returns {any}
+     */
     function line(x1, y1, x2, y2, classes, id) {
         let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('class', classes);
@@ -283,6 +340,14 @@ export const init = () => {
         return line;
     }
 
+    /**
+     * Returns a link around a given child element. This function also adds a title element next
+     * to the child for accessibility.
+     * @param {*} child child item to set the link on
+     * @param {*} id id of the link
+     * @param {*} title title of the link
+     * @returns {any}
+     */
     function link(child, id, title = null) {
         let link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
         link.setAttribute('id', id);
@@ -294,6 +359,11 @@ export const init = () => {
         return link;
     }
 
+    /**
+     * Adds a place on the SVG map. This function also prepares the code for linking activities
+     * and adding titles (for accessibility).
+     * @param {*} event event causing the command
+     */
     function addPlace(event) {
         let placesgroup = document.getElementById('placesGroup');
         let placeId = 'p' + placestore.id;
@@ -322,6 +392,11 @@ export const init = () => {
         placestore.id++;
     }
 
+    /**
+     * Handles single clicks on the background image.
+     * @param {*} event click event
+     * @returns {void}
+     */
     function clickHandler(event) {
         hideContextMenu();
         if (event.target.classList.contains('learningmap-place')) {
@@ -359,6 +434,11 @@ export const init = () => {
         }
     }
 
+    /**
+     * Adds a path between two places.
+     * @param {number} fid id of the first place (meant to be the smaller one)
+     * @param {number} sid id of the second place (meant to be the bigger one)
+     */
     function addPath(fid, sid) {
         let pid = 'p' + fid + '_' + sid;
         if (document.getElementById(pid) === null) {
@@ -385,6 +465,12 @@ export const init = () => {
         }
     }
 
+    /**
+     * Removes a place from the SVG and the placestore. This function also removes all
+     * touching paths and entries in statringplaces / targetplaces linking to the removed
+     * place.
+     * @param {any} event event causing the remove order
+     */
     function removePlace(event) {
         let place = document.getElementById(event.target.id);
         let parent = place.parentNode;
@@ -410,6 +496,10 @@ export const init = () => {
         updateCode();
     }
 
+    /**
+     * Removes all paths touching a certain place
+     * @param {number} id id of the place
+     */
     function removePathsTouchingPlace(id) {
         placestore.paths.forEach(
             function(e) {
@@ -420,6 +510,10 @@ export const init = () => {
         );
     }
 
+    /**
+     * Removes a path from the SVG and from the placestore
+     * @param {number} id id of the path
+     */
     function removePath(id) {
         let path = document.getElementById(id);
         if (!(path === null)) {
@@ -428,6 +522,10 @@ export const init = () => {
         }
     }
 
+    /**
+     * Removes a path from the placestore
+     * @param {number} pid id of the path to remove
+     */
     function removePathFromPlacestore(pid) {
         placestore.paths = placestore.paths.filter(
             function(e) {
@@ -436,6 +534,11 @@ export const init = () => {
         );
     }
 
+    /**
+     * Fetches the course module id linked activity
+     * @param {number} id id of the place
+     * @returns {(number|null)} id of the linked activity
+     */
     function getActivityIdFromPlacestore(id) {
         let place = placestore.places.filter(
             function(e) {
@@ -449,6 +552,11 @@ export const init = () => {
         }
     }
 
+    /**
+     * Sets the id of the linked activity of a place.
+     * @param {*} id id of the place
+     * @param {*} linkedActivity Course module id of the linked activity
+     */
     function setActivityIdInPlacestore(id, linkedActivity) {
         let place = placestore.places.filter(
             function(e) {
@@ -461,6 +569,9 @@ export const init = () => {
         updateCode();
     }
 
+    /**
+     * Sets the background image of the SVG to the current image in filemanager.
+     */
     function refreshBackgroundImage() {
         let previewimage = document.getElementsByClassName('realpreview');
         if (previewimage.length > 0) {
@@ -469,11 +580,18 @@ export const init = () => {
         }
     }
 
+    /**
+     * Updates the viewBox attribute of the SVG to the dimensions of the background image.
+     */
     function processPlacestore() {
         let svg = document.getElementById('learningmap-svgmap');
         svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
     }
 
+    /**
+     * Updates CSS code inside the SVG (called, when one of the colors is changed).
+     * This function does not call updateCode()!
+     */
     function updateCSS() {
         Templates.renderForPromise('mod_learningmap/cssskeleton', placestore)
             .then(({html}) => {
