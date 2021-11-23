@@ -172,9 +172,8 @@ function output_learningmap(cm_info $cm) {
     $completedplaces = [];
     $notavailable = [];
     foreach ($placestore->places as $place) {
+        $link = $dom->getElementById($place->linkId);
         if ($place->linkedActivity != null) {
-            $link = $dom->getElementById($place->linkId);
-
             try {
                 $placecm = get_fast_modinfo($cm->get_course(), $USER->id)->get_cm($place->linkedActivity);
             } catch (Exception $e) {
@@ -182,6 +181,7 @@ function output_learningmap(cm_info $cm) {
             }
             if (!$placecm) {
                 array_push($notavailable, $place->id);
+                $link->parentNode->removeChild($link);
             } else {
                 if ($link) {
                     $link->setAttribute(
@@ -193,8 +193,8 @@ function output_learningmap(cm_info $cm) {
                         $title->nodeValue =
                             $placecm->get_formatted_name() .
                             (
-                                in_array($place->id, $placestore->targetplaces)?
-                                ' (' . get_string('targetplace', 'learningmap') . ')':
+                                in_array($place->id, $placestore->targetplaces) ?
+                                ' (' . get_string('targetplace', 'learningmap') . ')' :
                                 ''
                             );
                     }
@@ -209,6 +209,7 @@ function output_learningmap(cm_info $cm) {
             }
         } else {
             array_push($notavailable, $place->id);
+            $link->parentNode->removeChild($link);
         }
     }
     foreach ($placestore->paths as $path) {
