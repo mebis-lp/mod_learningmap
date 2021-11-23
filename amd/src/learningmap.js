@@ -124,14 +124,14 @@ export const init = () => {
                 activitySetting.removeAttribute('hidden');
                 document.getElementById('learningmap-activity-selector').value = activityId;
                 if (placestore.startingplaces.includes(e.target.id)) {
-                    document.getElementById('learningmap-activity-starting').setAttribute('checked', 'on');
+                    document.getElementById('learningmap-activity-starting').checked = true;
                 } else {
-                    document.getElementById('learningmap-activity-starting').removeAttribute('checked', '');
+                    document.getElementById('learningmap-activity-starting').checked = false;
                 }
                 if (placestore.targetplaces.includes(e.target.id)) {
-                    document.getElementById('learningmap-activity-target').setAttribute('checked', 'on');
+                    document.getElementById('learningmap-activity-target').checked = true;
                 } else {
-                    document.getElementById('learningmap-activity-target').removeAttribute('checked', '');
+                    document.getElementById('learningmap-activity-target').checked = false;
                 }
                 elementForActivitySelector = e.target.id;
             } else {
