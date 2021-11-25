@@ -191,11 +191,13 @@ export const init = () => {
          * @param {*} evt
          */
         function startDrag(evt) {
+            evt.preventDefault();
             if (evt.target.classList.contains('learningmap-draggable')) {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
-                offset.x -= parseFloat(selectedElement.getAttributeNS(null, "cx"));
-                offset.y -= parseFloat(selectedElement.getAttributeNS(null, "cy"));
+                offset.x -= parseInt(selectedElement.getAttributeNS(null, "cx"));
+                offset.y -= parseInt(selectedElement.getAttributeNS(null, "cy"));
+                // Get paths that need to be updated.
                 upd1 = placestore.paths.filter(function(p) {
                     return p.fid == selectedElement.id;
                 });
@@ -211,8 +213,8 @@ export const init = () => {
          * @param {*} evt
          */
         function drag(evt) {
+            evt.preventDefault();
             if (selectedElement) {
-                evt.preventDefault();
                 var coord = getMousePosition(evt);
                 let cx = coord.x - offset.x;
                 let cy = coord.y - offset.y;
@@ -239,8 +241,10 @@ export const init = () => {
 
         /**
          * Function called when dragging ends.
+         * @param {*} evt
          */
-        function endDrag() {
+        function endDrag(evt) {
+            evt.preventDefault();
             selectedElement = false;
             updateCode();
         }
