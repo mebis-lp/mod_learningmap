@@ -4,7 +4,7 @@ import Templates from 'core/templates';
 export const init = () => {
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
-    var selectedElement, offset;
+    var selectedElement, offset, upd1, upd2;
 
     var firstPlace = null,
         secondPlace = null,
@@ -196,6 +196,12 @@ export const init = () => {
                 offset = getMousePosition(evt);
                 offset.x -= parseFloat(selectedElement.getAttributeNS(null, "cx"));
                 offset.y -= parseFloat(selectedElement.getAttributeNS(null, "cy"));
+                upd1 = placestore.paths.filter(function(p) {
+                    return p.fid == selectedElement.id;
+                });
+                upd2 = placestore.paths.filter(function(p) {
+                    return p.sid == selectedElement.id;
+                });
             }
         }
 
@@ -212,9 +218,7 @@ export const init = () => {
                 let cy = coord.y - offset.y;
                 selectedElement.setAttributeNS(null, "cx", cx);
                 selectedElement.setAttributeNS(null, "cy", cy);
-                let upd1 = placestore.paths.filter(function(p) {
-                    return p.fid == selectedElement.id;
-                });
+
                 upd1.forEach(function(p) {
                     let d = document.getElementById(p.id);
                     if (!(d === null)) {
@@ -222,9 +226,7 @@ export const init = () => {
                         d.setAttribute('y1', cy);
                     }
                 });
-                let upd2 = placestore.paths.filter(function(p) {
-                    return p.sid == selectedElement.id;
-                });
+
                 upd2.forEach(function(p) {
                     let d = document.getElementById(p.id);
                     if (!(d === null)) {
