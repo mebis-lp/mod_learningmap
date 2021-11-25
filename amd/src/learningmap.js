@@ -391,9 +391,9 @@ export const init = () => {
      * @returns {void}
      */
     function clickHandler(event) {
+        event.preventDefault();
         hideContextMenu();
-        if (event.target.classList.contains('learningmap-place')) {
-            event.preventDefault();
+        if (event.target.classList.contains('learningmap-place') && selectedElement === null) {
             if (firstPlace === null) {
                 firstPlace = event.target.id;
                 document.getElementById(firstPlace).classList.add('learningmap-selected');
