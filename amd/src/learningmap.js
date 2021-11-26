@@ -1,12 +1,14 @@
 import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
+import placestore from 'mod_learningmap/placestore';
 
 export const init = () => {
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
-    var selectedElement, offset, upd1, upd2;
+    var offset, upd1, upd2;
 
-    var firstPlace = null,
+    var selectedElement = null,
+        firstPlace = null,
         secondPlace = null,
         lastTarget = null;
 
@@ -24,111 +26,92 @@ export const init = () => {
 
     if (activitySelector) {
         activitySelector.addEventListener('change', function() {
-            setActivityIdInPlacestore(elementForActivitySelector, activitySelector.value);
+            placestore.setActivityId(elementForActivitySelector, activitySelector.value);
         });
         activityStarting.addEventListener('change', function() {
             if (activityStarting.checked) {
-                placestore.startingplaces.push(elementForActivitySelector);
+                placestore.addStartingPlace(elementForActivitySelector);
             } else {
-                placestore.startingplaces = placestore.startingplaces.filter(function(e) {
-                    return e != elementForActivitySelector;
-                });
+                placestore.removeStartingPlace(elementForActivitySelector);
             }
             updateCode();
         });
         activityTarget.addEventListener('change', function() {
             if (activityTarget.checked) {
-                placestore.targetplaces.push(elementForActivitySelector);
+                placestore.addTargetPlace(elementForActivitySelector);
             } else {
-                placestore.targetplaces = placestore.targetplaces.filter(function(e) {
-                    return e != elementForActivitySelector;
-                });
+                placestore.removeTargetPlace(elementForActivitySelector);
             }
             updateCode();
         });
     }
 
-    var placestore = {
-        id: 0,
-        places: [],
-        paths: [],
-        startingplaces: [],
-        targetplaces: [],
-        placecolor: '#c01c28',
-        strokecolor: '#ffffff',
-        visitedcolor: '#26a269',
-        height: 100,
-        width: 800,
-        editmode: true // This will be removed by data_postprocessing.
-    };
-
-    try {
-        let fromjson = JSON.parse(document.getElementsByName('placestore')[0].value);
-        Object.assign(placestore, fromjson);
-        refreshBackgroundImage();
-    } catch {}
+    let placestoreInput = document.getElementsByName('placestore')[0];
+    if (placestoreInput) {
+        placestore.loadJSON(placestoreInput.value);
+    }
 
     if (colorChooserPath) {
         colorChooserPath.addEventListener('change', function() {
-            placestore.strokecolor = colorChooserPath.value;
+            placestore.setColor('stroke', colorChooserPath.value);
             updateCSS();
         });
-        colorChooserPath.value = placestore.strokecolor;
+        colorChooserPath.value = placestore.getColor('stroke');
     }
 
     if (colorChooserPlace) {
         colorChooserPlace.addEventListener('change', function() {
-            placestore.placecolor = colorChooserPlace.value;
+            placestore.setColor('place', colorChooserPlace.value);
             updateCSS();
         });
-        colorChooserPlace.value = placestore.placecolor;
+        colorChooserPlace.value = placestore.getColor('place');
     }
 
     if (colorChooserVisited) {
         colorChooserVisited.addEventListener('change', function() {
-            placestore.visitedcolor = colorChooserVisited.value;
+            placestore.setColor('visited', colorChooserVisited.value);
             updateCSS();
         });
-        colorChooserVisited.value = placestore.visitedcolor;
+        colorChooserVisited.value = placestore.getColor('visited');
     }
 
-    mapdiv.innerHTML = code.value;
-
+    if (code && mapdiv) {
+        mapdiv.innerHTML = code.value;
+    }
     refreshBackgroundImage();
     registerBackgroundListener();
     makeDraggable(document.getElementById('learningmap-svgmap'));
 
     updateCSS();
 
-    mapdiv.addEventListener('dblclick', dblclickHandler);
-    mapdiv.addEventListener('click', clickHandler);
+    if (mapdiv) {
+        mapdiv.addEventListener('dblclick', dblclickHandler);
+        mapdiv.addEventListener('click', clickHandler);
 
-    mapdiv.addEventListener('contextmenu', function(e) {
-        showContextMenu(e);
-        e.preventDefault();
-    }, false);
-
+        mapdiv.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showContextMenu(e);
+        }, false);
+    }
     /**
      * Shows the context menu at the current mouse position
      * @param {*} e
      */
     function showContextMenu(e) {
-        if (elementForActivitySelector) {
-            document.getElementById(elementForActivitySelector).classList.remove('learningmap-selected-activity-selector');
-        }
+        unselectAll();
         if (activitySetting) {
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
-                let activityId = getActivityIdFromPlacestore(e.target.id);
+                let activityId = placestore.getActivityId(e.target.id);
                 activitySetting.setAttribute('style', 'top: ' + e.offsetY + 'px; left: ' + e.offsetX + 'px;');
                 activitySetting.removeAttribute('hidden');
                 document.getElementById('learningmap-activity-selector').value = activityId;
-                if (placestore.startingplaces.includes(e.target.id)) {
+                if (placestore.isStartingPlace(e.target.id)) {
                     document.getElementById('learningmap-activity-starting').checked = true;
                 } else {
                     document.getElementById('learningmap-activity-starting').checked = false;
                 }
-                if (placestore.targetplaces.includes(e.target.id)) {
+                if (placestore.isTargetPlace(e.target.id)) {
                     document.getElementById('learningmap-activity-target').checked = true;
                 } else {
                     document.getElementById('learningmap-activity-target').checked = false;
@@ -152,23 +135,26 @@ export const init = () => {
     }
 
     let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
-    let observer = new MutationObserver(refreshBackgroundImage);
-    observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
-
+    if (backgroundfileNode) {
+        let observer = new MutationObserver(refreshBackgroundImage);
+        observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
+    }
     /**
      * Enables dragging on an DOM node
      * @param {*} el
      */
     function makeDraggable(el) {
-        el.addEventListener('mousedown', startDrag);
-        el.addEventListener('mousemove', drag);
-        el.addEventListener('mouseup', endDrag);
-        el.addEventListener('mouseleave', endDrag);
-        el.addEventListener('touchstart', startDrag);
-        el.addEventListener('touchmove', drag);
-        el.addEventListener('touchend', endDrag);
-        el.addEventListener('touchleave', endDrag);
-        el.addEventListener('touchcancel', endDrag);
+        if (el) {
+            el.addEventListener('mousedown', startDrag);
+            el.addEventListener('mousemove', drag);
+            el.addEventListener('mouseup', endDrag);
+            el.addEventListener('mouseleave', endDrag);
+            el.addEventListener('touchstart', startDrag);
+            el.addEventListener('touchmove', drag);
+            el.addEventListener('touchend', endDrag);
+            el.addEventListener('touchleave', endDrag);
+            el.addEventListener('touchcancel', endDrag);
+        }
 
         /**
          * Helper function for getting the right coordinates from the mouse
@@ -245,7 +231,8 @@ export const init = () => {
          */
         function endDrag(evt) {
             evt.preventDefault();
-            selectedElement = false;
+            selectedElement = null;
+            unselectAll();
             updateCode();
         }
     }
@@ -254,10 +241,12 @@ export const init = () => {
      * Updates the form fields for the SVG code and the placestore from the editor.
      */
     function updateCode() {
-        let mapdiv = document.getElementById('learningmap-editor-map');
-        let code = document.getElementById('id_introeditor_text');
-        code.innerHTML = mapdiv.innerHTML;
-        document.getElementsByName('placestore')[0].value = JSON.stringify(placestore);
+        if (code && mapdiv) {
+            code.innerHTML = mapdiv.innerHTML;
+        }
+        if (placestoreInput) {
+            document.getElementsByName('placestore')[0].value = JSON.stringify(placestore);
+        }
     }
 
     /**
@@ -266,6 +255,7 @@ export const init = () => {
      */
     function dblclickHandler(event) {
         hideContextMenu();
+        unselectAll();
         if (event.target.classList.contains('learningmap-mapcontainer') ||
             event.target.classList.contains('learningmap-background-image')) {
             addPlace(event);
@@ -359,8 +349,8 @@ export const init = () => {
      */
     function addPlace(event) {
         let placesgroup = document.getElementById('placesGroup');
-        let placeId = 'p' + placestore.id;
-        let linkId = 'a' + placestore.id;
+        let placeId = 'p' + placestore.getId();
+        let linkId = 'a' + placestore.getId();
         var CTM = event.target.getScreenCTM();
         if (event.touches) {
             event = event.touches[0];
@@ -374,15 +364,7 @@ export const init = () => {
                 title('title' + placeId)
             )
         );
-        placestore.places.push({
-            id: placeId,
-            linkId: linkId,
-            linkedActivity: null
-        });
-        if (placestore.places.length == 1) {
-            placestore.startingplaces.push(placeId);
-        }
-        placestore.id++;
+        placestore.addPlace(placeId, linkId);
     }
 
     /**
@@ -419,12 +401,21 @@ export const init = () => {
                 secondPlace = null;
             }
         } else {
-            let p = document.getElementById(firstPlace);
-            if (!(p === null)) {
-                p.classList.remove('learningmap-selected');
-            }
+            unselectAll();
             firstPlace = null;
         }
+    }
+    /**
+     * Removes the classes 'learningmap-selected' and 'learningmap-selectet-activity-selector'
+     * from all nodes
+     */
+    function unselectAll() {
+        document.getElementsByClassName('learningmap-selected').forEach(function(e) {
+            e.classList.remove('learningmap-selected');
+        });
+        document.getElementsByClassName('learningmap-selected-activity-selector').forEach(function(e) {
+            e.classList.remove('learningmap-selected-activity-selector');
+        });
     }
 
     /**
@@ -449,11 +440,7 @@ export const init = () => {
                         pid
                     )
                 );
-                placestore.paths.push({
-                    id: pid,
-                    fid: 'p' + fid,
-                    sid: 'p' + sid
-                });
+                placestore.addPath(pid, 'p' + fid, 'p' + sid);
             }
         }
     }
@@ -468,21 +455,7 @@ export const init = () => {
         let place = document.getElementById(event.target.id);
         let parent = place.parentNode;
         removePathsTouchingPlace(event.target.id);
-        placestore.places = placestore.places.filter(
-            function(p) {
-                return p.id != event.target.id;
-            }
-        );
-        placestore.startingplaces = placestore.startingplaces.filter(
-            function(e) {
-                return e != event.target.id;
-            }
-        );
-        placestore.targetplaces = placestore.targetplaces.filter(
-            function(e) {
-                return e != event.target.id;
-            }
-        );
+        placestore.removePlace(event.target.id);
         parent.removeChild(place);
         parent.parentNode.removeChild(parent);
 
@@ -494,11 +467,9 @@ export const init = () => {
      * @param {number} id id of the place
      */
     function removePathsTouchingPlace(id) {
-        placestore.paths.forEach(
+        placestore.getTouchingPaths(id).forEach(
             function(e) {
-                if (e.fid == id || e.sid == id) {
-                    removePath(e.id);
-                }
+                removePath(e.id);
             }
         );
     }
@@ -511,55 +482,8 @@ export const init = () => {
         let path = document.getElementById(id);
         if (!(path === null)) {
             path.parentNode.removeChild(path);
-            removePathFromPlacestore(id);
+            placestore.removePath(id);
         }
-    }
-
-    /**
-     * Removes a path from the placestore
-     * @param {number} pid id of the path to remove
-     */
-    function removePathFromPlacestore(pid) {
-        placestore.paths = placestore.paths.filter(
-            function(e) {
-                return pid != e.id;
-            }
-        );
-    }
-
-    /**
-     * Fetches the course module id linked activity
-     * @param {number} id id of the place
-     * @returns {(number|null)} id of the linked activity
-     */
-    function getActivityIdFromPlacestore(id) {
-        let place = placestore.places.filter(
-            function(e) {
-                return id == e.id;
-            }
-        );
-        if (place.length > 0) {
-            return place[0].linkedActivity;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * Sets the id of the linked activity of a place.
-     * @param {*} id id of the place
-     * @param {*} linkedActivity Course module id of the linked activity
-     */
-    function setActivityIdInPlacestore(id, linkedActivity) {
-        let place = placestore.places.filter(
-            function(e) {
-                return id == e.id;
-            }
-        );
-        if (place.length > 0) {
-            place[0].linkedActivity = linkedActivity;
-        }
-        updateCode();
     }
 
     /**
@@ -579,22 +503,16 @@ export const init = () => {
      */
     function registerBackgroundListener() {
         let background = document.getElementById('learningmap-background-image');
-        background.addEventListener('load', function() {
-            let height = parseInt(background.getBBox().height);
-            let width = background.getBBox().width;
-            placestore.height = height;
-            placestore.width = width;
-            updateCode();
-            processPlacestore();
-        });
-    }
-
-    /**
-     * Updates the viewBox attribute of the SVG to the dimensions of the background image.
-     */
-    function processPlacestore() {
-        let svg = document.getElementById('learningmap-svgmap');
-        svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
+        if (background) {
+            background.addEventListener('load', function() {
+                let height = parseInt(background.getBBox().height);
+                let width = background.getBBox().width;
+                placestore.setBackgroundDimensions(width, height);
+                updateCode();
+                let svg = document.getElementById('learningmap-svgmap');
+                svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
+            });
+        }
     }
 
     /**
