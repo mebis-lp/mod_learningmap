@@ -212,12 +212,14 @@ function output_learningmap(cm_info $cm) {
             $link->parentNode->removeChild($link);
         }
     }
-    foreach ($placestore->paths as $path) {
-        if (in_array($path->sid, $completedplaces) && !in_array($path->fid, $notavailable)) {
-            array_push($active, $path->id, $path->fid);
-        }
-        if (in_array($path->fid, $completedplaces) && !in_array($path->sid, $notavailable)) {
-            array_push($active, $path->id, $path->sid);
+    if (!$placestore->hidepaths) {
+        foreach ($placestore->paths as $path) {
+            if (in_array($path->sid, $completedplaces) && !in_array($path->fid, $notavailable)) {
+                array_push($active, $path->id, $path->fid);
+            }
+            if (in_array($path->fid, $completedplaces) && !in_array($path->sid, $notavailable)) {
+                array_push($active, $path->id, $path->sid);
+            }
         }
     }
     foreach ($active as $a) {
