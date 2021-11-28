@@ -1,0 +1,22 @@
+<svg id="learningmap-svgmap-abc" class="learningmap-scaling-svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" viewBox="0 0 800 600">
+<style id="learningmap-svgstyle" type="text/css">
+.learningmap-place {
+    fill: #c01c28;
+    stroke-width: 3px;
+    stroke: #ffffff;
+    visibility: hidden;
+}
+.learningmap-path {
+    stroke: #ffffff;
+    stroke-width: 3px;
+    visibility: hidden;
+    visibility: hidden;
+}
+</style><g id="backgroundGroup">
+    <image x="0" y="0" width="800" class="learningmap-background-image" id="learningmap-background-image" xlink:href="@@PLUGINFILE@@/Beispiel%20Hintergrund.jpg"></image>
+</g>
+<g id="pathsGroup">
+<line class="learningmap-path" id="p0_1" x1="289.08392333984375" y1="504.9983215332031" x2="221.68171180207287" y2="396.94082246740226"></line><line class="learningmap-path" id="p1_2" x1="221.68171180207287" y1="396.94082246740226" x2="100.78569040454697" y2="342.3771313941825"></line><line class="learningmap-path" id="p2_3" x1="100.78569040454697" y1="342.3771313941825" x2="138.23135375976562" y2="156.21865844726562"></line><line class="learningmap-path" id="p3_5" x1="138.23135375976562" y1="156.21865844726562" x2="350.0668640136719" y2="197.94383239746094"></line><line class="learningmap-path" id="p4_5" x1="328.6693420410156" y1="287.8134460449219" x2="350.0668640136719" y2="197.94383239746094"></line><line class="learningmap-path" id="p1_4" x1="221.68171180207287" y1="396.94082246740226" x2="328.6693420410156" y2="287.8134460449219"></line><line class="learningmap-path" id="p4_9" x1="328.6693420410156" y1="287.8134460449219" x2="599.3480224609375" y2="365.9143981933594"></line><line class="learningmap-path" id="p5_6" x1="350.0668640136719" y1="197.94383239746094" x2="431.3774719238281" y2="53.51053237915039"></line><line class="learningmap-path" id="p6_8" x1="431.3774719238281" y1="53.51053237915039" x2="688.1477661132812" y2="49.23102569580078"></line></g>
+<g id="placesGroup">
+<a id="a0" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p0" cx="289.0839184219325" cy="504.9983283182882" r="10"></circle><title id="titlep0"></title></a><a id="a1" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p1" cx="221.68171180207287" cy="396.94082246740226" r="10"></circle><title id="titlep1"></title></a><a id="a2" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p2" cx="100.78569040454697" cy="342.3771313941825" r="10"></circle><title id="titlep2"></title></a><a id="a3" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p3" cx="138.2313607489134" cy="156.21865596790371" r="10"></circle><title id="titlep3"></title></a><a id="a4" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p4" cx="328.66934135740553" cy="287.8134403209629" r="10"></circle><title id="titlep4"></title></a><a id="a5" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p5" cx="350.0668672684721" cy="197.94383149448345" r="10"></circle><title id="titlep5"></title></a><a id="a6" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p6" cx="431.37746573052493" cy="53.510531594784354" r="10"></circle><title id="titlep6"></title></a><a id="a8" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p8" cx="688.1477766633233" cy="49.23102641257105" r="10"></circle><title id="titlep8"></title></a><a id="a9" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p9" cx="599.3480441323971" cy="365.9144098963557" r="10"></circle><title id="titlep9"></title></a></g>
+</svg>
