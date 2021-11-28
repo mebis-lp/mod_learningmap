@@ -31,9 +31,9 @@ class mod_learningmap_generator extends testing_module_generator {
 
         $record = (array)$record + array(
             'name' => 'test map',
-            'intro' => file_get_contents('./test.svg'),
+            'intro' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.svg'),
             'introformat' => 1,
-            'placestore' => file_get_contents('./test.json'),
+            'placestore' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.json'),
             'completiontype' => 2
         );
 
