@@ -35,7 +35,7 @@ class autoupdate {
             if (count($instances) > 0) {
                 $completion = new \completion_info($modinfo->get_course());
                 foreach ($instances as $i) {
-                    if(
+                    if (
                         $i->completion == COMPLETION_TRACKING_AUTOMATIC &&
                         $i->instance != $data['contextinstanceid']
                     ) {
