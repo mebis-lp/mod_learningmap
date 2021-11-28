@@ -135,11 +135,14 @@ class mod_learningmap_mod_form extends moodleform_mod {
         global $OUTPUT;
 
         if (!$this->current->instance) {
+            $mapid = uniqid();
+            $options = ['editmode' => true, 'mapid' => $mapid];
             $defaultvalues['introeditor[text]'] = $OUTPUT->render_from_template(
                 'mod_learningmap/svgskeleton',
-                ['editmode' => true]
+                $options
             );
             $defaultvalues['showdescription'] = 1;
+            $defaultvalues['placestore'] = json_encode($options);
         } else {
             $defaultvalues['intro'] = preg_replace(
                 '/<style[\s\S]*style>/i',

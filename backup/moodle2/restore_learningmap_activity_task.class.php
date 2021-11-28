@@ -54,6 +54,8 @@ class restore_learningmap_activity_task extends restore_activity_task {
      */
     public function after_restore() {
         global $DB;
+        $courseid = $this->get_courseid();
+        $modinfo = get_fast_modinfo($courseid);
 
         $item = $DB->get_record('learningmap', array('id' => $this->get_activityid()), '*', MUST_EXIST);
 
@@ -65,14 +67,25 @@ class restore_learningmap_activity_task extends restore_activity_task {
                 if ($moduleid) {
                     $place->linkedActivity = $moduleid->newitemid;
                 } else {
-                    $place->linkedActivity = null;
+                    try {
+                        if (!($place->linkedActivity === null)) {
+                            $modinfo->get_cm($place->linkedActivity);
+                        }
+                    } catch (Exception $e) {
+                        $place->linkedActivity = null;
+                    }
                 }
             }
         }
+        $oldmapid = $placestore->mapid;
+        $newmapid = uniqid();
+        $item->intro = str_replace('learningmap-svgmap-' . $oldmapid, 'learningmap-svgmap-' . $newmapid, $item->intro);
+        $placestore->mapid = $newmapid;
 
         $json = json_encode($placestore);
 
         $DB->set_field('learningmap', 'placestore', $json, array('id' => $this->get_activityid()));
-
+        $DB->set_field('learningmap', 'intro', $item->intro, array('id' => $this->get_activityid()));
+        $DB->set_field('learningmap', 'course', $courseid, array('id' => $this->get_activityid()));
     }
 }
