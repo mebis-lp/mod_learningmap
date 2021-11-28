@@ -52,3 +52,7 @@ $string['completiondetail:one_target'] = 'Reach one target place';
 $string['completiondetail:all_targets'] = 'Reach all target places';
 $string['completiondetail:all_places'] = 'Reach all places';
 $string['privacy:metadata'] = '';
+$string['places'] = 'Places';
+$string['visited'] = 'Visited';
+$string['paths'] = 'Paths';
+$string['hidepaths'] = 'Hide paths';

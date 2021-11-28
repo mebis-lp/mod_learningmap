@@ -52,3 +52,7 @@ $string['completiondetail:one_target'] = 'Einen Ziel-Ort erreichen';
 $string['completiondetail:all_targets'] = 'Alle Ziel-Orte erreichen';
 $string['completiondetail:all_places'] = 'Alle Orte erreichen';
 $string['privacy:metadata'] = '';
+$string['places'] = 'Orte';
+$string['visited'] = 'Besucht';
+$string['paths'] = 'Pfade';
+$string['hidepaths'] = 'Pfade verbergen';
