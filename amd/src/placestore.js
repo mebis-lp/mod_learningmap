@@ -265,8 +265,23 @@ let placestore = {
             visitedcolor: this.visitedcolor,
             height: this.height,
             width: this.width,
-            hidepaths: this.hidepaths
+            hidepaths: this.hidepaths,
+            editmode: this.editmode
         };
+    },
+    /**
+     * Sets hidepaths attribute
+     * @param {boolean} value
+     */
+    setHidePaths: function(value) {
+        this.hidepaths = value;
+    },
+    /**
+     * Returns the value of hidepaths attribute
+     * @returns {boolean}
+     */
+    getHidePaths: function() {
+        return this.hidepaths;
     }
 };
 

@@ -29,6 +29,14 @@
 .learningmap-path {
     stroke: {{ strokecolor }};
     stroke-width: 3px;
+    {{#hidepaths}}
+    {{#editmode}}
+    opacity: 0.5;
+    {{/editmode}}
+    {{^editmode}}
+    visibility: hidden;
+    {{/editmode}}
+    {{/hidepaths}}
     {{^editmode}}
     visibility: hidden;
     {{/editmode}}

@@ -19,6 +19,7 @@ export const init = () => {
     let colorChooserPlace = document.getElementById('learningmap-color-place');
     let colorChooserVisited = document.getElementById('learningmap-color-visited');
     let colorChooserPath = document.getElementById('learningmap-color-path');
+    let hidepaths = document.getElementById('learningmap-hidepaths');
 
     let activitySetting = document.getElementById('learningmap-activity-setting');
     let activitySelector = document.getElementById('learningmap-activity-selector');
@@ -43,6 +44,20 @@ export const init = () => {
                 placestore.removeTargetPlace(elementForActivitySelector);
             }
             updateCode();
+        });
+    }
+
+    if (hidepaths) {
+        if (placestore.getHidePaths()) {
+            hidepaths.checked = true;
+        }
+        hidepaths.addEventListener('change', function() {
+            if (hidepaths.checked) {
+                placestore.setHidePaths(true);
+            } else {
+                placestore.setHidePaths(false);
+            }
+            updateCSS();
         });
     }
 
@@ -516,7 +531,7 @@ export const init = () => {
      * Calls updateCode() when completed.
      */
     function updateCSS() {
-        Templates.renderForPromise('mod_learningmap/cssskeleton', placestore)
+        Templates.renderForPromise('mod_learningmap/cssskeleton', placestore.getPlacestore())
             .then(({html, js}) => {
                 Templates.replaceNode('#learningmap-svgstyle', html, js);
                 updateCode();

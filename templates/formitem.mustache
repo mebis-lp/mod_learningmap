@@ -26,22 +26,28 @@
         <div class="learningmap-menubar container border-left border-top border-right border-dark">
             <div class="row m-1">
                 <div class="col">
-                    <label for="learningmap-color-place">Place:</label>
+                    <label for="learningmap-color-place">{{#str}} places, learningmap {{/str}}</label>
                 </div>
                 <div class="col border-right border-dark">
                     <input type="color" id="learningmap-color-place"/>
                 </div>
                 <div class="col">
-                    <label for="learningmap-color-visited">Visited place:</label>
+                    <label for="learningmap-color-visited">{{#str}} visited, learningmap {{/str}}</label>
                 </div>
                 <div class="col border-right border-dark">
                     <input type="color" id="learningmap-color-visited"/>
                 </div>
                 <div class="col">
-                    <label for="learningmap-color-stroke">Path:</label>
+                    <label for="learningmap-color-stroke">{{#str}} paths, learningmap {{/str}}</label>
+                </div>
+                <div class="col border-right border-dark">
+                    <input type="color" id="learningmap-color-path"/>
                 </div>
                 <div class="col">
-                    <input type="color" id="learningmap-color-path"/>
+                    <label for="learningmap-hidepaths">{{#str}} hidepaths, learningmap {{/str}}</label>
+                </div>
+                <div class="col">
+                    <input type="checkbox" id="learningmap-hidepaths"/>
                 </div>
             </div>
         </div>
