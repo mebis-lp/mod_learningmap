@@ -47,20 +47,6 @@ export const init = () => {
         });
     }
 
-    if (hidepaths) {
-        if (placestore.getHidePaths()) {
-            hidepaths.checked = true;
-        }
-        hidepaths.addEventListener('change', function() {
-            if (hidepaths.checked) {
-                placestore.setHidePaths(true);
-            } else {
-                placestore.setHidePaths(false);
-            }
-            updateCSS();
-        });
-    }
-
     let placestoreInput = document.getElementsByName('placestore')[0];
     if (placestoreInput) {
         placestore.loadJSON(placestoreInput.value);
@@ -90,12 +76,27 @@ export const init = () => {
         colorChooserVisited.value = placestore.getColor('visited');
     }
 
+    if (hidepaths) {
+        if (placestore.getHidePaths()) {
+            hidepaths.checked = true;
+        }
+        hidepaths.addEventListener('change', function() {
+            if (hidepaths.checked) {
+                placestore.setHidePaths(true);
+            } else {
+                placestore.setHidePaths(false);
+            }
+            updateCSS();
+        });
+    }
+
     if (code && mapdiv) {
         mapdiv.innerHTML = code.value;
     }
     refreshBackgroundImage();
     registerBackgroundListener();
-    makeDraggable(document.getElementById('learningmap-svgmap'));
+    let svg = document.getElementById('learningmap-svgmap-' + placestore.getMapid());
+    makeDraggable(svg);
 
     updateCSS();
 
@@ -520,7 +521,6 @@ export const init = () => {
                 let width = background.getBBox().width;
                 placestore.setBackgroundDimensions(width, height);
                 updateCode();
-                let svg = document.getElementById('learningmap-svgmap');
                 svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
             });
         }

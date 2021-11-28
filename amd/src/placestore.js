@@ -10,6 +10,7 @@ let placestore = {
     height: 100,
     width: 800,
     hidepaths: false,
+    mapid: Math.floor(Math.random() * Date.now()),
     editmode: true,
     /**
      * Loads attributes from JSON into placestore
@@ -266,6 +267,7 @@ let placestore = {
             height: this.height,
             width: this.width,
             hidepaths: this.hidepaths,
+            mapid: this.mapid,
             editmode: this.editmode
         };
     },
@@ -282,6 +284,13 @@ let placestore = {
      */
     getHidePaths: function() {
         return this.hidepaths;
+    },
+    /**
+     * Returns the mapid
+     * @returns {string}
+     */
+    getMapid: function() {
+        return this.mapid;
     }
 };
 
