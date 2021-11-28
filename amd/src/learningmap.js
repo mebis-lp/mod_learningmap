@@ -16,14 +16,14 @@ export const init = () => {
 
     let mapdiv = document.getElementById('learningmap-editor-map');
     let code = document.getElementById('id_introeditor_text');
-    let activitySetting = document.getElementById('learningmap-activity-setting');
-    let activitySelector = document.getElementById('learningmap-activity-selector');
-    let activityStarting = document.getElementById('learningmap-activity-starting');
-    let activityTarget = document.getElementById('learningmap-activity-target');
     let colorChooserPlace = document.getElementById('learningmap-color-place');
     let colorChooserVisited = document.getElementById('learningmap-color-visited');
     let colorChooserPath = document.getElementById('learningmap-color-path');
 
+    let activitySetting = document.getElementById('learningmap-activity-setting');
+    let activitySelector = document.getElementById('learningmap-activity-selector');
+    let activityStarting = document.getElementById('learningmap-activity-starting');
+    let activityTarget = document.getElementById('learningmap-activity-target');
     if (activitySelector) {
         activitySelector.addEventListener('change', function() {
             placestore.setActivityId(elementForActivitySelector, activitySelector.value);

@@ -145,25 +145,5 @@ define('placestore', function() {
 
     };
 
-    return {
-        loadJSON: placestore.loadJSON,
-        buildJSON: placestore.buildJSON,
-        addPlace: placestore.addPlace,
-        removePlace: placestore.removePlace,
-        addStartingPlace: placestore.addStartingPlace,
-        removeStartingPlace: placestore.removeStartingPlace,
-        isStartingPlace: placestore.isStartingPlace,
-        addTargetPlace: placestore.addTargetPlace,
-        removeTargetPlace: placestore.removeTargetPlace,
-        isTargetPlace: placestore.isTargetPlace,
-        addPath: placestore.addPath,
-        removePath: placestore.removePath,
-        getTouchingPaths: placestore.getTouchingPaths,
-        getActivityId: placestore.getActivityId,
-        setActivityId: placestore.setActivityId,
-        setColor: placestore.setColor,
-        getColor: placestore.getColor,
-        getId: placestore.getId,
-        setBackgroundDimensions: placestore.setBackgroundDimensions
-    };
-  });
+    return placestore;
+});
