@@ -184,12 +184,8 @@ export const init = () => {
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "cx"));
                 offset.y -= parseInt(selectedElement.getAttributeNS(null, "cy"));
                 // Get paths that need to be updated.
-                upd1 = placestore.paths.filter(function(p) {
-                    return p.fid == selectedElement.id;
-                });
-                upd2 = placestore.paths.filter(function(p) {
-                    return p.sid == selectedElement.id;
-                });
+                upd1 = placestore.getPathsWithFid(selectedElement.id);
+                upd2 = placestore.getPathsWithSid(selectedElement.id);
             }
         }
 
@@ -245,7 +241,7 @@ export const init = () => {
             code.innerHTML = mapdiv.innerHTML;
         }
         if (placestoreInput) {
-            document.getElementsByName('placestore')[0].value = JSON.stringify(placestore);
+            document.getElementsByName('placestore')[0].value = JSON.stringify(placestore.getPlacestore());
         }
     }
 
@@ -410,10 +406,10 @@ export const init = () => {
      * from all nodes
      */
     function unselectAll() {
-        document.getElementsByClassName('learningmap-selected').forEach(function(e) {
+        Array.from(document.getElementsByClassName('learningmap-selected')).forEach(function (e) {
             e.classList.remove('learningmap-selected');
         });
-        document.getElementsByClassName('learningmap-selected-activity-selector').forEach(function(e) {
+        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach( function(e) {
             e.classList.remove('learningmap-selected-activity-selector');
         });
     }
