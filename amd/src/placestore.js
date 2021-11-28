@@ -11,6 +11,10 @@ let placestore = {
     width: 800,
     hidepaths: false,
     editmode: true,
+    /**
+     * Loads attributes from JSON into placestore
+     * @param {*} json
+     */
     loadJSON: function(json) {
         try {
             let fromjson = JSON.parse(json);
@@ -18,9 +22,19 @@ let placestore = {
             // eslint-disable-next-line no-empty
         } catch { }
     },
+    /**
+     * Returns placestore as a JSON string ()
+     * @returns {string}
+     */
     buildJSON: function() {
-        return JSON.stringify(this);
+        return JSON.stringify(this.getPlacestore());
     },
+    /**
+     * Adds a place. If it is the only place, it is set as starting place
+     * @param {*} id id of the place
+     * @param {*} linkId id of the corresponding link
+     * @param {*} linkedActivity course module id of linked activity
+     */
     addPlace: function(id, linkId, linkedActivity = null) {
         this.places.push({
             id: id,
@@ -32,6 +46,10 @@ let placestore = {
         }
         id++;
     },
+    /**
+     * Removes a place
+     * @param {*} id id of the place
+     */
     removePlace: function(id) {
         this.removeStartingPlace(id);
         this.removeTargetPlace(id);
@@ -41,9 +59,17 @@ let placestore = {
             }
         );
     },
+    /**
+     * Adds a place to the array of starting places
+     * @param {*} id id of the place
+     */
     addStartingPlace: function(id) {
         this.startingplaces.push(id);
     },
+    /**
+     * Removes a place from the array of starting places
+     * @param {*} id id of the place
+     */
     removeStartingPlace: function(id) {
         this.startingplaces = this.startingplaces.filter(
             function(e) {
@@ -51,12 +77,25 @@ let placestore = {
             }
         );
     },
+    /**
+     * Returns whether a place is in the array of starting places
+     * @param {*} id id of the place
+     * @returns {boolean}
+     */
     isStartingPlace: function(id) {
         return this.startingplaces.includes(id);
     },
+    /**
+     * Adds a place to the array of target places
+     * @param {*} id id of the place
+     */
     addTargetPlace: function(id) {
         this.targetplaces.push(id);
     },
+    /**
+     * Removes a place from the array of target places
+     * @param {*} id id of the place
+     */
     removeTargetPlace: function(id) {
         this.targetplaces = this.targetplaces.filter(
             function(e) {
@@ -64,9 +103,20 @@ let placestore = {
             }
         );
     },
+    /**
+     * Returns whether a place is in the array of target places
+     * @param {number} id id of the place
+     * @returns {boolean}
+     */
     isTargetPlace: function(id) {
         return this.targetplaces.includes(id);
     },
+    /**
+     * Adds a path between two places
+     * @param {*} pid id of the path
+     * @param {*} fid id of the first place
+     * @param {*} sid id of the second place
+     */
     addPath: function(pid, fid, sid) {
         this.paths.push({
             id: pid,
@@ -74,6 +124,10 @@ let placestore = {
             sid: sid
         });
     },
+    /**
+     * Removes a path
+     * @param {*} id id of the place
+     */
     removePath: function(id) {
         this.paths = this.paths.filter(
             function(p) {
@@ -81,6 +135,11 @@ let placestore = {
             }
         );
     },
+    /**
+     * Returns an array of paths touching a place
+     * @param {*} id id of the place
+     * @returns {array}
+     */
     getTouchingPaths: function(id) {
         return this.paths.filter(
             function(p) {
@@ -88,6 +147,11 @@ let placestore = {
             }
         );
     },
+    /**
+     * Returns the course module id linked to a place
+     * @param {*} id id of the place
+     * @returns {number} id of the linked course module
+     */
     getActivityId: function(id) {
         let place = this.places.filter(
             function(e) {
@@ -100,6 +164,11 @@ let placestore = {
             return null;
         }
     },
+    /**
+     * Sets the id of the linked course module
+     * @param {*} id id of the place
+     * @param {*} linkedActivity course module id
+     */
     setActivityId: function(id, linkedActivity) {
         let place = this.places.filter(
             function(e) {
@@ -110,6 +179,11 @@ let placestore = {
             place[0].linkedActivity = linkedActivity;
         }
     },
+    /**
+     * Sets the color of 'stroke', 'place' or 'visited'
+     * @param {*} type type of the color
+     * @param {*} color color in hex format
+     */
     setColor: function(type, color) {
         switch (type) {
             case 'stroke':
@@ -123,6 +197,11 @@ let placestore = {
                 break;
         }
     },
+    /**
+     * Gets the color of 'stroke', 'place' or 'visited'
+     * @param {*} type type of the color
+     * @returns {string} color in hex format
+     */
     getColor: function(type) {
         switch (type) {
             case 'stroke':
@@ -134,23 +213,46 @@ let placestore = {
         }
         return null;
     },
+    /**
+     * Returns the current id
+     * @returns {number}
+     */
     getId: function() {
         return this.id;
     },
+    /**
+     * Sets the dimensions of the background image
+     * @param {*} width
+     * @param {*} height
+     */
     setBackgroundDimensions: function(width, height) {
         this.width = width;
         this.height = height;
     },
+    /**
+     * Returns all paths starting at a place
+     * @param {*} id id of the place
+     * @returns {array}
+     */
     getPathsWithFid: function(id) {
         return this.paths.filter(function(p) {
             return p.fid == id;
         });
     },
+    /**
+     * Returns all paths ending at a place
+     * @param {*} id id of the place
+     * @returns {array}
+     */
     getPathsWithSid: function(id) {
         return this.paths.filter(function(p) {
             return p.sid == id;
         });
     },
+    /**
+     * Returns the attributes of placestore
+     * @returns {object}
+     */
     getPlacestore: function() {
         return {
             id: this.id,
