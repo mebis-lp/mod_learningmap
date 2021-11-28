@@ -44,7 +44,7 @@ let placestore = {
         if (this.places.length == 1) {
             this.addStartingPlace(id);
         }
-        id++;
+        this.id++;
     },
     /**
      * Removes a place
