@@ -28,6 +28,11 @@ export const init = () => {
     if (activitySelector) {
         activitySelector.addEventListener('change', function() {
             placestore.setActivityId(elementForActivitySelector, activitySelector.value);
+            if (activitySelector.value) {
+                document.getElementById(elementForActivitySelector).classList.remove('learningmap-emptyplace');
+            } else {
+                document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
+            }
         });
         activityStarting.addEventListener('change', function() {
             if (activityStarting.checked) {
@@ -373,7 +378,7 @@ export const init = () => {
         let cy = (event.clientY - CTM.f) / CTM.d;
         placesgroup.appendChild(
             link(
-                circle(cx, cy, 10, 'learningmap-place learningmap-draggable', placeId),
+                circle(cx, cy, 10, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
                 linkId,
                 title('title' + placeId)
             )

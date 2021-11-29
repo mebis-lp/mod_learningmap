@@ -26,6 +26,11 @@
     visibility: hidden;
     {{/editmode}}
 }
+
+#learningmap-svgmap-{{mapid}} .learningmap-targetplace {
+    stroke-dasharray: 1,1;
+}
+
 #learningmap-svgmap-{{mapid}} .learningmap-path {
     stroke: {{ strokecolor }};
     stroke-width: 3px;
@@ -54,5 +59,9 @@
 }
 #learningmap-svgmap-{{mapid}} .learningmap-selected-activity-selector {stroke-dasharray: 10; animation: dashdraw 4s linear infinite;}
        @keyframes dashdraw {to {stroke-dashoffset: 200;}}
+
+#learningmap-svgmap-{{mapid}} .learningmap-emptyplace {
+    opacity: 0.3;
+}
 {{/editmode}}
 </style>
