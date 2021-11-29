@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Learning map';
 $string['modulenameplural'] = 'Learning maps';
+$string['modulename_help'] = 'The learningmap module allows to structure activities in a course as places on a map, connected by paths. Some places are starting places and shown from the beginning. Other places and paths are shown when the activities of the connected places are completed.';
 $string['pluginname'] = 'Learning map';
 $string['name'] = 'Learning map name';
 $string['name_help'] = 'The name of the learning map is only displayed if the "Show map on course page" is not checked.';

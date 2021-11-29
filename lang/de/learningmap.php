@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['modulename'] = 'Lernlandkarte';
 $string['modulenameplural'] = 'Lernlandkarten';
+$string['modulename_help'] = 'Lernlandkarten erlauben es, die Aktivitäten in einem Kurs als durch Pfade verbundene Orte auf einer Landkarte darzustellen. Einzelne Orte sind Start-Orte und werden zu Beginn dargestellt. Andere Orte und Pfade werden angezeigt, sobald die Aktivitäten der verbundenen Orte abgeschlossen sind.';
 $string['pluginname'] = 'Lernlandkarte';
 $string['name'] = 'Titel der Lernlandkarte';
 $string['name_help'] = 'Der Titel der Lernlandkarte wird nur angezeigt, wenn "Karte auf Kursseite anzeigen" nicht aktiviert ist.';
