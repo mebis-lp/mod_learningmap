@@ -18,8 +18,9 @@
  * Custom completion rules for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021 Stefan Hanauska <stefan.hanauska@altmuehlnet.de>
- * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright   2021, ISB Bayern
+ * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_learningmap\completion;

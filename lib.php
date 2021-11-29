@@ -17,9 +17,10 @@
 /**
  * Library for mod_learningmap
  *
- * @package mod_learningmap
- * @copyright  2021 Stefan Hanauska <stefan.hanauska@altmuehlnet.de>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package     mod_learningmap
+ * @copyright   2021, ISB Bayern
+ * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
