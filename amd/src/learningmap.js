@@ -40,8 +40,10 @@ export const init = () => {
         activityTarget.addEventListener('change', function() {
             if (activityTarget.checked) {
                 placestore.addTargetPlace(elementForActivitySelector);
+                document.getElementById(elementForActivitySelector).classList.add('learningmap-targetplace');
             } else {
                 placestore.removeTargetPlace(elementForActivitySelector);
+                document.getElementById(elementForActivitySelector).classList.remove('learningmap-targetplace');
             }
             updateCode();
         });
