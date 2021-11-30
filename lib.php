@@ -157,22 +157,32 @@ function learningmap_get_coursemodule_info($cm) {
 }
 
 /**
- * Generates the course module info, especially the intro content (if showdescription is set) and removes the view link.
- * If showdescription is not set, a view link is displayed.
+ * Removes the view link if showdescription is set.
  *
  * @param cm_info $cm
  * @return void
  */
 function learningmap_cm_info_dynamic(cm_info $cm) {
-    // Decides whether to display the map on course page or via view.php.
+    // Decides whether to display the link.
     if ($cm->showdescription == 1) {
         $cm->set_no_view_link(true);
 
         $completion = new completion_info($cm->get_course());
         $completion->set_module_viewed($cm);
+    }
+}
 
+/**
+ * Generates course module info, especially the map (as intro).
+ * If showdescription is not set, this function does nothing.
+ *
+ * @param cm_info $cm
+ * @return void
+ */
+function learningmap_cm_info_view(cm_info $cm) {
+    // Only show map on course page if showdescription is set.
+    if ($cm->showdescription == 1) {
         $cm->set_content(get_learningmap($cm), true);
-
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
     }
 }
