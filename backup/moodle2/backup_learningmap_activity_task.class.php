@@ -27,6 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/backup_learningmap_stepslib.php');
 
+/**
+ * Class defining a backup activity for mod_learningmap
+ */
 class backup_learningmap_activity_task extends backup_activity_task {
 
     /**
@@ -42,6 +45,12 @@ class backup_learningmap_activity_task extends backup_activity_task {
         $this->add_step(new backup_learningmap_activity_structure_step('learningmap_structure', 'learningmap.xml'));
     }
 
+    /**
+     * Encodes the links to view.php for backup
+     *
+     * @param [string] $content
+     * @return string
+     */
     public static function encode_content_links($content) {
         global $CFG;
 

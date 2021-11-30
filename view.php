@@ -26,7 +26,6 @@
 require('../../config.php');
 require_once('lib.php');
 
-
 $id = required_param('id', PARAM_INT);
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'learningmap');
 
@@ -45,6 +44,6 @@ $completion->set_module_viewed($cm);
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->box(output_learningmap($cm));
+echo $OUTPUT->box(get_learningmap($cm));
 
 echo $OUTPUT->footer();

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Privacy subsystem implementation for mod_learningmap
+ * Unit test for mod_learningmap
  *
  * @package     mod_learningmap
  * @copyright   2021, ISB Bayern
@@ -23,22 +23,29 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_learningmap\privacy;
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Privacy Subsystem for mod_learningmap implementing null_provider.
- */
-class provider implements \core_privacy\local\metadata\null_provider {
-
+ /**
+  * Testcase for testing the data generator
+  *
+  * @group      mod_learningmap
+  * @group      mebis
+  */
+class mod_learningmap_generation_testcase extends advanced_testcase {
     /**
-     * Get the language string identifier with the component's language
-     * file to explain why this plugin stores no data.
+     * Tests the data generator for this module
      *
-     * @return string
+     * @return void
      */
-    public static function get_reason() : string {
-        return 'privacy:metadata';
+    public function test_create_instance() {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $course = $this->getDataGenerator()->create_course();
+        $this->assertFalse($DB->record_exists('learningmap', array('course' => $course->id)));
+        $learningmap = $this->getDataGenerator()->create_module('learningmap', array('course' => $course));
+
+        $records = $DB->get_records('learningmap', array('course' => $course->id), 'id');
+        $this->assertCount(1, $records);
+        $this->assertTrue(array_key_exists($learningmap->id, $records));
     }
 }

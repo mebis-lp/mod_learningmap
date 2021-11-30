@@ -25,10 +25,18 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->dirroot.'/mod/learningmap/lib.php');
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/mod/learningmap/lib.php');
 
+/**
+ * Editing form for mod_learningmap
+ */
 class mod_learningmap_mod_form extends moodleform_mod {
+    /**
+     * Defines the editing form for mod_learningmap
+     *
+     * @return void
+     */
     public function definition() {
         global $PAGE, $OUTPUT;
 
@@ -105,10 +113,21 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $this->add_action_buttons(true, false, null);
     }
 
+    /**
+     * Returns whether the custom completion rules are enabled.
+     *
+     * @param [array] $data form data
+     * @return boolean
+     */
     public function completion_rule_enabled($data) {
         return (!empty($data['completiontype']) && $data['completiontype'] > 0);
     }
 
+    /**
+     * Adds the custom completion rules for mod_learningmap
+     *
+     * @return array
+     */
     public function add_completion_rules() {
         $mform = $this->_form;
 
@@ -133,6 +152,13 @@ class mod_learningmap_mod_form extends moodleform_mod {
         return(['completiontype']);
     }
 
+    /**
+     * Processes the form data before loading the form. Adds the default values for empty forms, replaces the CSS
+     * with the values for editing.
+     *
+     * @param [array] $defaultvalues
+     * @return void
+     */
     public function data_preprocessing(&$defaultvalues) {
         global $OUTPUT;
 
@@ -156,6 +182,13 @@ class mod_learningmap_mod_form extends moodleform_mod {
         }
     }
 
+    /**
+     * Processes the form data after the form is submitted.
+     * Replaces the CSS in the SVG with the parts suitable for output.
+     *
+     * @param [stdClass] $data
+     * @return void
+     */
     public function data_postprocessing($data) {
         global $OUTPUT;
 

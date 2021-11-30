@@ -25,7 +25,15 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class defining backup steps for mod_learningmap
+ */
 class backup_learningmap_activity_structure_step extends backup_activity_structure_step {
+    /**
+     * Defines the XML structure for learningmap backups
+     *
+     * @return backup_nested_element
+     */
     protected function define_structure() {
         $learningmap = new backup_nested_element(
             'learningmap',

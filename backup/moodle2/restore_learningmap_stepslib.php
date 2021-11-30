@@ -25,6 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class defining restore steps for mod_learningmap
+ */
 class restore_learningmap_activity_structure_step extends restore_activity_structure_step {
 
     /**

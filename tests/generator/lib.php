@@ -25,8 +25,19 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Data generator for mod_learningmap
+ */
 class mod_learningmap_generator extends testing_module_generator {
 
+    /**
+     * Creates an instance of a learningmap. As unit tests do not support JS,
+     * the SVG test data is static.
+     *
+     * @param array $record
+     * @param array|null $options
+     * @return stdClass learningmap instance
+     */
     public function create_instance($record = null, array $options = null) {
         global $CFG;
 

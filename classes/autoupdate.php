@@ -27,7 +27,17 @@ namespace mod_learningmap;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Class for handling incoming events from course module completion
+ */
 class autoupdate {
+    /**
+     * Called when a course_module_completion_updated event is triggered. Updates the completion state for all
+     * learningmaps in the course of the activity.
+     *
+     * @param \core\event\base $event
+     * @return void
+     */
     public static function update_from_event(\core\event\base $event) {
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {

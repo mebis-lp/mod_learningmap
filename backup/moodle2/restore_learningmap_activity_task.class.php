@@ -27,22 +27,46 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/restore_learningmap_stepslib.php');
 
+/**
+ * Class defining a restore activity for mod_learningmap
+ */
 class restore_learningmap_activity_task extends restore_activity_task {
 
+    /**
+     * No specific settings for this activity
+     *
+     * @return void
+     */
     protected function define_my_settings() {
     }
 
+    /**
+     * Defines the restore step for learningmap
+     *
+     * @return void
+     */
     protected function define_my_steps() {
         $this->add_step(new restore_learningmap_activity_structure_step('learningmap_structure', 'learningmap.xml'));
     }
 
-    // Defining this to make SVG hacks possible.
+    /**
+     * Calls decode functions of other plugins for the intro field. This is not necessary for
+     * mod_learningmap itself but it makes small hacks in SVG possible and may be convenient for
+     * future use.
+     *
+     * @return array
+     */
     public static function define_decode_contents() {
         $contents = array();
         $contents[] = new restore_decode_content('learningmap', array('intro'), 'learningmap');
         return $contents;
     }
 
+    /**
+     * Defines rules for decoding links to view.php in restore step
+     *
+     * @return array
+     */
     public static function define_decode_rules() {
         $rules = array();
         $rules[] = new restore_decode_rule('LEARNINGMAPVIEWBYID', '/mod/learningmap/view.php?id=$1', 'course_module');

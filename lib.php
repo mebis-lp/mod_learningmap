@@ -25,17 +25,35 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Adds a new learningmap instance
+ *
+ * @param stdClass $data learningmap record
+ * @return void
+ */
 function learningmap_add_instance($data) {
     global $DB;
     return $DB->insert_record("learningmap", $data);
 }
 
+/**
+ * Updates a learningmap instance
+ *
+ * @param stdClass $data learningmap record
+ * @return void
+ */
 function learningmap_update_instance($data) {
     global $DB;
     $data->id = $data->instance;
     return $DB->update_record("learningmap", $data);
 }
 
+/**
+ * Deletes a learningmap instance
+ *
+ * @param integer $id learningmap record
+ * @return void
+ */
 function learningmap_delete_instance($id) {
     global $DB;
 
@@ -44,6 +62,7 @@ function learningmap_delete_instance($id) {
 }
 
 /**
+ * Returns whether a feature is supported by this module.
  * @uses FEATURE_IDNUMBER
  * @uses FEATURE_GROUPS
  * @uses FEATURE_GROUPINGS
@@ -108,6 +127,12 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
     send_stored_file($file, 0, 0, false, $options);
 }
 
+/**
+ * Adds custom completion info to the course module info
+ *
+ * @param cm_info $cm
+ * @return void
+ */
 function learningmap_get_coursemodule_info($cm) {
     global $DB;
 
@@ -131,6 +156,13 @@ function learningmap_get_coursemodule_info($cm) {
     return $result;
 }
 
+/**
+ * Generates the course module info, especially the intro content (if showdescription is set) and removes the view link.
+ * If showdescription is not set, a view link is displayed.
+ *
+ * @param cm_info $cm
+ * @return void
+ */
 function learningmap_cm_info_dynamic(cm_info $cm) {
     // Decides whether to display the map on course page or via view.php.
     if ($cm->showdescription == 1) {
@@ -139,13 +171,19 @@ function learningmap_cm_info_dynamic(cm_info $cm) {
         $completion = new completion_info($cm->get_course());
         $completion->set_module_viewed($cm);
 
-        $cm->set_content(output_learningmap($cm), true);
+        $cm->set_content(get_learningmap($cm), true);
 
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
     }
 }
 
-function output_learningmap(cm_info $cm) {
+/**
+ * Returns the code of the learningmap.
+ *
+ * @param cm_info $cm
+ * @return void
+ */
+function get_learningmap(cm_info $cm) {
     global $CFG, $DB, $USER, $OUTPUT;
 
     $context = context_module::instance($cm->id);

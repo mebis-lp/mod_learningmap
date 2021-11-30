@@ -27,7 +27,16 @@ namespace mod_learningmap\completion;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Custom completion types for mod_learningmap
+ */
 class custom_completion extends \core_completion\activity_custom_completion {
+    /**
+     * Returns completion state of the custom completion rules
+     *
+     * @param string $rule
+     * @return integer
+     */
     public function get_state(string $rule): int {
         global $DB;
 
@@ -100,6 +109,11 @@ class custom_completion extends \core_completion\activity_custom_completion {
         }
     }
 
+    /**
+     * Defines the names of custom completion rules.
+     *
+     * @return array
+     */
     public static function get_defined_custom_rules(): array {
         return [
             'completion_with_one_target',
@@ -108,6 +122,11 @@ class custom_completion extends \core_completion\activity_custom_completion {
         ];
     }
 
+    /**
+     * Returns the descriptions of the custom completion rules
+     *
+     * @return array
+     */
     public function get_custom_rule_descriptions(): array {
         return [
             'completion_with_one_target' => get_string('completiondetail:one_target', 'learningmap'),
@@ -116,6 +135,11 @@ class custom_completion extends \core_completion\activity_custom_completion {
         ];
     }
 
+    /**
+     * Returns the sort order of completion rules
+     *
+     * @return array
+     */
     public function get_sort_order(): array {
         return [
             'completionview',
