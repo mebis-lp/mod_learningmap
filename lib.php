@@ -146,7 +146,7 @@ function learningmap_cm_info_dynamic(cm_info $cm) {
 }
 
 function output_learningmap(cm_info $cm) {
-    global $DB, $USER, $OUTPUT;
+    global $CFG, $DB, $USER, $OUTPUT;
 
     $context = context_module::instance($cm->id);
 
@@ -168,7 +168,7 @@ function output_learningmap(cm_info $cm) {
     $dom->validateOnParse = true;
     $dom->preserveWhiteSpace = false;
     $dom->formatOutput = true;
-    $dom->loadXML('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "'.new moodle_url('/mod/learningmap/svg11.dtd').'">'.$svg);
+    $dom->loadXML('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "' . $CFG->dirroot . '/mod/learningmap/svg11.dtd' . '">'.$svg);
     $active = [];
     $completedplaces = [];
     $notavailable = [];
@@ -242,7 +242,7 @@ function output_learningmap(cm_info $cm) {
         }
     }
     $remove = ['<?xml version="1.0"?>',
-    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "'. new moodle_url('/mod/learningmap/svg11.dtd').'">'];
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "' . $CFG->dirroot . '/mod/learningmap/svg11.dtd' . '">'];
     return(
         $OUTPUT->render_from_template(
             'mod_learningmap/mapcontainer',
