@@ -40,9 +40,13 @@ $string['editplace'] = 'Ort bearbeiten';
 $string['startingplace'] = 'Start-Ort';
 $string['targetplace'] = 'Ziel-Ort';
 $string['showdescription'] = 'Karte auf Kursseite anzeigen';
-$string['showdescription_help'] = 'Wenn diese Option aktiviert ist, wird die Lernlandkarte auf der Kursseite angezeigt (wie ein Textfeld). Ansonsten wird auf der Kursseite ein Link angezeigt und die Karte wird auf einer separaten Seite dargestellt.';
+$string['showdescription_help'] = 'Wenn diese Option aktiviert ist, wird die Lernlandkarte auf der Kursseite angezeigt. Ist sie deaktiviert, wird die Lernlandkarte auf einer separaten Seite dargestellt.';
 $string['intro'] = $string['learningmap'];
-$string['intro_help'] = 'Mit einem Doppelklick auf das Hintergrundbild wird ein neuer Ort hinzugefügt. Um einen Pfad hinzuzufügen die zwei Orte nacheinander anklicken. Durch einen Doppelklick auf einen Ort oder einen Pfad wird dieser wieder entfernt. Mit einem Rechtsklick auf einen Ort können seine Eigenschaftenkann verändert werden (verknüpfte Aktivität, Start-Ort, Ziel-Ort).';
+$string['intro_help'] = 'Hinzufügen eines Ortes: Doppelklick
+Hinzufügen eines Pfades: Zwei Orte nacheinander anklicken
+Entfernen eines Ortes: Doppelklick auf den Ort
+Entfernen eines Pfades: Doppelklick auf den Pfad
+Eigenschaften des Ortes verändern: Rechtsklick';
 $string['learningmap:addinstance'] = 'Lernlandkarte hinzufügen';
 $string['learningmap:view'] = 'Lernlandkarte anzeigen';
 $string['completiontype'] = 'Art des Aktivitätsabschlusses';
