@@ -36,6 +36,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
 
         $cm = get_fast_modinfo($this->current->course);
 
+        $s = [];
         $activitysel = [];
         // Gets only sections with content.
         foreach ($cm->sections as $sectionnum => $section) {
