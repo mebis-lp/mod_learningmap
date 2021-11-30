@@ -42,7 +42,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         $this->validate_rule($rule);
 
-        $map = $DB->get_record("learningmap", array("id" => $this->cm->instance), 'completiontype, placestore', MUST_EXIST);
+        $map = $DB->get_record("learningmap", ["id" => $this->cm->instance], 'completiontype, placestore', MUST_EXIST);
 
         if ($map->completiontype > 0) {
             $placestore = json_decode($map->placestore);

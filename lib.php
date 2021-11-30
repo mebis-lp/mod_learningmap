@@ -57,7 +57,7 @@ function learningmap_update_instance($data) {
 function learningmap_delete_instance($id) {
     global $DB;
 
-    return $DB->delete_records("learningmap", array("id" => $id));
+    return $DB->delete_records("learningmap", ["id" => $id]);
     // ToDo: Check whether intro files are automatically deleted.
 }
 
@@ -114,7 +114,7 @@ function learningmap_supports($feature) {
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - justsend the file
  */
-function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=array()) {
+function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) {
     require_course_login($course, true, $cm);
 
     $fullpath = "/$context->id/mod_learningmap/$filearea/".implode('/', $args);
@@ -188,7 +188,7 @@ function get_learningmap(cm_info $cm) {
 
     $context = context_module::instance($cm->id);
 
-    $map = $DB->get_record("learningmap", array("id" => $cm->instance));
+    $map = $DB->get_record("learningmap", ["id" => $cm->instance]);
 
     $completion = new completion_info($cm->get_course());
 
@@ -225,7 +225,7 @@ function get_learningmap(cm_info $cm) {
                 if ($link) {
                     $link->setAttribute(
                         'xlink:href',
-                        new moodle_url('/mod/'.$placecm->modname.'/view.php', array('id' => $placecm->id))
+                        new moodle_url('/mod/'.$placecm->modname.'/view.php', ['id' => $placecm->id])
                     );
                     $title = $dom->getElementById('title' . $place->id);
                     if ($title) {

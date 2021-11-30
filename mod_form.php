@@ -65,7 +65,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'name', get_string('name', 'learningmap'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('name', 'learningmap'), ['size' => '64']);
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addHelpButton('name', 'name', 'learningmap');
@@ -87,10 +87,11 @@ class mod_learningmap_mod_form extends moodleform_mod {
             'introeditor[itemid]',
             get_string('backgroundfile', 'learningmap'),
             null,
-            array(
+            [
                 'accepted_types' => 'web_image',
                 'maxfiles' => 1,
-                'subdirs' => 0)
+                'subdirs' => 0
+            ]
         );
         $mform->addRule('introeditor[itemid]', null, 'required', null, 'client');
         $mform->addHelpButton('introeditor[itemid]', 'backgroundfile', 'learningmap');
@@ -116,7 +117,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
     /**
      * Returns whether the custom completion rules are enabled.
      *
-     * @param [array] $data form data
+     * @param array $data form data
      * @return boolean
      */
     public function completion_rule_enabled($data) {
@@ -156,7 +157,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * Processes the form data before loading the form. Adds the default values for empty forms, replaces the CSS
      * with the values for editing.
      *
-     * @param [array] $defaultvalues
+     * @param array $defaultvalues
      * @return void
      */
     public function data_preprocessing(&$defaultvalues) {

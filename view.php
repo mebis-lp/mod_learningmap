@@ -33,9 +33,9 @@ require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/learningmap:view', $context);
 
-$map = $DB->get_record('learningmap', array('id' => $cm->instance), '*', MUST_EXIST);
+$map = $DB->get_record('learningmap', ['id' => $cm->instance], '*', MUST_EXIST);
 
-$PAGE->set_url(new moodle_url('/mod/learningmap/view.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url('/mod/learningmap/view.php', ['id' => $id]));
 $PAGE->set_title(get_string('pluginname', 'mod_learningmap') . ' ' . $map->name);
 $PAGE->set_heading($map->name);
 

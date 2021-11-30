@@ -53,12 +53,13 @@ class mod_learningmap_completion_testcase extends advanced_testcase {
             ));
             $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
         }
-        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, array('id' => $learningmap->id));
+        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
 
         $user1 = $this->getDataGenerator()->create_user(
-            array(
-            'email' => 'user1@example.com',
-            'username' => 'user1')
+            [
+                'email' => 'user1@example.com',
+                'username' => 'user1'
+            ]
         );
 
         $modinfo = get_fast_modinfo($course, $user1->id);
@@ -109,12 +110,13 @@ class mod_learningmap_completion_testcase extends advanced_testcase {
             ));
             $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
         }
-        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, array('id' => $learningmap->id));
+        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
 
         $user1 = $this->getDataGenerator()->create_user(
-            array(
-            'email' => 'user1@example.com',
-            'username' => 'user1')
+            [
+                'email' => 'user1@example.com',
+                'username' => 'user1'
+            ]
         );
 
         $modinfo = get_fast_modinfo($course, $user1->id);
@@ -165,12 +167,13 @@ class mod_learningmap_completion_testcase extends advanced_testcase {
             ));
             $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
         }
-        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, array('id' => $learningmap->id));
+        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
 
         $user1 = $this->getDataGenerator()->create_user(
-            array(
-            'email' => 'user1@example.com',
-            'username' => 'user1')
+            [
+                'email' => 'user1@example.com',
+                'username' => 'user1'
+            ]
         );
 
         $modinfo = get_fast_modinfo($course, $user1->id);

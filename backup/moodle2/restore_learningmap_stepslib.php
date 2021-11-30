@@ -36,7 +36,7 @@ class restore_learningmap_activity_structure_step extends restore_activity_struc
      * @throws base_step_exception
      */
     protected function define_structure() {
-        $paths = array();
+        $paths = [];
         $paths[] = new restore_path_element('learningmap', '/activity/learningmap');
         return $this->prepare_activity_structure($paths);
     }

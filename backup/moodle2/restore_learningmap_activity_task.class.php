@@ -57,7 +57,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      * @return array
      */
     public static function define_decode_contents() {
-        $contents = array();
+        $contents = [];
         $contents[] = new restore_decode_content('learningmap', array('intro'), 'learningmap');
         return $contents;
     }
@@ -68,7 +68,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      * @return array
      */
     public static function define_decode_rules() {
-        $rules = array();
+        $rules = [];
         $rules[] = new restore_decode_rule('LEARNINGMAPVIEWBYID', '/mod/learningmap/view.php?id=$1', 'course_module');
         return $rules;
     }
@@ -109,8 +109,8 @@ class restore_learningmap_activity_task extends restore_activity_task {
 
         $json = json_encode($placestore);
 
-        $DB->set_field('learningmap', 'placestore', $json, array('id' => $this->get_activityid()));
-        $DB->set_field('learningmap', 'intro', $item->intro, array('id' => $this->get_activityid()));
-        $DB->set_field('learningmap', 'course', $courseid, array('id' => $this->get_activityid()));
+        $DB->set_field('learningmap', 'placestore', $json, ['id' => $this->get_activityid()]);
+        $DB->set_field('learningmap', 'intro', $item->intro, ['id' => $this->get_activityid()]);
+        $DB->set_field('learningmap', 'course', $courseid, ['id' => $this->get_activityid()]);
     }
 }

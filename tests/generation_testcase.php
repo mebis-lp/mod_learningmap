@@ -42,9 +42,9 @@ class mod_learningmap_generation_testcase extends advanced_testcase {
 
         $course = $this->getDataGenerator()->create_course();
         $this->assertFalse($DB->record_exists('learningmap', array('course' => $course->id)));
-        $learningmap = $this->getDataGenerator()->create_module('learningmap', array('course' => $course));
+        $learningmap = $this->getDataGenerator()->create_module('learningmap', ['course' => $course]);
 
-        $records = $DB->get_records('learningmap', array('course' => $course->id), 'id');
+        $records = $DB->get_records('learningmap', ['course' => $course->id], 'id');
         $this->assertCount(1, $records);
         $this->assertTrue(array_key_exists($learningmap->id, $records));
     }
