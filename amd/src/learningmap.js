@@ -524,11 +524,14 @@ export const init = () => {
         let background = document.getElementById('learningmap-background-image');
         if (background) {
             background.addEventListener('load', function() {
+                background.removeAttribute('height');
                 let height = parseInt(background.getBBox().height);
                 let width = background.getBBox().width;
                 placestore.setBackgroundDimensions(width, height);
                 updateCode();
                 svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
+                background.setAttribute('width', width);
+                background.setAttribute('height', height);
             });
         }
     }
