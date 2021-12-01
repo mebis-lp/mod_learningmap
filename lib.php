@@ -180,11 +180,31 @@ function learningmap_cm_info_dynamic(cm_info $cm) : void {
  * @return void
  */
 function learningmap_cm_info_view(cm_info $cm) : void {
+    global $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
         $cm->set_content(get_learningmap($cm), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
+        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init', ['coursemodules' => get_place_cm($cm)]);
     }
+}
+
+/**
+ * Returns all course module ids for places of a certain learning map.
+ * @param cm_info $cm course module object for the learning map
+ * @return array
+ */
+function get_place_cm(cm_info $cm) : array {
+    global $DB;
+    $map = $DB->get_record("learningmap", ["id" => $cm->instance], 'placestore');
+    $modules = [];
+    $placestore = json_decode($map->placestore);
+    foreach ($placestore->places as $p) {
+        if ($p->linkedActivity != null) {
+            array_push($modules, $p->linkedActivity);
+        }
+    }
+    return $modules;
 }
 
 /**
