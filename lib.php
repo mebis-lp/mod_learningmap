@@ -29,9 +29,9 @@ defined('MOODLE_INTERNAL') || die();
  * Adds a new learningmap instance
  *
  * @param stdClass $data learningmap record
- * @return void
+ * @return int
  */
-function learningmap_add_instance($data) {
+function learningmap_add_instance($data) : int {
     global $DB;
     return $DB->insert_record("learningmap", $data);
 }
@@ -40,9 +40,9 @@ function learningmap_add_instance($data) {
  * Updates a learningmap instance
  *
  * @param stdClass $data learningmap record
- * @return void
+ * @return int
  */
-function learningmap_update_instance($data) {
+function learningmap_update_instance($data) : int {
     global $DB;
     $data->id = $data->instance;
     return $DB->update_record("learningmap", $data);
@@ -52,9 +52,9 @@ function learningmap_update_instance($data) {
  * Deletes a learningmap instance
  *
  * @param integer $id learningmap record
- * @return void
+ * @return int
  */
-function learningmap_delete_instance($id) {
+function learningmap_delete_instance($id) : int {
     global $DB;
 
     return $DB->delete_records("learningmap", ["id" => $id]);
@@ -73,7 +73,7 @@ function learningmap_delete_instance($id) {
  * @param string $feature FEATURE_xx constant for requested feature
  * @return bool|null True if module supports feature, false if not, null if doesn't know
  */
-function learningmap_supports($feature) {
+function learningmap_supports($feature) : ?bool {
     switch($feature) {
         case FEATURE_IDNUMBER:
             return true;
@@ -114,7 +114,7 @@ function learningmap_supports($feature) {
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - justsend the file
  */
-function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) {
+function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) : ?bool {
     require_course_login($course, true, $cm);
 
     $fullpath = "/$context->id/mod_learningmap/$filearea/".implode('/', $args);
@@ -131,9 +131,9 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
  * Adds custom completion info to the course module info
  *
  * @param cm_info $cm
- * @return void
+ * @return cached_cm_info
  */
-function learningmap_get_coursemodule_info($cm) {
+function learningmap_get_coursemodule_info($cm) : cached_cm_info {
     global $DB;
 
     if (!$map = $DB->get_record('learningmap', ['id' => $cm->instance], 'completiontype')) {
@@ -162,7 +162,7 @@ function learningmap_get_coursemodule_info($cm) {
  * @param cm_info $cm
  * @return void
  */
-function learningmap_cm_info_dynamic(cm_info $cm) {
+function learningmap_cm_info_dynamic(cm_info $cm) : void {
     // Decides whether to display the link.
     if ($cm->showdescription == 1) {
         $cm->set_no_view_link(true);
@@ -179,7 +179,7 @@ function learningmap_cm_info_dynamic(cm_info $cm) {
  * @param cm_info $cm
  * @return void
  */
-function learningmap_cm_info_view(cm_info $cm) {
+function learningmap_cm_info_view(cm_info $cm) : void {
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
         $cm->set_content(get_learningmap($cm), true);
@@ -191,9 +191,9 @@ function learningmap_cm_info_view(cm_info $cm) {
  * Returns the code of the learningmap.
  *
  * @param cm_info $cm
- * @return void
+ * @return string
  */
-function get_learningmap(cm_info $cm) {
+function get_learningmap(cm_info $cm) : string {
     global $CFG, $DB, $USER, $OUTPUT;
 
     $context = context_module::instance($cm->id);
@@ -242,6 +242,7 @@ function get_learningmap(cm_info $cm) {
                         $title->nodeValue =
                             $placecm->get_formatted_name() .
                             (
+                                // Add info to target places (for accessibility).
                                 in_array($place->id, $placestore->targetplaces) ?
                                 ' (' . get_string('targetplace', 'learningmap') . ')' :
                                 ''

@@ -21,21 +21,16 @@
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @group      mod_learningmap
+ * @group      mebis
  */
-
- /**
-  * Testcase for testing the data generator
-  *
-  * @group      mod_learningmap
-  * @group      mebis
-  */
 class mod_learningmap_generation_testcase extends advanced_testcase {
     /**
      * Tests the data generator for this module
      *
      * @return void
      */
-    public function test_create_instance() {
+    public function test_create_instance() : void {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();

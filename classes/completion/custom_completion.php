@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace mod_learningmap\completion;
+
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Custom completion rules for mod_learningmap
  *
@@ -21,14 +25,6 @@
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-namespace mod_learningmap\completion;
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Custom completion types for mod_learningmap
  */
 class custom_completion extends \core_completion\activity_custom_completion {
     /**

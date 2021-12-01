@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/course/moodleform_mod.php');
+require_once($CFG->dirroot . '/mod/learningmap/lib.php');
+
 /**
  * Editing form for mod_learningmap
  *
@@ -22,22 +27,13 @@
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/course/moodleform_mod.php');
-require_once($CFG->dirroot . '/mod/learningmap/lib.php');
-
-/**
- * Editing form for mod_learningmap
- */
 class mod_learningmap_mod_form extends moodleform_mod {
     /**
      * Defines the editing form for mod_learningmap
      *
      * @return void
      */
-    public function definition() {
+    public function definition() : void {
         global $PAGE, $OUTPUT;
 
         $mform = &$this->_form;
@@ -118,9 +114,9 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * Returns whether the custom completion rules are enabled.
      *
      * @param array $data form data
-     * @return boolean
+     * @return bool
      */
-    public function completion_rule_enabled($data) {
+    public function completion_rule_enabled($data) : bool {
         return (!empty($data['completiontype']) && $data['completiontype'] > 0);
     }
 
@@ -129,7 +125,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      *
      * @return array
      */
-    public function add_completion_rules() {
+    public function add_completion_rules() : array {
         $mform = $this->_form;
 
         $completionoptions = [
@@ -160,7 +156,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @param array $defaultvalues
      * @return void
      */
-    public function data_preprocessing(&$defaultvalues) {
+    public function data_preprocessing(&$defaultvalues) : void {
         global $OUTPUT;
 
         if (!$this->current->instance) {
@@ -187,10 +183,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * Processes the form data after the form is submitted.
      * Replaces the CSS in the SVG with the parts suitable for output.
      *
-     * @param [stdClass] $data
+     * @param stdClass $data
      * @return void
      */
-    public function data_postprocessing($data) {
+    public function data_postprocessing($data) : void {
         global $OUTPUT;
 
         $data->introeditor['text'] = preg_replace(

@@ -21,11 +21,6 @@
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-/**
- * Testcases for testing the custom completion types
- *
  * @group      mod_learningmap
  * @group      mebis
  */
@@ -36,7 +31,7 @@ class mod_learningmap_completion_testcase extends advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype1() {
+    public function test_completiontype1() : void {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -93,7 +88,7 @@ class mod_learningmap_completion_testcase extends advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype2() {
+    public function test_completiontype2() : void {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -150,7 +145,7 @@ class mod_learningmap_completion_testcase extends advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype3() {
+    public function test_completiontype3() : void {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();

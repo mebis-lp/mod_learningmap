@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Backup steps for mod_learningmap
  *
@@ -22,19 +24,13 @@
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Class defining backup steps for mod_learningmap
- */
 class backup_learningmap_activity_structure_step extends backup_activity_structure_step {
     /**
      * Defines the XML structure for learningmap backups
      *
      * @return backup_nested_element
      */
-    protected function define_structure() {
+    protected function define_structure() : backup_nested_element {
         $learningmap = new backup_nested_element(
             'learningmap',
             ['id'],

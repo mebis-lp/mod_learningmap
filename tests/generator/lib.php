@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * mod_learningmap data generator
  *
@@ -21,12 +23,6 @@
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Data generator for mod_learningmap
  */
 class mod_learningmap_generator extends testing_module_generator {
 
@@ -38,7 +34,7 @@ class mod_learningmap_generator extends testing_module_generator {
      * @param array|null $options
      * @return stdClass learningmap instance
      */
-    public function create_instance($record = null, array $options = null) {
+    public function create_instance($record = null, array $options = null) : stdClass {
         global $CFG;
 
         $record = (array)$record + [

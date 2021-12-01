@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+namespace mod_learningmap;
+
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Autoupdate class for mod_learningmap
  *
@@ -21,14 +25,6 @@
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-namespace mod_learningmap;
-
-defined('MOODLE_INTERNAL') || die();
-
-/**
- * Class for handling incoming events from course module completion
  */
 class autoupdate {
     /**
@@ -38,7 +34,7 @@ class autoupdate {
      * @param \core\event\base $event
      * @return void
      */
-    public static function update_from_event(\core\event\base $event) {
+    public static function update_from_event(\core\event\base $event) : void {
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
             $modinfo = get_fast_modinfo($data['courseid']);
