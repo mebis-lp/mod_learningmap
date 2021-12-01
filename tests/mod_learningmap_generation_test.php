@@ -24,7 +24,7 @@
  * @group      mod_learningmap
  * @group      mebis
  */
-class mod_learningmap_generation_testcase extends advanced_testcase {
+class mod_learningmap_generation_test extends advanced_testcase {
     /**
      * Tests the data generator for this module
      *
