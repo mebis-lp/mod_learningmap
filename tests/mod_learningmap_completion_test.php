@@ -42,10 +42,10 @@ class mod_learningmap_completion_test extends advanced_testcase {
 
         $activities = [];
         for ($i = 0; $i < 9; $i++) {
-            array_push($activities, $this->getDataGenerator()->create_module(
+            $activities[] = $this->getDataGenerator()->create_module(
                 'page',
                 ['name' => 'A', 'content' => 'B', 'course' => $course, 'completion' => 2, 'completionview' => 1]
-            ));
+            );
             $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
         }
         $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
@@ -99,10 +99,10 @@ class mod_learningmap_completion_test extends advanced_testcase {
 
         $activities = [];
         for ($i = 0; $i < 9; $i++) {
-            array_push($activities, $this->getDataGenerator()->create_module(
+            $activities[] = $this->getDataGenerator()->create_module(
                 'page',
                 ['name' => 'A', 'content' => 'B', 'course' => $course, 'completion' => 2, 'completionview' => 1]
-            ));
+            );
             $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
         }
         $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
@@ -156,10 +156,10 @@ class mod_learningmap_completion_test extends advanced_testcase {
 
         $activities = [];
         for ($i = 0; $i < 9; $i++) {
-            array_push($activities, $this->getDataGenerator()->create_module(
+            $activities[] = $this->getDataGenerator()->create_module(
                 'page',
                 ['name' => 'A', 'content' => 'B', 'course' => $course, 'completion' => 2, 'completionview' => 1]
-            ));
+            );
             $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
         }
         $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);

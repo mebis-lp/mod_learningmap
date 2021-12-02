@@ -42,11 +42,11 @@ $string['targetplace'] = 'Ziel-Ort';
 $string['showdescription'] = 'Karte auf Kursseite anzeigen';
 $string['showdescription_help'] = 'Wenn diese Option aktiviert ist, wird die Lernlandkarte auf der Kursseite angezeigt. Ist sie deaktiviert, wird die Lernlandkarte auf einer separaten Seite dargestellt.';
 $string['intro'] = $string['learningmap'];
-$string['intro_help'] = 'Hinzufügen eines Ortes: Doppelklick
-Hinzufügen eines Pfades: Zwei Orte nacheinander anklicken
-Entfernen eines Ortes: Doppelklick auf den Ort
-Entfernen eines Pfades: Doppelklick auf den Pfad
-Eigenschaften des Ortes verändern: Rechtsklick';
+$string['intro_help'] = '<ul><li><b>Hinzufügen eines Ortes:</b> Doppelklick</li>
+<li><b>Hinzufügen eines Pfades:</b> Zwei Orte nacheinander anklicken</li>
+<li><b>Entfernen eines Ortes:</b> Doppelklick auf den Ort</li>
+<li><b>Entfernen eines Pfades:</b> Doppelklick auf den Pfad</li>
+<li><b>Eigenschaften des Ortes verändern:</b> Rechtsklick</li></ul>';
 $string['learningmap:addinstance'] = 'Lernlandkarte hinzufügen';
 $string['learningmap:view'] = 'Lernlandkarte anzeigen';
 $string['completiontype'] = 'Art des Aktivitätsabschlusses';

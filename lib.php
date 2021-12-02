@@ -131,13 +131,13 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
  * Adds custom completion info to the course module info
  *
  * @param cm_info $cm
- * @return cached_cm_info
+ * @return cached_cm_info|null
  */
 function learningmap_get_coursemodule_info($cm) : cached_cm_info {
     global $DB;
 
     if (!$map = $DB->get_record('learningmap', ['id' => $cm->instance], 'completiontype')) {
-        return false;
+        return null;
     }
 
     $result = new cached_cm_info();
@@ -201,7 +201,7 @@ function get_place_cm(cm_info $cm) : array {
     $placestore = json_decode($map->placestore);
     foreach ($placestore->places as $p) {
         if ($p->linkedActivity != null) {
-            array_push($modules, $p->linkedActivity);
+            $modules[] = $p->linkedActivity;
         }
     }
     return $modules;
@@ -249,7 +249,7 @@ function get_learningmap(cm_info $cm) : string {
                 $placecm = false;
             }
             if (!$placecm) {
-                array_push($notavailable, $place->id);
+                $notavailable[] = $place->id;
                 $link->parentNode->removeChild($link);
             } else {
                 if ($link) {
@@ -270,40 +270,50 @@ function get_learningmap(cm_info $cm) : string {
                     }
                 }
                 if (in_array($place->id, $placestore->startingplaces)) {
-                    array_push($active, $place->id);
+                    $active[] = $place->id;
                 }
                 if ($completion->get_data($placecm, true, $USER->id)->completionstate > 0) {
-                    array_push($completedplaces, $place->id);
-                    array_push($active, $place->id);
+                    $completedplaces[] = $place->id;
+                    $active[] = $place->id;
                 }
             }
         } else {
-            array_push($notavailable, $place->id);
+            $notavailable = $place->id;
             $link->parentNode->removeChild($link);
         }
     }
+    // Only set paths visible if hidepaths is not set in placestore
     if (!$placestore->hidepaths) {
         foreach ($placestore->paths as $path) {
+            // If the ending of the path is a completed place and this place is availabile,
+            // show path and the place on the other end.
             if (in_array($path->sid, $completedplaces) && !in_array($path->fid, $notavailable)) {
-                array_push($active, $path->id, $path->fid);
+                $active[] = $path->id;
+                $active[] = $path->fid;
             }
+            // If the beginning of the path is a completed place and this place is availabile,
+            // show path and the place on the other end.
             if (in_array($path->fid, $completedplaces) && !in_array($path->sid, $notavailable)) {
-                array_push($active, $path->id, $path->sid);
+                $active[] = $path->id;
+                $active[] = $path->sid;
             }
         }
     }
+    // Set all active paths and places to visible
     foreach ($active as $a) {
         $domplace = $dom->getElementById($a);
         if ($domplace) {
             $domplace->setAttribute('style', 'visibility: visible;');
         }
     }
+    // Make all completed places visible and set color for visited places
     foreach ($completedplaces as $place) {
         $domplace = $dom->getElementById($place);
         if ($domplace) {
             $domplace->setAttribute('style', 'visibility: visible; fill: ' . $placestore->visitedcolor . ';');
         }
     }
+    // Make all places hidden if they are not availabile
     foreach ($notavailable as $place) {
         $domplace = $dom->getElementById($place);
         if ($domplace) {
