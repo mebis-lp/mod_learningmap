@@ -3,17 +3,26 @@ import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
 export const init = () => {
+    // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
-    var offset, upd1, upd2;
+    // Variable for storing the mouse offset
+    var offset;
 
+    // Variables for storing the paths that need update of the first (upd1) or
+    // the second (upd2) coordinates.
+    var upd1, upd2;
+
+    // Variables for handling the currently selected elements
     var selectedElement = null,
         firstPlace = null,
         secondPlace = null,
         lastTarget = null;
 
+    // Variable for storing the selected element for the activity selector
     var elementForActivitySelector = null;
 
+    // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
     let code = document.getElementById('id_introeditor_text');
     let colorChooserPlace = document.getElementById('learningmap-color-place');
@@ -21,11 +30,15 @@ export const init = () => {
     let colorChooserPath = document.getElementById('learningmap-color-path');
     let hidepaths = document.getElementById('learningmap-hidepaths');
 
+    // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
     let activitySelector = document.getElementById('learningmap-activity-selector');
     let activityStarting = document.getElementById('learningmap-activity-starting');
     let activityTarget = document.getElementById('learningmap-activity-target');
+
+    // Attach listeners to the activity selector
     if (activitySelector) {
+        // Show places that are not linked to an activity
         activitySelector.addEventListener('change', function() {
             placestore.setActivityId(elementForActivitySelector, activitySelector.value);
             if (activitySelector.value) {
@@ -34,6 +47,7 @@ export const init = () => {
                 document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
             }
         });
+        // Add / remove a place to the starting places array
         activityStarting.addEventListener('change', function() {
             if (activityStarting.checked) {
                 placestore.addStartingPlace(elementForActivitySelector);
@@ -42,6 +56,7 @@ export const init = () => {
             }
             updateCode();
         });
+        // Add / remove a place to the target places array
         activityTarget.addEventListener('change', function() {
             if (activityTarget.checked) {
                 placestore.addTargetPlace(elementForActivitySelector);
@@ -54,11 +69,13 @@ export const init = () => {
         });
     }
 
+    // Load placestore values from the hidden input field
     let placestoreInput = document.getElementsByName('placestore')[0];
     if (placestoreInput) {
         placestore.loadJSON(placestoreInput.value);
     }
 
+    // Attach listener to the color choosers for paths
     if (colorChooserPath) {
         colorChooserPath.addEventListener('change', function() {
             placestore.setColor('stroke', colorChooserPath.value);
@@ -67,6 +84,7 @@ export const init = () => {
         colorChooserPath.value = placestore.getColor('stroke');
     }
 
+    // Attach listener to the color choosers for places
     if (colorChooserPlace) {
         colorChooserPlace.addEventListener('change', function() {
             placestore.setColor('place', colorChooserPlace.value);
@@ -75,6 +93,7 @@ export const init = () => {
         colorChooserPlace.value = placestore.getColor('place');
     }
 
+    // Attach listener to the color choosers for visited places
     if (colorChooserVisited) {
         colorChooserVisited.addEventListener('change', function() {
             placestore.setColor('visited', colorChooserVisited.value);
@@ -83,6 +102,7 @@ export const init = () => {
         colorChooserVisited.value = placestore.getColor('visited');
     }
 
+    // Attach a listener to the hidepaths checkbox
     if (hidepaths) {
         if (placestore.getHidePaths()) {
             hidepaths.checked = true;
@@ -97,16 +117,22 @@ export const init = () => {
         });
     }
 
+    // Get SVG code from the (hidden) textarea field
     if (code && mapdiv) {
         mapdiv.innerHTML = code.value;
     }
+    // Reload background image to get the correct width and height values
     refreshBackgroundImage();
     registerBackgroundListener();
+
+    // Enable dragging of places
     let svg = document.getElementById('learningmap-svgmap-' + placestore.getMapid());
     makeDraggable(svg);
 
+    // Refresh stylesheet values from placestore
     updateCSS();
 
+    // Add listeners for clicking and context menu
     if (mapdiv) {
         mapdiv.addEventListener('dblclick', dblclickHandler);
         mapdiv.addEventListener('click', clickHandler);
