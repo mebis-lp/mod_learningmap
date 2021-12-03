@@ -214,13 +214,11 @@ function get_place_cm(cm_info $cm) : array {
  * @return string
  */
 function get_learningmap(cm_info $cm) : string {
-    global $CFG, $DB, $USER, $OUTPUT;
+    global $DB, $OUTPUT;
 
     $context = context_module::instance($cm->id);
 
     $map = $DB->get_record("learningmap", ["id" => $cm->instance]);
-
-    $completion = new completion_info($cm->get_course());
 
     $svg = file_rewrite_pluginfile_URLS(
         $map->intro,
@@ -230,102 +228,17 @@ function get_learningmap(cm_info $cm) : string {
         'intro',
         null
     );
-    $placestore = json_decode($map->placestore);
 
-    $dom = new DOMDocument('1.0', 'UTF-8');
-    $dom->validateOnParse = true;
-    $dom->preserveWhiteSpace = false;
-    $dom->formatOutput = true;
-    $dom->loadXML('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "' . $CFG->dirroot . '/mod/learningmap/pix/svg11.dtd">' . $svg);
-    $active = [];
-    $completedplaces = [];
-    $notavailable = [];
-    foreach ($placestore->places as $place) {
-        $link = $dom->getElementById($place->linkId);
-        if ($place->linkedActivity != null) {
-            try {
-                $placecm = get_fast_modinfo($cm->get_course(), $USER->id)->get_cm($place->linkedActivity);
-            } catch (Exception $e) {
-                $placecm = false;
-            }
-            if (!$placecm) {
-                $notavailable[] = $place->id;
-                $link->parentNode->removeChild($link);
-            } else {
-                if ($link) {
-                    $link->setAttribute(
-                        'xlink:href',
-                        new moodle_url('/mod/' . $placecm->modname . '/view.php', ['id' => $placecm->id])
-                    );
-                    $title = $dom->getElementById('title' . $place->id);
-                    if ($title) {
-                        $title->nodeValue =
-                            $placecm->get_formatted_name() .
-                            (
-                                // Add info to target places (for accessibility).
-                                in_array($place->id, $placestore->targetplaces) ?
-                                ' (' . get_string('targetplace', 'learningmap') . ')' :
-                                ''
-                            );
-                    }
-                }
-                if (in_array($place->id, $placestore->startingplaces)) {
-                    $active[] = $place->id;
-                }
-                if ($completion->get_data($placecm, true, $USER->id)->completionstate > 0) {
-                    $completedplaces[] = $place->id;
-                    $active[] = $place->id;
-                }
-            }
-        } else {
-            $notavailable = $place->id;
-            $link->parentNode->removeChild($link);
-        }
-    }
-    // Only set paths visible if hidepaths is not set in placestore
-    if (!$placestore->hidepaths) {
-        foreach ($placestore->paths as $path) {
-            // If the ending of the path is a completed place and this place is availabile,
-            // show path and the place on the other end.
-            if (in_array($path->sid, $completedplaces) && !in_array($path->fid, $notavailable)) {
-                $active[] = $path->id;
-                $active[] = $path->fid;
-            }
-            // If the beginning of the path is a completed place and this place is availabile,
-            // show path and the place on the other end.
-            if (in_array($path->fid, $completedplaces) && !in_array($path->sid, $notavailable)) {
-                $active[] = $path->id;
-                $active[] = $path->sid;
-            }
-        }
-    }
-    // Set all active paths and places to visible
-    foreach ($active as $a) {
-        $domplace = $dom->getElementById($a);
-        if ($domplace) {
-            $domplace->setAttribute('style', 'visibility: visible;');
-        }
-    }
-    // Make all completed places visible and set color for visited places
-    foreach ($completedplaces as $place) {
-        $domplace = $dom->getElementById($place);
-        if ($domplace) {
-            $domplace->setAttribute('style', 'visibility: visible; fill: ' . $placestore->visitedcolor . ';');
-        }
-    }
-    // Make all places hidden if they are not availabile
-    foreach ($notavailable as $place) {
-        $domplace = $dom->getElementById($place);
-        if ($domplace) {
-            $domplace->setAttribute('style', 'visibility: hidden;');
-        }
-    }
-    $remove = ['<?xml version="1.0"?>',
-    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "' . $CFG->dirroot . '/mod/learningmap/pix/svg11.dtd">'];
+    $placestore = json_decode($map->placestore, true);
+
+    $worker = new \mod_learningmap\mapworker($svg, $placestore);
+    $worker->process_map_objects($cm);
+    $worker->remove_tags_before_svg();
+
     return(
         $OUTPUT->render_from_template(
             'mod_learningmap/mapcontainer',
-            ['mapcode' => str_replace($remove, '', $dom->saveXML())]
+            ['mapcode' => $worker->get_svgcode()]
         )
     );
 }

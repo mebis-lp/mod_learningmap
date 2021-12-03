@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+use mod_learningmap\mapworker;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
@@ -178,12 +180,12 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $defaultvalues['placestore'] = json_encode($options);
         } else {
             // Replace the stylesheet for editing mode
-            $defaultvalues['intro'] = preg_replace(
-                '/<style[\s\S]*style>/i',
-                $OUTPUT->render_from_template('mod_learningmap/cssskeleton',
-                    array_merge(json_decode($defaultvalues['placestore'], true), ['editmode' => true] )),
-                $defaultvalues['introeditor']['text']
+            $mapworker = new mapworker(
+                $defaultvalues['introeditor']['text'],
+                json_decode($defaultvalues['placestore'], true)
             );
+            $mapworker->replace_stylesheet(['editmode' => true]);
+            $defaultvalues['introeditor']['intro'] = $mapworker->get_svgcode();
             // Make the introeditor use the values of the intro field.
             // This is necessary to avoid inconsistencies.
             $defaultvalues['introeditor']['text'] = $defaultvalues['intro'];
@@ -198,13 +200,11 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @return void
      */
     public function data_postprocessing($data) : void {
-        global $OUTPUT;
-        // Remove the editing components from stylesheet
-        $data->introeditor['text'] = preg_replace(
-            '/<style[\s\S]*style>/i',
-            $OUTPUT->render_from_template('mod_learningmap/cssskeleton',
-                array_merge(json_decode($data->placestore, true), ['editmode' => false])),
-            $data->introeditor['text']
+        $mapworker = new mapworker(
+            $data->introeditor['text'],
+            json_decode($data->placestore, true)
         );
+        $mapworker->replace_stylesheet(['editmode' => false]);
+        $data->introeditor['text'] = $mapworker->get_svgcode();
     }
 }
