@@ -11,7 +11,7 @@ let placestore = {
     height: 100,
     width: 800,
     hidepaths: false,
-    mapid: Math.floor(Math.random() * Date.now()),
+    mapid: '',
     editmode: true,
     /**
      * Loads attributes from JSON into placestore
