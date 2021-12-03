@@ -46,6 +46,7 @@ export const init = () => {
             } else {
                 document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
             }
+            updateCode();
         });
         // Add / remove a place to the starting places array
         activityStarting.addEventListener('change', function() {
