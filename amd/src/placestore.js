@@ -41,7 +41,9 @@ let placestore = {
         this.places.push({
             id: id,
             linkId: linkId,
-            linkedActivity: linkedActivity
+            linkedActivity: linkedActivity,
+            placecolor: null,
+            visitedcolor: null
         });
         if (this.places.length == 1) {
             this.addStartingPlace(id);
@@ -123,7 +125,10 @@ let placestore = {
         this.paths.push({
             id: pid,
             fid: fid,
-            sid: sid
+            sid: sid,
+            strokecolor: null,
+            strokedasharray: null,
+            hidepath: null
         });
     },
     /**

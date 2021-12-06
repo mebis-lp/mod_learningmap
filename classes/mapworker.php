@@ -143,7 +143,7 @@ class mapworker {
                     }
                 }
             } else {
-                $notavailable = $place['id'];
+                $notavailable[] = $place['id'];
                 $link->parentNode->removeChild($link);
             }
         }

@@ -256,18 +256,28 @@ export const init = () => {
                 upd1.forEach(function(p) {
                     let d = document.getElementById(p.id);
                     if (!(d === null)) {
-                        let pathDeclaration = d.getAttribute('d');
-                        let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
-                        d.setAttribute('d', newPathDeclaration);
+                        if (d.nodeName == 'path') {
+                            let pathDeclaration = d.getAttribute('d');
+                            let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
+                            d.setAttribute('d', newPathDeclaration);
+                        } else {
+                            d.setAttribute('x1', cx);
+                            d.setAttribute('y1', cy);
+                        }
                     }
                 });
 
                 upd2.forEach(function(p) {
                     let d = document.getElementById(p.id);
                     if (!(d === null)) {
-                        let pathDeclaration = d.getAttribute('d');
-                        let newPathDeclaration = pathDeclaration.split('L')[0] +'L ' + cx + ' ' + cy ;
-                        d.setAttribute('d', newPathDeclaration);
+                        if (d.nodeName == 'path') {
+                            let pathDeclaration = d.getAttribute('d');
+                            let newPathDeclaration = pathDeclaration.split('L')[0] +'L ' + cx + ' ' + cy ;
+                            d.setAttribute('d', newPathDeclaration);
+                        } else {
+                            d.setAttribute('x2', cx);
+                            d.setAttribute('y2', cy);
+                        }
                     }
                 });
             }
