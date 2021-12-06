@@ -23,9 +23,9 @@
     <div class="card-text">{{#str}} activity, core {{/str}}
     <select id="learningmap-activity-selector">
     {{#sections}}
-        <option disabled>{{name}}</option>
+        <option disabled title="{{name}}">{{#shortentext}} 30, {{{name}}} {{/shortentext}}</option>
         {{#coursemodules}}
-        <option value="{{id}}">{{name}}</option>
+        <option value="{{id}}" title="{{name}}">{{#shortentext}} 30, {{{name}}} {{/shortentext}}</option>
         {{/coursemodules}}
     {{/sections}}
     </select><br/>
