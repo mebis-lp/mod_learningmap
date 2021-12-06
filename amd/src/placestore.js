@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2011120201,
+    version: 2011120601,
     id: 0,
     places: [],
     paths: [],
