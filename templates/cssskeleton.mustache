@@ -47,6 +47,12 @@
     visibility: hidden;
     {{/editmode}}
 }
+#learningmap-svgmap-{{mapid}} .learningmap-checkmark {
+    stroke-width: 3px;
+    stroke-linecap: round;
+    stroke: {{ strokecolor }};
+    fill: none;
+}
 {{#editmode}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover {
     fill: blue;
