@@ -14,7 +14,6 @@ let placestore = {
     mapid: '',
     usecheckmark: false,
     editmode: true,
-    usecheckmark: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json

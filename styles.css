@@ -9,6 +9,12 @@
     z-index: 1;
 }
 
+#learningmap-advanced-settings {
+    position: absolute;
+    z-index: 1;
+    right: 0px;
+}
+
 #fitem_id_introeditor_text {
     display: none;
 }
