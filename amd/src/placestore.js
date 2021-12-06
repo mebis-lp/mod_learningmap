@@ -12,6 +12,7 @@ let placestore = {
     width: 800,
     hidepaths: false,
     mapid: '',
+    usecheckmark: false,
     editmode: true,
     /**
      * Loads attributes from JSON into placestore
@@ -269,6 +270,7 @@ let placestore = {
             width: this.width,
             hidepaths: this.hidepaths,
             mapid: this.mapid,
+            usecheckmark: this.usecheckmark,
             editmode: this.editmode
         };
     },
@@ -292,6 +294,20 @@ let placestore = {
      */
     getMapid: function() {
         return this.mapid;
+    },
+    /**
+     * Returns the value of usecheckmark attribute
+     * @returns {boolean}
+     */
+    getUseCheckmark: function() {
+        return this.usecheckmark;
+    },
+    /**
+     * Sets the value of usecheckmark attribute
+     * @param {boolean} value
+     */
+    setUseCheckmark(value) {
+        this.usecheckmark = value;
     }
 };
 

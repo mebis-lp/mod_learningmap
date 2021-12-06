@@ -44,14 +44,12 @@
                     <input type="color" id="learningmap-color-path"/>
                 </div>
                 <div class="col">
-                    <label for="learningmap-hidepaths">{{#str}} hidepaths, learningmap {{/str}}</label>
-                </div>
-                <div class="col">
-                    <input type="checkbox" id="learningmap-hidepaths"/>
+                    <i class="fa fa-cog" id="learningmap-advanced-settings-icon"></i>
                 </div>
             </div>
         </div>
         {{> mod_learningmap/activityselector }}
+        {{> mod_learningmap/advancedsettings }}
         <div class="learningmap-mapcontainer learningmap-scaling-svg-container" id="learningmap-editor-map">
         </div>
     </div>

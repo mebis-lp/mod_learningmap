@@ -28,13 +28,14 @@ export const init = () => {
     let colorChooserPlace = document.getElementById('learningmap-color-place');
     let colorChooserVisited = document.getElementById('learningmap-color-visited');
     let colorChooserPath = document.getElementById('learningmap-color-path');
-    let hidepaths = document.getElementById('learningmap-hidepaths');
+
 
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
     let activitySelector = document.getElementById('learningmap-activity-selector');
     let activityStarting = document.getElementById('learningmap-activity-starting');
     let activityTarget = document.getElementById('learningmap-activity-target');
+    let advancedSettingsIcon = document.getElementById('learningmap-advanced-settings-icon');
 
     // Attach listeners to the activity selector
     if (activitySelector) {
@@ -76,6 +77,52 @@ export const init = () => {
         placestore.loadJSON(placestoreInput.value);
     }
 
+    // Attach listeners to the advanced settings div
+    if (advancedSettingsIcon) {
+        let advancedSettings = document.getElementById('learningmap-advanced-settings');
+        advancedSettingsIcon.addEventListener('click', function() {
+            advancedSettings.removeAttribute('hidden');
+        });
+        let advancedSettingsClose = document.getElementById('learningmap-advanced-settings-close');
+        if(advancedSettingsClose) {
+            advancedSettingsClose.addEventListener('click', function() {
+                advancedSettings.setAttribute('hidden', '');
+            });
+        }
+
+        let hidepaths = document.getElementById('learningmap-hidepaths');
+        // Attach a listener to the hidepaths checkbox
+        if (hidepaths) {
+            if (placestore.getHidePaths()) {
+                hidepaths.checked = true;
+            }
+            hidepaths.addEventListener('change', function() {
+                if (hidepaths.checked) {
+                    placestore.setHidePaths(true);
+                } else {
+                    placestore.setHidePaths(false);
+                }
+                updateCSS();
+            });
+        }
+
+        let usecheckmark = document.getElementById('learningmap-usecheckmark');
+        // Attach a listener to the usecheckmark checkbox
+        if (usecheckmark) {
+            if (placestore.getUseCheckmark()) {
+                usecheckmark.checked = true;
+            }
+            usecheckmark.addEventListener('change', function() {
+                if (usecheckmark.checked) {
+                    placestore.setUseCheckmark(true);
+                } else {
+                    placestore.setUseCheckmark(false);
+                }
+                updateCSS();
+            });
+        }
+}
+
     // Attach listener to the color choosers for paths
     if (colorChooserPath) {
         colorChooserPath.addEventListener('change', function() {
@@ -101,21 +148,6 @@ export const init = () => {
             updateCSS();
         });
         colorChooserVisited.value = placestore.getColor('visited');
-    }
-
-    // Attach a listener to the hidepaths checkbox
-    if (hidepaths) {
-        if (placestore.getHidePaths()) {
-            hidepaths.checked = true;
-        }
-        hidepaths.addEventListener('change', function() {
-            if (hidepaths.checked) {
-                placestore.setHidePaths(true);
-            } else {
-                placestore.setHidePaths(false);
-            }
-            updateCSS();
-        });
     }
 
     // Get SVG code from the (hidden) textarea field

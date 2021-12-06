@@ -62,3 +62,5 @@ $string['places'] = 'Orte';
 $string['visited'] = 'Besucht';
 $string['paths'] = 'Pfade';
 $string['hidepaths'] = 'Pfade verbergen';
+$string['usecheckmark'] = 'Haken für abgeschlossene Orte';
+$string['advancedsettings'] = 'Erweiterte Einstellungen';

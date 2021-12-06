@@ -58,3 +58,5 @@ $string['places'] = 'Places';
 $string['visited'] = 'Visited';
 $string['paths'] = 'Paths';
 $string['hidepaths'] = 'Hide paths';
+$string['usecheckmark'] = 'Checkmark for visited places';
+$string['advancedsettings'] = 'Advanced settings';
