@@ -13,6 +13,7 @@ let placestore = {
     hidepaths: false,
     mapid: '',
     editmode: true,
+    usecheckmark: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -274,6 +275,7 @@ let placestore = {
             width: this.width,
             hidepaths: this.hidepaths,
             mapid: this.mapid,
+            usecheckmark: this.usecheckmark,
             editmode: this.editmode
         };
     },

@@ -176,6 +176,15 @@ class mapworker {
             $domplace = $this->dom->getElementById($place);
             if ($domplace) {
                 $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
+                if($this->placestore['usecheckmark']) {
+                    $x = $domplace->getAttribute('cx');
+                    $y = $domplace->getAttribute('cy');
+                    $use = $this->dom->createElement('use');
+                    $use->setAttribute('xlink:href', '#checkmark');
+                    $use->setAttribute('transform', 'translate(' . $x . ' '. $y . ')');
+                    $use->setAttribute('class', 'learningmap-checkmark');
+                    $domplace->parentNode->appendChild($use);
+                }
             }
         }
         // Make all places hidden if they are not availabile
