@@ -256,16 +256,18 @@ export const init = () => {
                 upd1.forEach(function(p) {
                     let d = document.getElementById(p.id);
                     if (!(d === null)) {
-                        d.setAttribute('x1', cx);
-                        d.setAttribute('y1', cy);
+                        let pathDeclaration = d.getAttribute('d');
+                        let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
+                        d.setAttribute('d', newPathDeclaration);
                     }
                 });
 
                 upd2.forEach(function(p) {
                     let d = document.getElementById(p.id);
                     if (!(d === null)) {
-                        d.setAttribute('x2', cx);
-                        d.setAttribute('y2', cy);
+                        let pathDeclaration = d.getAttribute('d');
+                        let newPathDeclaration = pathDeclaration.split('L')[0] +'L ' + cx + ' ' + cy ;
+                        d.setAttribute('d', newPathDeclaration);
                     }
                 });
             }
@@ -349,24 +351,21 @@ export const init = () => {
     }
 
     /**
-     * Returns a line between two points.
+     * Returns a path between two points.
      * @param {*} x1 x coordinate of the first point
      * @param {*} y1 y coordinate of the first point
      * @param {*} x2 x coordinate of the second point
      * @param {*} y2 y coordinate of the second point
      * @param {*} classes CSS classes to set
-     * @param {*} id id of the line
+     * @param {*} id id of the path
      * @returns {any}
      */
-    function line(x1, y1, x2, y2, classes, id) {
-        let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('class', classes);
-        line.setAttribute('id', id);
-        line.setAttribute('x1', x1);
-        line.setAttribute('y1', y1);
-        line.setAttribute('x2', x2);
-        line.setAttribute('y2', y2);
-        return line;
+     function path(x1, y1, x2, y2, classes, id) {
+        let path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('class', classes);
+        path.setAttribute('id', id);
+        path.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2);
+        return path;
     }
 
     /**
@@ -477,7 +476,7 @@ export const init = () => {
             let second = document.getElementById('p' + sid);
             if (pathsgroup && first && second) {
                 pathsgroup.appendChild(
-                    line(
+                    path(
                         first.cx.baseVal.value,
                         first.cy.baseVal.value,
                         second.cx.baseVal.value,
