@@ -35,3 +35,7 @@
 .learningmap-menubar input[type="color"] {
     width: 2rem;
 }
+
+.learningmap-used-activity {
+    color: green;
+}

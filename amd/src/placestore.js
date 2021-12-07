@@ -311,8 +311,21 @@ let placestore = {
      * Sets the value of usecheckmark attribute
      * @param {boolean} value
      */
-    setUseCheckmark(value) {
+    setUseCheckmark: function(value) {
         this.usecheckmark = value;
+    },
+    /**
+     * Returns an array with all activity ids
+     * @returns {array}
+     */
+    getAllActivities: function() {
+        let activities = [];
+        this.places.forEach(function(p) {
+            if (p.linkedActivity) {
+                activities.push(p.linkedActivity);
+            }
+        });
+        return activities;
     }
 };
 

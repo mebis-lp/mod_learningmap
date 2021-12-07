@@ -47,6 +47,7 @@ export const init = () => {
             } else {
                 document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
             }
+            updateActivities();
             updateCode();
         });
         // Add / remove a place to the starting places array
@@ -77,6 +78,9 @@ export const init = () => {
         placestore.loadJSON(placestoreInput.value);
     }
 
+    // Mark all activities in the placestore as "used".
+    updateActivities();
+
     // Attach listeners to the advanced settings div
     if (advancedSettingsIcon) {
         let advancedSettings = document.getElementById('learningmap-advanced-settings');
@@ -84,7 +88,7 @@ export const init = () => {
             advancedSettings.removeAttribute('hidden');
         });
         let advancedSettingsClose = document.getElementById('learningmap-advanced-settings-close');
-        if(advancedSettingsClose) {
+        if (advancedSettingsClose) {
             advancedSettingsClose.addEventListener('click', function() {
                 advancedSettings.setAttribute('hidden', '');
             });
@@ -616,5 +620,20 @@ export const init = () => {
                 return true;
             })
             .catch(ex => displayException(ex));
+    }
+
+    /**
+     * Updates the activity selector to highlight the activities already used
+     */
+    function updateActivities() {
+        let activities = placestore.getAllActivities();
+        let options = Array.from(activitySelector.getElementsByTagName('option'));
+        options.forEach(function(n) {
+            if (activities.includes(n.value)) {
+                n.classList.add('learningmap-used-activity');
+            } else {
+                n.classList.remove('learningmap-used-activity');
+            }
+        });
     }
 };
