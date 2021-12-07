@@ -45,7 +45,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $s = [];
         $activitysel = [];
         // Gets only sections with content.
-        foreach ($cm->sections as $sectionnum => $section) {
+        foreach ($cm->get_sections() as $sectionnum => $section) {
             $sectioninfo = $cm->get_section_info($sectionnum);
             $s['name'] = $sectioninfo->name;
             if (empty($s['name'])) {
@@ -68,6 +68,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addHelpButton('name', 'name', 'learningmap');
+
+        $mform->addElement('html', $OUTPUT->render_from_template('mod_learningmap/inlinehelp', []));
 
         $mform->addElement(
             'html',

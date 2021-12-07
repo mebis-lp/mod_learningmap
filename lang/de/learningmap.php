@@ -64,3 +64,6 @@ $string['paths'] = 'Pfade';
 $string['hidepaths'] = 'Pfade verbergen';
 $string['usecheckmark'] = 'Haken für abgeschlossene Orte';
 $string['advancedsettings'] = 'Erweiterte Einstellungen';
+$string['editorhelp'] = 'Wie verwende ich den Editor?';
+$string['usecasehelp'] = 'Wie verwende ich Lernlandkarten?';
+$string['infolink'] = 'https://www.mebis.bayern.de/p/70989';

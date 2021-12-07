@@ -60,3 +60,6 @@ $string['paths'] = 'Paths';
 $string['hidepaths'] = 'Hide paths';
 $string['usecheckmark'] = 'Checkmark for visited places';
 $string['advancedsettings'] = 'Advanced settings';
+$string['editorhelp'] = 'How to use the editor';
+$string['usecasehelp'] = 'How to use learning maps';
+$string['infolink'] = 'https://www.mebis.bayern.de/p/70989';
