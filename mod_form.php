@@ -54,6 +54,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $s['coursemodules'] = [];
             foreach ($section as $cmid) {
                 $module = $cm->get_cm($cmid);
+                // Get only course modules with completion enabled and not deleted.
                 if ($module->completion > 0 && $module->deletioninprogress == 0) {
                     $s['coursemodules'][] = ['id' => $cmid, 'name' => $module->name];
                 }
