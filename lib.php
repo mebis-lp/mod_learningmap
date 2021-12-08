@@ -251,5 +251,5 @@ function get_learningmap(cm_info $cm) : string {
  * @return array status array
  */
 function learningmap_reset_userdata($data) {
-    return array();
+    return [];
 }
