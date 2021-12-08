@@ -15,17 +15,16 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Version information for mod_learningmap
+ * Admin settings for mod_learningmap
  *
  * @package     mod_learningmap
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_learningmap';
-$plugin->release = '0.3';
-$plugin->version = 2021120801;
-$plugin->requires = 2020061500;
-$plugin->maturity = MATURITY_BETA;
+if ($ADMIN->fulltree) {
+    $settings->add(new admin_setting_configtext('mod_learningmap/usecaselink', get_string('usecaselink', 'learningmap'), '', 'https://www.mebis.bayern.de/p/70989', PARAM_URL));
+}

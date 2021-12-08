@@ -69,7 +69,12 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addHelpButton('name', 'name', 'learningmap');
 
-        $mform->addElement('html', $OUTPUT->render_from_template('mod_learningmap/inlinehelp', []));
+        $mform->addElement('html',
+            $OUTPUT->render_from_template(
+                'mod_learningmap/inlinehelp',
+                ['usecaselink' => get_config('mod_learningmap', 'usecaselink')]
+            )
+        );
 
         $mform->addElement(
             'html',

@@ -38,7 +38,6 @@ $string['completiontype'] = 'Art des Aktivitätsabschlusses';
 $string['editorhelp'] = 'Wie verwende ich den Editor?';
 $string['editplace'] = 'Ort bearbeiten';
 $string['hidepaths'] = 'Pfade verbergen';
-$string['infolink'] = 'https://www.mebis.bayern.de/p/70989';
 $string['intro'] = 'Lernlandkarte';
 $string['intro_help'] = '<ul><li><b>Hinzufügen eines Ortes:</b> Doppelklick</li>
 <li><b>Hinzufügen eines Pfades:</b> Zwei Orte nacheinander anklicken</li>
@@ -65,5 +64,6 @@ $string['startingplace'] = 'Start-Ort';
 $string['svgcode'] = 'SVG Code';
 $string['targetplace'] = 'Ziel-Ort';
 $string['usecasehelp'] = 'Wie verwende ich Lernlandkarten?';
+$string['usecaselink'] = 'Link zu einer Seite, die den Einsatz der Lernlandkarte erklärt';
 $string['usecheckmark'] = 'Haken für abgeschlossene Orte';
 $string['visited'] = 'Besucht';
