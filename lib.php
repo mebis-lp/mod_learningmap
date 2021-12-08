@@ -242,3 +242,14 @@ function get_learningmap(cm_info $cm) : string {
         )
     );
 }
+
+/**
+ * This function is used by the reset_course_userdata function in moodlelib.
+ * At this moment nothing needs to be done.
+ *
+ * @param object $data the data submitted from the reset course.
+ * @return array status array
+ */
+function learningmap_reset_userdata($data) {
+    return array();
+}
