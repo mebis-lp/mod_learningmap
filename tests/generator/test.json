@@ -1,0 +1,112 @@
+{
+    "id": 10,
+    "places": [
+        {
+            "id": "p0",
+            "linkId": "a0",
+            "linkedActivity": "99990"
+        },
+        {
+            "id": "p1",
+            "linkId": "a1",
+            "linkedActivity": "99991"
+        },
+        {
+            "id": "p2",
+            "linkId": "a2",
+            "linkedActivity": "99992"
+        },
+        {
+            "id": "p3",
+            "linkId": "a3",
+            "linkedActivity": "99993"
+        },
+        {
+            "id": "p4",
+            "linkId": "a4",
+            "linkedActivity": "99994"
+        },
+        {
+            "id": "p5",
+            "linkId": "a5",
+            "linkedActivity": "99995"
+        },
+        {
+            "id": "p6",
+            "linkId": "a6",
+            "linkedActivity": "99996"
+        },
+        {
+            "id": "p8",
+            "linkId": "a8",
+            "linkedActivity": "99997"
+        },
+        {
+            "id": "p9",
+            "linkId": "a9",
+            "linkedActivity": "99998"
+        }
+    ],
+    "paths": [
+        {
+            "id": "p0_1",
+            "fid": "p0",
+            "sid": "p1"
+        },
+        {
+            "id": "p1_2",
+            "fid": "p1",
+            "sid": "p2"
+        },
+        {
+            "id": "p2_3",
+            "fid": "p2",
+            "sid": "p3"
+        },
+        {
+            "id": "p3_5",
+            "fid": "p3",
+            "sid": "p5"
+        },
+        {
+            "id": "p4_5",
+            "fid": "p4",
+            "sid": "p5"
+        },
+        {
+            "id": "p1_4",
+            "fid": "p1",
+            "sid": "p4"
+        },
+        {
+            "id": "p4_9",
+            "fid": "p4",
+            "sid": "p9"
+        },
+        {
+            "id": "p5_6",
+            "fid": "p5",
+            "sid": "p6"
+        },
+        {
+            "id": "p6_8",
+            "fid": "p6",
+            "sid": "p8"
+        }
+    ],
+    "startingplaces": [
+        "p0"
+    ],
+    "targetplaces": [
+        "p8",
+        "p9"
+    ],
+    "placecolor": "#c01c28",
+    "strokecolor": "#ffffff",
+    "visitedcolor": "#26a269",
+    "height": 600,
+    "width": 800,
+    "hidepaths": true,
+    "mapid": "abc",
+    "editmode": true
+}

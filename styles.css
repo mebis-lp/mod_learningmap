@@ -1,0 +1,41 @@
+.learningmap-mapcontainer {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#learningmap-activity-setting {
+    position: absolute;
+    z-index: 1;
+}
+
+#learningmap-advanced-settings {
+    position: absolute;
+    z-index: 1;
+    right: 0px;
+}
+
+#fitem_id_introeditor_text {
+    display: none;
+}
+
+.learningmap-scaling-svg-container {
+    position: relative;
+    min-height: 100px;
+    width: 100%;
+}
+
+.learningmap-scaling-svg {
+    vertical-align: top;
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+
+.learningmap-menubar input[type="color"] {
+    width: 2rem;
+}
+
+.learningmap-used-activity {
+    color: green;
+}
