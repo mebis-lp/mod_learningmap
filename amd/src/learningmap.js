@@ -161,6 +161,7 @@ export const init = () => {
     // Reload background image to get the correct width and height values
     refreshBackgroundImage();
     registerBackgroundListener();
+    updateCode();
 
     // Enable dragging of places
     let svg = document.getElementById('learningmap-svgmap-' + placestore.getMapid());
@@ -600,10 +601,10 @@ export const init = () => {
                 let height = parseInt(background.getBBox().height);
                 let width = background.getBBox().width;
                 placestore.setBackgroundDimensions(width, height);
-                updateCode();
                 svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
                 background.setAttribute('width', width);
                 background.setAttribute('height', height);
+                updateCode();
             });
         }
     }
