@@ -53,6 +53,10 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
             $completion = new \completion_info($this->cm->get_course());
 
+            $modinfo = get_fast_modinfo($this->cm->get_course(), $this->userid);
+            $cms = $modinfo->get_cms();
+            $allcms = array_keys($cms);
+
             foreach ($placestore->places as $place) {
                 // Prevent infinite loop.
                 if ($place->linkedActivity == $this->cm->id) {
@@ -63,9 +67,9 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     continue;
                 }
                 if ($place->linkedActivity != null) {
-                    try {
-                        $placecm = get_fast_modinfo($this->cm->get_course(), $this->userid)->get_cm($place->linkedActivity);
-                    } catch (\Exception $e) {
+                    if (in_array($place->linkedActivity, $allcms)) {
+                        $placecm = $modinfo->get_cm($place->linkedActivity);
+                    } else {
                         // No way to fulfill condition.
                         if ($map->completiontype > 1) {
                             return COMPLETION_INCOMPLETE;
