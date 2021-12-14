@@ -117,16 +117,20 @@ class mapworker {
 
         $completion = new \completion_info($cm->get_course());
 
+        $modinfo = get_fast_modinfo($cm->get_course(), $USER->id);
+
+        $allcms = array_keys($modinfo->get_cms());
+
         // Walk through all places in the map.
         foreach ($this->placestore['places'] as $place) {
             // Get the id of the link in the DOM.
             $link = $this->dom->getElementById($place['linkId']);
             // Only if the place is linked to an activity.
             if ($place['linkedActivity'] != null) {
-                // Try to get modinfo for the activity.
-                try {
-                    $placecm = get_fast_modinfo($cm->get_course(), $USER->id)->get_cm($place['linkedActivity']);
-                } catch (\Exception $e) {
+                // Only get modinfo for the activity if it is in the array of course module ids.
+                if (in_array($place['linkedActivity'], $allcms)) {
+                    $placecm = $modinfo->get_cm($place['linkedActivity']);
+                } else {
                     $placecm = false;
                 }
                 // If the activity is not found or if there is no activity, add it to the list of not availabile places.
