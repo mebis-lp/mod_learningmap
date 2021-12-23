@@ -14,7 +14,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 let placestore = {
-    version: 2011120601,
+    version: 2021122301,
     id: 0,
     places: [],
     paths: [],
