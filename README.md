@@ -1,29 +1,38 @@
-# Learningmap #
+# Learning maps
+A learning map provides an easy way to improve the visualization of the activities in a moodle course.
+Activities are represented as places on a map, connected by paths. Activities and paths are initially invisible. Every time an activity attached to a place is completed, the place changes its color (e.g. from red to green) and all connected paths and places are revealed.
 
-This plugin allows to visualize activities in a course as places on a map.
-The places are connected through paths. When an activity is completed, all
-connected places and paths are shown on the map.
+## Use of learning maps
+Learning maps can be used in many ways. They can show all activities of the course or only a part of it. They can also be nested to have different map levels (e.g. for a complete school year - one big map containing smaller maps for each topic).
+Usually the activities show in the map are hidden but availabile for the participants. In this way the learning map can provide an easier way to build a path of dependent activities without using the moodle access restrictions.
+Learning maps can be embedded on the course page (like a label) or shown on a separate page (like a page). You can use any activity with any type of activity completion.
 
-The user can define the layout of the map:
-- The background image (jpg, png, svg)
-- The location of the places
-- The paths connecting the places
-- The color of places, visited places (this means the activity is completed) and paths
-- Whether the paths are shown on the map
-- Which places are starting places (this means they are shown on the map from the beginning)
-- Which places are target places (important for automatic completion)
+## Start and completion
+On a learning map you can define starting places which are visible by default. The first place you put on the map is a starting place by default.
+You can also define places as target places. They can be used for automatic completion of the map in three different ways:
+The map is completed if
+* one target place is reached (this means the linked activity is completed)
+* all target places are reached
+* all places are reached
 
-The map can be shown on the course page (like a label) or on a separate page.
+This is very useful if you used nested maps, you can also imitate parts of the behaviour of mod_checklist in this way.
+The map is always updated when the completion state of a linked activity changes.
 
-The activity supports the following completion mechanisms:
-- Completion by view
-- Completion by reaching one target place
-- Completion by reaching all target places
-- Completion by visiting all places
+## Features
+As a background image you can use any image which can be viewed by a web browser (e.g. JPG, PNG, GIF, SVG). The map is resized to the size of the image and is fully responsive.
+You can change the color of places (different colors for visited / unvisited places) and the strokes for places and paths. Target places are highlighted for the participants. If necessary you can also hide the paths to the participants or show a checkmark in visited places.
+If the learning map is embedded on a course page and manual completion of an linked activity is triggered, a page reload is forced to keep the map status correct.
+If an activity has additional restrictions (e.g. being visible only after a certain date), learning map will display it only if these restrictions are fulfilled.
 
-When the activity is embedded on course page and there are activities with manual completion
-visible on the same course page, the plugin triggers a page refresh when ticking / unticking
-manual completion.
+## Use of the editor
+Using the editor is very easy:
+* Choose your background image - it will be immediately shown in the map editor
+* Add places (double click on the map)
+* Link places to activities (right click on the place)
+* Connect places by (single) clicking on both places
+* Remove paths / places by double clicking on them
+
+If a place is not linked to an activity it is shown with reduced opacity.
 
 
 ## Installing via uploaded ZIP file ##
