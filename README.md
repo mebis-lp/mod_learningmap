@@ -1,39 +1,31 @@
 # Learning maps
-A learning map provides an easy way to improve the visualization of the activities in a moodle course.
-Activities are represented as places on a map, connected by paths. Activities and paths are initially invisible. Every time an activity attached to a place is completed, the place changes its color (e.g. from red to green) and all connected paths and places are revealed.
+
+A learning map provides an easy way of improving the visualization of activities in a moodle course. Activities are represented as places (i.e. dots) on the map, connected by paths (i.e. lines). Activities and paths are initially invisible. Every time an activity attached to a place is completed, the place changes its color (e.g. from red to green) and all connected paths and places are gradually revealed.
 
 ## Use of learning maps
-Learning maps can be used in many ways. They can show all activities of the course or only a part of it. They can also be nested to have different map levels (e.g. for a complete school year - one big map containing smaller maps for each topic).
-Usually the activities show in the map are hidden but availabile for the participants. In this way the learning map can provide an easier way to build a path of dependent activities without using the moodle access restrictions.
-Learning maps can be embedded on the course page (like a label) or shown on a separate page (like a page). You can use any activity with any type of activity completion.
+
+Learning maps can be used in many ways. They can include all activities of a course or only parts of it. They can also be nested to have different map levels (e.g. one big map for a complete school year, containing smaller maps for each topic). Usually the activities shown in the map are hidden but available for the participants. By this means, the learning map can provide an easy way of creating a path of dependent activities without the necessity of using moodle access restrictions. Learning maps can be embedded on the course page (like a label) or shown on a separate page (like a page). You can include any activity with any type of activity completion in a learning map.
 
 ## Start and completion
-On a learning map you can define starting places which are visible by default. The first place you put on the map is a starting place by default.
-You can also define places as target places. They can be used for automatic completion of the map in three different ways:
-The map is completed if
-* one target place is reached (this means the linked activity is completed)
-* all target places are reached
-* all places are reached
 
-This is very useful if you used nested maps, you can also imitate parts of the behaviour of mod_checklist in this way.
-The map is always updated when the completion state of a linked activity changes.
+On a learning map you can define visible starting places. The first place you put on the map is a starting place by default. You can also define places as target places. They can be used for automatic completion of the map in three different ways: 1. The map is completed if one target place is reached (i.e. the linked activity is completed), 2. all target places are reached, 3. all places are reached. This is very convenient when using nested maps. As a consequence, learning maps can also be used to replace parts of the function of mod_checklist.
 
 ## Features
-As a background image you can use any image which can be viewed by a web browser (e.g. JPG, PNG, GIF, SVG). The map is resized to the size of the image and is fully responsive.
-You can change the color of places (different colors for visited / unvisited places) and the strokes for places and paths. Target places are highlighted for the participants. If necessary you can also hide the paths to the participants or show a checkmark in visited places.
-If the learning map is embedded on a course page and manual completion of an linked activity is triggered, a page reload is forced to keep the map status correct.
-If an activity has additional restrictions (e.g. being visible only after a certain date), learning map will display it only if these restrictions are fulfilled.
+
+As a background image, you can use any image which can be viewed in a web browser (e.g. JPG, PNG, GIF, SVG). The map is resized to the size of the image and fully responsive. You can change the color of places (different colors for visited / unvisited places) and the lines of places and paths. Target places are highlighted for the participants. If necessary, you can also hide the paths or show a checkmark at visited places.
+The map is always updated when the completion state of a linked activity changes. If the learning map is embedded on a course page and manual completion of a linked activity is triggered, a page reload is forced to keep the map status correct. If an activity has additional restrictions (e.g. visible only after a certain date), learning map will display it only if these restrictions are fulfilled.
 
 ## Use of the editor
+
 Using the editor is very easy:
-* Choose your background image - it will be immediately shown in the map editor
-* Add places (double click on the map)
-* Link places to activities (right click on the place)
-* Connect places by (single) clicking on both places
-* Remove paths / places by double clicking on them
+
+1. Choose your background image - it will be immediately shown in the map editor
+2. Add places (double click on the map)
+3. Link places to activities (right click on the place)
+4. Connect places by a (single) click on both places
+5. Remove paths / places by double-clicking them
 
 If a place is not linked to an activity it is shown with reduced opacity.
-
 
 ## Installing via uploaded ZIP file ##
 
