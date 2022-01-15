@@ -176,21 +176,24 @@ class mapworker {
                 $link->parentNode->removeChild($link);
             }
         }
-        // Only set paths visible if hidepaths is not set in placestore.
-        if (!$this->placestore['hidepaths']) {
-            foreach ($this->placestore['paths'] as $path) {
-                // If the ending of the path is a completed place and this place is availabile,
-                // show path and the place on the other end.
-                if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], $notavailable)) {
+        foreach ($this->placestore['paths'] as $path) {
+            // If the ending of the path is a completed place and this place is availabile,
+            // show path and the place on the other end.
+            if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], $notavailable)) {
+                // Only set paths visible if hidepaths is not set in placestore.
+                if (!$this->placestore['hidepaths']) {
                     $active[] = $path['id'];
-                    $active[] = $path['fid'];
                 }
-                // If the beginning of the path is a completed place and this place is availabile,
-                // show path and the place on the other end.
-                if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], $notavailable)) {
+                $active[] = $path['fid'];
+            }
+            // If the beginning of the path is a completed place and this place is availabile,
+            // show path and the place on the other end.
+            if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], $notavailable)) {
+                // Only set paths visible if hidepaths is not set in placestore.
+                if (!$this->placestore['hidepaths']) {
                     $active[] = $path['id'];
-                    $active[] = $path['sid'];
                 }
+                $active[] = $path['sid'];
             }
         }
         // Set all active paths and places to visible.
