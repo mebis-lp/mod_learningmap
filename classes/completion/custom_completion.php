@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// mod_learningmap - A moodle plugin for easy visualization of learning paths
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+// GNU Affero General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace mod_learningmap\completion;
 
@@ -24,7 +24,7 @@ defined('MOODLE_INTERNAL') || die();
  * @package     mod_learningmap
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
 class custom_completion extends \core_completion\activity_custom_completion {
     /**
@@ -53,6 +53,10 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
             $completion = new \completion_info($this->cm->get_course());
 
+            $modinfo = get_fast_modinfo($this->cm->get_course(), $this->userid);
+            $cms = $modinfo->get_cms();
+            $allcms = array_keys($cms);
+
             foreach ($placestore->places as $place) {
                 // Prevent infinite loop.
                 if ($place->linkedActivity == $this->cm->id) {
@@ -63,9 +67,9 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     continue;
                 }
                 if ($place->linkedActivity != null) {
-                    try {
-                        $placecm = get_fast_modinfo($this->cm->get_course(), $this->userid)->get_cm($place->linkedActivity);
-                    } catch (\Exception $e) {
+                    if (in_array($place->linkedActivity, $allcms)) {
+                        $placecm = $modinfo->get_cm($place->linkedActivity);
+                    } else {
                         // No way to fulfill condition.
                         if ($map->completiontype > 1) {
                             return COMPLETION_INCOMPLETE;

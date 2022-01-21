@@ -1,18 +1,18 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// mod_learningmap - A moodle plugin for easy visualization of learning paths
 //
-// Moodle is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU Affero General Public License as
+// published by the Free Software Foundation, either version 3 of the
+// License, or (at your option) any later version.
 //
-// Moodle is distributed in the hope that it will be useful,
+// This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+// GNU Affero General Public License for more details.
 //
-// You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Affero General Public License
+// along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Language file for mod_learningmap
@@ -20,7 +20,7 @@
  * @package     mod_learningmap
  * @copyright   2021, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -39,7 +39,10 @@ $string['editorhelp'] = 'How to use the editor';
 $string['editplace'] = 'Edit place';
 $string['hidepaths'] = 'Hide paths';
 $string['intro'] = 'Learning map';
-$string['intro_help'] = 'By double clicking on the background image you add a new place. For adding a new path click once on the starting place and then on the target place. If you double click on a place or a path, it is removed. Right click on a place to modify the activity it is linked to and to set / unset it as a starting place.';
+$string['intro_help'] = '<ul><li><b>Add a new place:</b> Double click on background</li>
+<li><b>Add a path:</b> Single click on two places</li>
+<li><b>Remove a place / path:</b> Double click on it</li>
+<li><b>Change properties of a place:</b> Right click on it</li></ul>';
 $string['learningmap'] = 'Learning map';
 $string['learningmap:addinstance'] = 'Add a new learning map';
 $string['learningmap:view'] = 'View learning map';
