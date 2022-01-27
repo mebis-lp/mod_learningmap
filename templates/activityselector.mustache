@@ -16,6 +16,45 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 }}
 {{!
     @template mod_learningmap/activityselector
+
+    Template for displaying the activity selector in the editor.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * none
+
+    Example context (json):
+    {
+    "sections":[
+        {
+            "name":"Section 0",
+            "coursemodules":[
+                {
+                "id":"1039",
+                "name":"Activity 1"
+                },
+                {
+                "id":"1040",
+                "name":"Activity 2"
+                }
+            ]
+        },
+        {
+            "name":"Section 1",
+            "coursemodules":[
+                {
+                "id":"1043",
+                "name":"Activity 3"
+                }
+            ]
+        },
+    ]
+    }
 }}
 <div id="learningmap-activity-setting" class="card border-dark" hidden>
     <div class="card-body">
