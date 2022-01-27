@@ -16,6 +16,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 }}
 {{!
     @template mod_learningmap/cssskeleton
+
+    Template for the stylesheet of the SVG.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * none
+
+    Example context (json):
+    {
+        "placecolor":"#c01c28",
+        "strokecolor":"#ffffff",
+        "visitedcolor":"#26a269",
+        "hidepaths":false,
+        "mapid":"61e7dad7afb67",
+        "editmode":true
+    }
 }}
 <style id="learningmap-svgstyle" type="text/css">
 #learningmap-svgmap-{{mapid}} .learningmap-place {

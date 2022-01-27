@@ -16,6 +16,39 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 }}
 {{!
     @template mod_learningmap/svgskeleton
+
+    Template for the SVG.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * none
+
+    Example content(json):
+    {
+    "id":0,
+    "places":[
+    ],
+    "paths":[
+    ],
+    "startingplaces":[
+    ],
+    "targetplaces":[
+    ],
+    "placecolor":"#c01c28",
+    "strokecolor":"#ffffff",
+    "visitedcolor":"#26a269",
+    "height":600,
+    "width":800,
+    "hidepaths":false,
+    "mapid":"61e7dad7afb67",
+    "usecheckmark":false,
+    "editmode":true
+    }
 }}
 <svg id="learningmap-svgmap-{{mapid}}" class="learningmap-scaling-svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full">
 <defs>

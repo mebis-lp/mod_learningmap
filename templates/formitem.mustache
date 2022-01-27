@@ -16,6 +16,46 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 }}
 {{!
     @template mod_learningmap/formitem
+
+    Template for the form item containing the editor.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * none
+
+    Example context (json):
+    {
+    "sections":[
+      {
+         "name":"Section 0",
+         "coursemodules":[
+            {
+               "id":"1039",
+               "name":"Activity 1"
+            },
+            {
+               "id":"1040",
+               "name":"Activity 2"
+            }
+         ]
+      },
+      {
+         "name":"Section 1",
+         "coursemodules":[
+            {
+               "id":"1043",
+               "name":"Activity 3"
+            }
+         ]
+      },
+    ],
+    "help":"This is the help text"
+    }
 }}
 <div class="form-group row fitem">
     <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">
@@ -38,7 +78,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
                     <input type="color" id="learningmap-color-visited"/>
                 </div>
                 <div class="col">
-                    <label for="learningmap-color-stroke">{{#str}} paths, learningmap {{/str}}</label>
+                    <label for="learningmap-color-path">{{#str}} paths, learningmap {{/str}}</label>
                 </div>
                 <div class="col border-right border-dark">
                     <input type="color" id="learningmap-color-path"/>
