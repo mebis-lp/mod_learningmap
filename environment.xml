@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<COMPATIBILITY_MATRIX>
+    <PLUGIN name="mod_learningmap">
+        <PHP_EXTENSIONS>
+            <PHP_EXTENSION name="dom" level="required">
+        </PHP_EXTENSION>
+    </PLUGIN>
+</COMPATIBILITY_MATRIX>
