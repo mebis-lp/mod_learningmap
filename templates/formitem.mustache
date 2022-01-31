@@ -54,9 +54,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
          ]
       }
     ],
-    "help":"This is the help text"
+    "help":"This is the help text",
+    "completiondisabled":"false"
     }
 }}
+{{#completiondisabled}}<div class="alert alert-danger row">{{#str}} completiondisabled, learningmap {{/str}}</div>{{/completiondisabled}}
 <div class="form-group row fitem">
     <div class="col-md-3 col-form-label d-flex pb-0 pr-md-0">
         <label class="d-inline word-break">{{#str}} learningmap, learningmap {{/str}}</label>

@@ -84,7 +84,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
             'html',
             $OUTPUT->render_from_template(
                 'mod_learningmap/formitem',
-                ['sections' => $activitysel, 'help' => $OUTPUT->help_icon('intro', 'learningmap', '')]
+                ['sections' => $activitysel,
+                'help' => $OUTPUT->help_icon('intro', 'learningmap', ''),
+                'completiondisabled' => $cm->get_course()->enablecompletion == 0
+                ]
             )
         );
 

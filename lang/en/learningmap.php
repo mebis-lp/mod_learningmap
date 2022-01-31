@@ -34,6 +34,7 @@ $string['completion_with_one_target'] = 'Reaching one target place is necessary 
 $string['completiondetail:all_places'] = 'Reach all places';
 $string['completiondetail:all_targets'] = 'Reach all target places';
 $string['completiondetail:one_target'] = 'Reach one target place';
+$string['completiondisabled'] = 'Completion tracking is disabled in course settings. Without completion tracking this plugin won\'t work.';
 $string['completiontype'] = 'Type of completion';
 $string['editorhelp'] = 'How to use the editor';
 $string['editplace'] = 'Edit place';
