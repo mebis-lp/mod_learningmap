@@ -18,7 +18,7 @@
  * Language file for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021, ISB Bayern
+ * @copyright   2021-2022, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
@@ -34,6 +34,7 @@ $string['completion_with_one_target'] = 'Reaching one target place is necessary 
 $string['completiondetail:all_places'] = 'Reach all places';
 $string['completiondetail:all_targets'] = 'Reach all target places';
 $string['completiondetail:one_target'] = 'Reach one target place';
+$string['completiondisabled'] = 'Completion tracking is disabled in course settings. Without completion tracking this plugin won\'t work.';
 $string['completiontype'] = 'Type of completion';
 $string['editorhelp'] = 'How to use the editor';
 $string['editplace'] = 'Edit place';
@@ -52,6 +53,7 @@ $string['modulenameplural'] = 'Learning maps';
 $string['name'] = 'Learning map name';
 $string['name_help'] = 'The name of the learning map is only displayed if the "Show map on course page" is not checked.';
 $string['nocompletion'] = 'No completion with map items';
+$string['nocompletionenabled'] = 'Not available because completion is not enabled';
 $string['paths'] = 'Paths';
 $string['places'] = 'Places';
 $string['pluginadministration'] = 'Learning map administration';

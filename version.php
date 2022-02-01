@@ -18,14 +18,14 @@
  * Version information for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021, ISB Bayern
+ * @copyright   2021-2022, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_learningmap';
-$plugin->release = '0.4';
-$plugin->version = 2022012701;
+$plugin->release = '0.4.1';
+$plugin->version = 2022013101;
 $plugin->requires = 2020061500;
 $plugin->maturity = MATURITY_BETA;

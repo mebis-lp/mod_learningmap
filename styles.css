@@ -39,3 +39,7 @@
 .learningmap-used-activity {
     color: green;
 }
+
+.learningmap-disabled-activity {
+    color: lightsalmon;
+}

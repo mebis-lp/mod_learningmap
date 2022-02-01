@@ -25,7 +25,7 @@ require_once($CFG->dirroot . '/mod/learningmap/lib.php');
  * Editing form for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021, ISB Bayern
+ * @copyright   2021-2022, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
@@ -54,9 +54,13 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $s['coursemodules'] = [];
             foreach ($section as $cmid) {
                 $module = $cm->get_cm($cmid);
-                // Get only course modules with completion enabled and not deleted.
-                if ($module->completion > 0 && $module->deletioninprogress == 0) {
-                    $s['coursemodules'][] = ['id' => $cmid, 'name' => $module->name];
+                // Get only course modules which are not deleted.
+                if ($module->deletioninprogress == 0) {
+                    $s['coursemodules'][] = [
+                        'id' => $cmid,
+                        'name' => $module->name,
+                        'completionenabled' => $module->completion > 0
+                    ];
                 }
             }
             $activitysel[] = $s;
@@ -80,7 +84,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
             'html',
             $OUTPUT->render_from_template(
                 'mod_learningmap/formitem',
-                ['sections' => $activitysel, 'help' => $OUTPUT->help_icon('intro', 'learningmap', '')]
+                ['sections' => $activitysel,
+                'help' => $OUTPUT->help_icon('intro', 'learningmap', ''),
+                'completiondisabled' => $cm->get_course()->enablecompletion == 0
+                ]
             )
         );
 

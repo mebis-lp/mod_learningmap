@@ -22,7 +22,7 @@ defined('MOODLE_INTERNAL') || die();
  * Autoupdate class for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021, ISB Bayern
+ * @copyright   2021-2022, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
