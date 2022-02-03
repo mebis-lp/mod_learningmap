@@ -52,6 +52,21 @@ export const init = () => {
     let activityTarget = document.getElementById('learningmap-activity-target');
     let advancedSettingsIcon = document.getElementById('learningmap-advanced-settings-icon');
 
+    // Hide tree view as there is no preview file we can attach to
+    let treeView = document.querySelector('.fp-viewbar .fp-vb-tree');
+    if (treeView) {
+        treeView.setAttribute('style', 'display: none;');
+    }
+
+    // Trigger click event on icon view to ensure that tree view is not active.
+    let iconView = document.querySelector('.fp-viewbar .fp-vb-icons');
+    if (iconView) {
+        // Handle possible delay in form loading.
+        setTimeout(() => {
+            iconView.dispatchEvent(new Event('click'));
+        }, 1000);
+    }
+
     // Attach listeners to the activity selector
     if (activitySelector) {
         // Show places that are not linked to an activity
