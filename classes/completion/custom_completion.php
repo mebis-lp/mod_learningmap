@@ -16,8 +16,6 @@
 
 namespace mod_learningmap\completion;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Custom completion rules for mod_learningmap
  *

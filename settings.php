@@ -26,5 +26,11 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($ADMIN->fulltree) {
-    $settings->add(new admin_setting_configtext('mod_learningmap/usecaselink', get_string('usecaselink', 'learningmap'), '', 'https://www.mebis.bayern.de/p/70989', PARAM_URL));
+    $settings->add(new admin_setting_configtext(
+        'mod_learningmap/usecaselink',
+        get_string('usecaselink', 'learningmap'),
+        '',
+        'https://www.mebis.bayern.de/p/70989',
+        PARAM_URL)
+    );
 }

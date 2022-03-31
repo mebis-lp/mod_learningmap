@@ -23,8 +23,6 @@
  * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Adds a new learningmap instance
  *

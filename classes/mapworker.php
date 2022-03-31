@@ -18,8 +18,6 @@ namespace mod_learningmap;
 
 use DOMDocument;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class for handling the content of the learningmap
  *

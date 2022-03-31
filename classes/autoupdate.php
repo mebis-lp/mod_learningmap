@@ -16,8 +16,6 @@
 
 namespace mod_learningmap;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Autoupdate class for mod_learningmap
  *
