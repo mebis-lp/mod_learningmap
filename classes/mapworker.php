@@ -18,8 +18,6 @@ namespace mod_learningmap;
 
 use DOMDocument;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class for handling the content of the learningmap
  *
@@ -30,21 +28,21 @@ defined('MOODLE_INTERNAL') || die();
  */
 class mapworker {
     /**
-     * @var DOMDocument $dom DOMDocument for parsing the SVG
+     * @var $dom DOMDocument for parsing the SVG
      */
-    protected DOMDocument $dom;
+    protected $dom;
     /**
-     * @var string $svgcode String containing the SVG code (synchronized with $dom)
+     * @var $svgcode String containing the SVG code (synchronized with $dom)
      */
-    protected string $svgcode;
+    protected $svgcode;
     /**
-     * @var array $placestore Array containing the placestore
+     * @var $placestore Array containing the placestore
      */
-    protected array $placestore;
+    protected $placestore;
     /**
-     * @var string $prepend String to prepend to the SVG code (for parsing by DOMDocument)
+     * @var $prepend String to prepend to the SVG code (for parsing by DOMDocument)
      */
-    protected string $prepend;
+    protected $prepend;
 
     /**
      * Creates mapworker from SVG code

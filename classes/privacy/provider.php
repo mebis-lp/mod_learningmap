@@ -16,8 +16,6 @@
 
 namespace mod_learningmap\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy subsystem implementation for mod_learningmap
  *
