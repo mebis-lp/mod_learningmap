@@ -338,7 +338,7 @@ export const init = () => {
                     if (!(d === null)) {
                         if (d.nodeName == 'path') {
                             let pathDeclaration = d.getAttribute('d');
-                            let newPathDeclaration = pathDeclaration.split('L')[0] +'L ' + cx + ' ' + cy ;
+                            let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
                             d.setAttribute('d', newPathDeclaration);
                         } else {
                             d.setAttribute('x2', cx);
@@ -534,7 +534,7 @@ export const init = () => {
         Array.from(document.getElementsByClassName('learningmap-selected')).forEach(function (e) {
             e.classList.remove('learningmap-selected');
         });
-        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach( function(e) {
+        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach(function (e) {
             e.classList.remove('learningmap-selected-activity-selector');
         });
     }
