@@ -44,6 +44,6 @@ $completion->set_module_viewed($cm);
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->box(get_learningmap($cm));
+echo $OUTPUT->box(learningmap_get_learningmap($cm));
 
 echo $OUTPUT->footer();

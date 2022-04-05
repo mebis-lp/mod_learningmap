@@ -181,9 +181,9 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     global $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
-        $cm->set_content(get_learningmap($cm), true);
+        $cm->set_content(learningmap_get_learningmap($cm), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
-        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init', ['coursemodules' => get_place_cm($cm)]);
+        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init', ['coursemodules' => learningmap_get_place_cm($cm)]);
     }
 }
 
@@ -192,7 +192,7 @@ function learningmap_cm_info_view(cm_info $cm) : void {
  * @param cm_info $cm course module object for the learning map
  * @return array
  */
-function get_place_cm(cm_info $cm) : array {
+function learningmap_get_place_cm(cm_info $cm) : array {
     global $DB;
     $map = $DB->get_record("learningmap", ["id" => $cm->instance], 'placestore');
     $modules = [];
@@ -211,7 +211,7 @@ function get_place_cm(cm_info $cm) : array {
  * @param cm_info $cm
  * @return string
  */
-function get_learningmap(cm_info $cm) : string {
+function learningmap_get_learningmap(cm_info $cm) : string {
     global $DB, $OUTPUT;
 
     $context = context_module::instance($cm->id);
