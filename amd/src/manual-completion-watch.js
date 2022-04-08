@@ -9,5 +9,18 @@ export const init = (coursemodules) => {
                 }, 500);
             });
         }
+        // For moodle 3.9 compatibility
+        selector = '.togglecompletion';
+        let els = Array.from(document.querySelectorAll(selector));
+        els.forEach(function(el) {
+            let idfield = el.querySelector('input[name="id"]');
+            if (idfield && idfield.getAttribute('value') == c) {
+                el.addEventListener('submit', function() {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                });
+            }
+        });
     });
 };
