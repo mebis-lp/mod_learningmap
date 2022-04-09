@@ -26,7 +26,7 @@ namespace mod_learningmap;
  * @group      mod_learningmap
  * @group      mebis
  */
-class mod_learningmap_completion_test extends advanced_testcase {
+class mod_learningmap_completion_test extends \advanced_testcase {
 
     /**
      * Tests completion by reaching one target place
