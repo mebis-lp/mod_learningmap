@@ -25,6 +25,7 @@
 
 /**
  * Return whether the learning map is completed by the given user.
+ * Necessary for moodle 3.9 / 3.10.
  *
  * @deprecated since Moodle 3.11
  * @see \mod_learningmap\completion\custom_completion

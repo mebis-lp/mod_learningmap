@@ -9,7 +9,7 @@ export const init = (coursemodules) => {
                 }, 500);
             });
         }
-        // For moodle 3.9 compatibility
+        // For moodle 3.9 / 3.10 compatibility
         selector = '.togglecompletion';
         let els = Array.from(document.querySelectorAll(selector));
         els.forEach(function(el) {
