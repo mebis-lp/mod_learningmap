@@ -29,5 +29,9 @@ $observers = [
     [
         'eventname' => '\core\event\course_module_completion_updated',
         'callback' => '\mod_learningmap\autoupdate::update_from_event'
+    ],
+    [
+        'eventname' => '\core\event\course_module_deleted',
+        'callback' => '\mod_learningmap\autoupdate::update_from_delete_event'
     ]
 ];

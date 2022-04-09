@@ -50,4 +50,37 @@ class autoupdate {
             }
         }
     }
+
+    /**
+     * Called when a course_module_deleted event is triggered. Removes the deleted course module from all
+     * learningmaps in the course of the activity.
+     *
+     * @param \core\event\base $event
+     * @return void
+     */
+    public static function update_from_delete_event(\core\event\base $event) : void {
+        global $DB;
+        $data = $event->get_data();
+        if (isset($data['courseid']) && $data['courseid'] > 0) {
+            $modinfo = get_fast_modinfo($data['courseid']);
+            $instances = $modinfo->get_instances_of('learningmap');
+            if (count($instances) > 0) {
+                foreach ($instances as $i) {
+                    if ($map = $DB->get_record('learningmap', ['id' => $i->instance], 'placestore')) {
+                        $changed = false;
+                        $placestore = json_decode($map->placestore);
+                        foreach ($placestore->places as $p) {
+                            if ($p->linkedActivity == $data['objectid']) {
+                                $p->linkedActivity = null;
+                                $changed = true;
+                            }
+                        }
+                        if ($changed) {
+                            $DB->set_field('learningmap', 'placestore', json_encode($placestore), ['id' => $i->instance]);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
