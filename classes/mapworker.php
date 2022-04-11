@@ -54,8 +54,13 @@ class mapworker {
         global $CFG;
         $this->svgcode = $svgcode;
         $this->placestore = $placestore;
-
-        $this->prepend = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "' . $CFG->dirroot . '/mod/learningmap/pix/svg11.dtd">';
+        // This fixes a problem for loading SVG DTD on Windows locally
+        if (strcasecmp(substr(PHP_OS, 0, 3), 'WIN') == 0) {
+            $dtd = '' . new \moodle_url('/mod/learningmap/pix/svg11.dtd');
+        } else {
+            $dtd = $CFG->dirroot . '/mod/learningmap/pix/svg11.dtd';
+        }
+        $this->prepend = '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "' . $dtd . '">';
 
         $this->dom = new \DOMDocument('1.0', 'UTF-8');
         $this->dom->validateOnParse = true;
