@@ -167,6 +167,11 @@ class mapworker {
                         $completedplaces[] = $place['id'];
                         $active[] = $place['id'];
                     }
+                    // Places that are not accessible (e.g. because of additional availability restrictions)
+                    // are not shown on the map.
+                    if (!$placecm->available) {
+                        $notavailable[] = $place['id'];
+                    }
                 }
                 // If the place is not linked to an activity it is not availabile.
             } else {
