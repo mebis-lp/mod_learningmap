@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
 require_once(__DIR__ . '/deprecatedlib.php');
 
 /**
@@ -185,7 +187,8 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     if ($cm->showdescription == 1) {
         $cm->set_content(learningmap_get_learningmap($cm), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
-        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init', ['coursemodules' => learningmap_get_place_cm($cm)]);
+        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
+            ['coursemodules' => learningmap_get_place_cm($cm)]);
     }
 }
 

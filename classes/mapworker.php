@@ -54,7 +54,7 @@ class mapworker {
         global $CFG;
         $this->svgcode = $svgcode;
         $this->placestore = $placestore;
-        // This fixes a problem for loading SVG DTD on Windows locally
+        // This fixes a problem for loading SVG DTD on Windows locally.
         if (strcasecmp(substr(PHP_OS, 0, 3), 'WIN') == 0) {
             $dtd = '' . new \moodle_url('/mod/learningmap/pix/svg11.dtd');
         } else {
