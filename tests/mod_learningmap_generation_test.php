@@ -16,8 +16,6 @@
 
 namespace mod_learningmap;
 
-use advanced_testcase;
-
 /**
  * Unit test for mod_learningmap
  *
