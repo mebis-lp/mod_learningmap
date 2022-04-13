@@ -1,18 +1,18 @@
 <?php
-// mod_learningmap - A moodle plugin for easy visualization of learning paths
+// This file is part of Moodle - https://moodle.org/
 //
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful,
+// Moodle is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
+// GNU General Public License for more details.
 //
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
  * Library for mod_learningmap
@@ -20,8 +20,10 @@
  * @package     mod_learningmap
  * @copyright   2021-2022, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
- * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+require_once(__DIR__ . '/deprecatedlib.php');
 
 /**
  * Adds a new learningmap instance
@@ -181,9 +183,9 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     global $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
-        $cm->set_content(get_learningmap($cm), true);
+        $cm->set_content(learningmap_get_learningmap($cm), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
-        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init', ['coursemodules' => get_place_cm($cm)]);
+        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init', ['coursemodules' => learningmap_get_place_cm($cm)]);
     }
 }
 
@@ -192,7 +194,7 @@ function learningmap_cm_info_view(cm_info $cm) : void {
  * @param cm_info $cm course module object for the learning map
  * @return array
  */
-function get_place_cm(cm_info $cm) : array {
+function learningmap_get_place_cm(cm_info $cm) : array {
     global $DB;
     $map = $DB->get_record("learningmap", ["id" => $cm->instance], 'placestore');
     $modules = [];
@@ -211,7 +213,7 @@ function get_place_cm(cm_info $cm) : array {
  * @param cm_info $cm
  * @return string
  */
-function get_learningmap(cm_info $cm) : string {
+function learningmap_get_learningmap(cm_info $cm) : string {
     global $DB, $OUTPUT;
 
     $context = context_module::instance($cm->id);

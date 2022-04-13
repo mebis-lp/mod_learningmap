@@ -2,7 +2,8 @@
 <COMPATIBILITY_MATRIX>
     <PLUGIN name="mod_learningmap">
         <PHP_EXTENSIONS>
-            <PHP_EXTENSION name="dom" level="required">
+            <PHP_EXTENSION name="dom" level="required"></PHP_EXTENSION>
+            <PHP_EXTENSION name="libxml" level="required"></PHP_EXTENSION>
         </PHP_EXTENSION>
     </PLUGIN>
 </COMPATIBILITY_MATRIX>

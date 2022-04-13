@@ -1,18 +1,3 @@
-// mod_learningmap - A moodle plugin for easy visualization of learning paths
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Affero General Public License as
-// published by the Free Software Foundation, either version 3 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Affero General Public License for more details.
-//
-// You should have received a copy of the GNU Affero General Public License
-// along with this program.  If not, see <https://www.gnu.org/licenses/>.
-
 import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
@@ -220,7 +205,21 @@ export const init = () => {
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = placestore.getActivityId(e.target.id);
-                activitySetting.setAttribute('style', 'top: ' + e.offsetY + 'px; left: ' + e.offsetX + 'px;');
+                let cy = e.offsetY;
+                let cx = e.offsetX;
+                let vertical = 'top';
+                let height = svg.getBoundingClientRect().height;
+                let width = svg.getBoundingClientRect().width;
+                if (cy > height / 2) {
+                    vertical = 'bottom';
+                    cy = height - cy;
+                }
+                let horizontal = 'left';
+                if (cx > width / 2) {
+                    horizontal = 'right';
+                    cx = width - cx;
+                }
+                activitySetting.setAttribute('style', vertical + ': ' + cy + 'px; ' + horizontal + ': ' + cx + 'px;');
                 activitySetting.removeAttribute('hidden');
                 document.getElementById('learningmap-activity-selector').value = activityId;
                 if (placestore.isStartingPlace(e.target.id)) {
@@ -532,10 +531,10 @@ export const init = () => {
      * from all nodes
      */
     function unselectAll() {
-        Array.from(document.getElementsByClassName('learningmap-selected')).forEach(function(e) {
+        Array.from(document.getElementsByClassName('learningmap-selected')).forEach(function (e) {
             e.classList.remove('learningmap-selected');
         });
-        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach(function(e) {
+        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach(function (e) {
             e.classList.remove('learningmap-selected-activity-selector');
         });
     }
