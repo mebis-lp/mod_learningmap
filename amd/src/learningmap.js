@@ -531,10 +531,10 @@ export const init = () => {
      * from all nodes
      */
     function unselectAll() {
-        Array.from(document.getElementsByClassName('learningmap-selected')).forEach(function (e) {
+        Array.from(document.getElementsByClassName('learningmap-selected')).forEach(function(e) {
             e.classList.remove('learningmap-selected');
         });
-        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach(function (e) {
+        Array.from(document.getElementsByClassName('learningmap-selected-activity-selector')).forEach(function(e) {
             e.classList.remove('learningmap-selected-activity-selector');
         });
     }
