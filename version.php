@@ -28,5 +28,5 @@ $plugin->component = 'mod_learningmap';
 $plugin->release = '0.5.1';
 $plugin->version = 2022041402;
 $plugin->requires = 2020061500;
-$plugin->supported = [39, 40];
+$plugin->supported = [39, 400];
 $plugin->maturity = MATURITY_BETA;
