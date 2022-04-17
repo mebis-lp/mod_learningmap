@@ -73,9 +73,14 @@ function learningmap_delete_instance($id) : int {
  * @uses FEATURE_GRADE_HAS_GRADE
  * @uses FEATURE_GRADE_OUTCOMES
  * @param string $feature FEATURE_xx constant for requested feature
- * @return bool|null True if module supports feature, false if not, null if doesn't know
+ * @return mixed True if module supports feature, false if not, null if doesn't know or string for the module purpose.
  */
-function learningmap_supports($feature) : ?bool {
+function learningmap_supports($feature) {
+    // For versions <4.0.
+    if (!defined('FEATURE_MOD_PURPOSE')) {
+        define('FEATURE_MOD_PURPOSE', 'mod_purpose');
+        define('MOD_PURPOSE_CONTENT', 'content');
+    }
     switch($feature) {
         case FEATURE_IDNUMBER:
             return true;
@@ -97,6 +102,8 @@ function learningmap_supports($feature) : ?bool {
             return true;
         case FEATURE_BACKUP_MOODLE2:
             return true;
+        case FEATURE_MOD_PURPOSE:
+            return MOD_PURPOSE_CONTENT;
         default:
             return null;
     }
