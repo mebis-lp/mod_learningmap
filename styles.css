@@ -43,3 +43,20 @@
 .learningmap-disabled-activity {
     color: lightsalmon;
 }
+
+/* It would be better having an own id for the circle of the unvisited visible places instead of the selector '.modtype_learningmap circle' */
+.modtype_learningmap circle {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        stroke-width: 3px;
+    }
+    50% {
+        stroke-width: 7px;
+    }
+    100% {
+        stroke-width: 3px;
+    }
+}
