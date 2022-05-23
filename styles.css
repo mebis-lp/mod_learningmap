@@ -43,3 +43,11 @@
 .learningmap-disabled-activity {
     color: lightsalmon;
 }
+
+.learningmap-hidden {
+    visibility: hidden !important;
+}
+
+.learningmap-place.learningmap-reachable, .learningmap-path.learningmap-reachable {
+    visibility: visible;
+}

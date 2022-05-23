@@ -213,15 +213,20 @@ class mapworker {
         // Set all active paths and places to visible.
         foreach ($active as $a) {
             $domplace = $this->dom->getElementById($a);
-            if ($domplace) {
-                $domplace->setAttribute('style', 'visibility: visible;');
+            if (!$domplace) {
+                continue;
             }
+            $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-reachable');
         }
         // Make all completed places visible and set color for visited places.
         foreach ($completedplaces as $place) {
             $domplace = $this->dom->getElementById($place);
             if ($domplace) {
-                $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
+                if (!isset($this->placestore['version'])) {
+                    $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
+                } else {
+                    $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-place-visited');
+                }
                 // If the option "usecheckmark" is selected, add the checkmark to the circle.
                 if ($this->placestore['usecheckmark']) {
                     $x = $domplace->getAttribute('cx');
@@ -237,9 +242,10 @@ class mapworker {
         // Make all places hidden if they are not availabile.
         foreach ($notavailable as $place) {
             $domplace = $this->dom->getElementById($place);
-            if ($domplace) {
-                $domplace->setAttribute('style', 'visibility: hidden;');
+            if (!$domplace) {
+                continue;
             }
+            $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
         }
         $this->svgcode = $this->dom->saveXML();
     }
