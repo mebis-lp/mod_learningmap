@@ -43,3 +43,8 @@
 .learningmap-disabled-activity {
     color: lightsalmon;
 }
+
+/* Don't know if '.modtype_learningmap' is needed...' */
+.modtype_learningmap circle:hover {
+    stroke-width: 10px!important;
+}
