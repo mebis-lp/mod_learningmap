@@ -51,3 +51,19 @@
 .learningmap-place.learningmap-reachable, .learningmap-path.learningmap-reachable {
     visibility: visible !important;
 }
+
+.learningmap-place:not(.learningmap-place-visited) {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        stroke-width: 3px;
+    }
+    50% {
+        stroke-width: 7px;
+    }
+    100% {
+        stroke-width: 3px;
+    }
+}
