@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2021122301,
+    version: 2022052301,
     id: 0,
     places: [],
     paths: [],
@@ -24,6 +24,8 @@ let placestore = {
             Object.assign(this, fromjson);
             // eslint-disable-next-line no-empty
         } catch { }
+        // Update version (only relevant if learning map is saved)
+        this.version = 2022052301;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -276,7 +278,8 @@ let placestore = {
             hidepaths: this.hidepaths,
             mapid: this.mapid,
             usecheckmark: this.usecheckmark,
-            editmode: this.editmode
+            editmode: this.editmode,
+            version: this.version
         };
     },
     /**

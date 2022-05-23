@@ -48,8 +48,9 @@
     {{/editmode}}
 }
 
-#learningmap-svgmap-{{mapid}} .learningmap-targetplace {
-    stroke-dasharray: 1,1;
+#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-place-visited {
+    visibility: visible;
+    fill: {{ visitedcolor }};
 }
 
 #learningmap-svgmap-{{mapid}} .learningmap-path {
@@ -68,6 +69,7 @@
     visibility: hidden;
     {{/editmode}}
 }
+
 #learningmap-svgmap-{{mapid}} .learningmap-checkmark {
     stroke-width: 3px;
     stroke-linecap: round;
