@@ -16,8 +16,6 @@
 
 namespace mod_learningmap;
 
-use DOMDocument;
-
 /**
  * Class for handling the content of the learningmap
  *
@@ -113,7 +111,7 @@ class mapworker {
      * @return void
      */
     public function process_map_objects(\cm_info $cm) : void {
-        global $USER;
+        global $CFG, $USER;
         $active = [];
         $completedplaces = [];
         $notavailable = [];
@@ -144,9 +142,17 @@ class mapworker {
                 } else {
                     // Set the link URL in the map.
                     if ($link) {
+                        if (!is_null($placecm->url)) {
+                            // Link modules that have a view page to their corresponding url.
+                            $url = '' . $placecm->url;
+                        } else {
+                            // Other modules (like labels) are shown on the course page. Link to the corresponding anchor.
+                            $url = $CFG->wwwroot . '/course/view.php?id=' . $placecm->course .
+                                '&section=' . $placecm->sectionnum . '#module-' . $placecm->id;
+                        }
                         $link->setAttribute(
                             'xlink:href',
-                            new \moodle_url('/mod/' . $placecm->modname . '/view.php', ['id' => $placecm->id])
+                            $url
                         );
                         // Set the title element for the link (for accessibility) and for a tooltip when hovering
                         // the link.
@@ -207,15 +213,20 @@ class mapworker {
         // Set all active paths and places to visible.
         foreach ($active as $a) {
             $domplace = $this->dom->getElementById($a);
-            if ($domplace) {
-                $domplace->setAttribute('style', 'visibility: visible;');
+            if (!$domplace) {
+                continue;
             }
+            $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-reachable');
         }
         // Make all completed places visible and set color for visited places.
         foreach ($completedplaces as $place) {
             $domplace = $this->dom->getElementById($place);
             if ($domplace) {
-                $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
+                if (!isset($this->placestore['version'])) {
+                    $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
+                } else {
+                    $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-place-visited');
+                }
                 // If the option "usecheckmark" is selected, add the checkmark to the circle.
                 if ($this->placestore['usecheckmark']) {
                     $x = $domplace->getAttribute('cx');
@@ -231,9 +242,10 @@ class mapworker {
         // Make all places hidden if they are not availabile.
         foreach ($notavailable as $place) {
             $domplace = $this->dom->getElementById($place);
-            if ($domplace) {
-                $domplace->setAttribute('style', 'visibility: hidden;');
+            if (!$domplace) {
+                continue;
             }
+            $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
         }
         $this->svgcode = $this->dom->saveXML();
     }
