@@ -49,5 +49,5 @@
 }
 
 .learningmap-place.learningmap-reachable, .learningmap-path.learningmap-reachable {
-    visibility: visible;
+    visibility: visible !important;
 }
