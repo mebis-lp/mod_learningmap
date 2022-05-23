@@ -44,7 +44,6 @@
     color: lightsalmon;
 }
 
-/* Don't know if '.modtype_learningmap' is needed...' */
-.modtype_learningmap circle:hover {
+.learningmap-place:hover {
     stroke-width: 10px!important;
 }
