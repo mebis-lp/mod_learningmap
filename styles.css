@@ -52,6 +52,9 @@
     visibility: visible !important;
 }
 
+.learningmap-place:hover {
+    stroke-width: 10px!important;
+
 .learningmap-place:not(.learningmap-place-visited) {
     animation: pulse 1.5s infinite;
 }
