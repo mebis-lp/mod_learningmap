@@ -14,6 +14,8 @@ let placestore = {
     mapid: '',
     usecheckmark: false,
     editmode: true,
+    pulse: false,
+    hover: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -279,7 +281,9 @@ let placestore = {
             mapid: this.mapid,
             usecheckmark: this.usecheckmark,
             editmode: this.editmode,
-            version: this.version
+            version: this.version,
+            pulse: this.pulse,
+            hover: this.hover
         };
     },
     /**
@@ -295,6 +299,34 @@ let placestore = {
      */
     getHidePaths: function() {
         return this.hidepaths;
+    },
+    /**
+     * Sets pulse attribute
+     * @param {boolean} value
+     */
+    setPulse: function(value) {
+        this.pulse = value;
+    },
+    /**
+     * Returns the value of pulse attribute
+     * @returns {boolean}
+     */
+    getPulse: function() {
+        return this.pulse;
+    },
+    /**
+     * Sets hover attribute
+     * @param {boolean} value
+     */
+    setHover: function(value) {
+        this.hover = value;
+    },
+    /**
+     * Returns the value of hover attribute
+     * @returns {boolean}
+     */
+    getHover: function() {
+        return this.hover;
     },
     /**
      * Returns the mapid

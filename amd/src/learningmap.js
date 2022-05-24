@@ -140,6 +140,38 @@ export const init = () => {
                 updateCSS();
             });
         }
+
+        let hover = document.getElementById('learningmap-hover');
+        // Attach a listener to the hover checkbox
+        if (hover) {
+            if (placestore.getHover()) {
+                hover.checked = true;
+            }
+            hover.addEventListener('change', function() {
+                if (hover.checked) {
+                    placestore.setHover(true);
+                } else {
+                    placestore.setHover(false);
+                }
+                updateCSS();
+            });
+        }
+
+        let pulse = document.getElementById('learningmap-pulse');
+        // Attach a listener to the pulse checkbox
+        if (pulse) {
+            if (placestore.getPulse()) {
+                pulse.checked = true;
+            }
+            pulse.addEventListener('change', function() {
+                if (pulse.checked) {
+                    placestore.setPulse(true);
+                } else {
+                    placestore.setPulse(false);
+                }
+                updateCSS();
+            });
+        }
 }
 
     // Attach listener to the color choosers for paths

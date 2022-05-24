@@ -44,6 +44,7 @@ function xmldb_learningmap_upgrade($oldversion) {
                 $DB->update_record('learningmap', $entry);
             }
         }
+        upgrade_mod_savepoint(true, 2022052401, 'learningmap');
     }
     return true;
 }

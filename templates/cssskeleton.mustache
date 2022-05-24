@@ -85,11 +85,12 @@
 #learningmap-svgmap-{{mapid}} .learningmap-path.learningmap-reachable {
     visibility: visible;
 }
-
+{{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover {
     stroke-width: 10px;
 }
-
+{{/hover}}
+{{#pulse}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited) {
     animation: pulse 1.5s infinite;
 }
@@ -105,6 +106,7 @@
         stroke-width: 3px;
     }
 }
+{{/pulse}}
 {{/editmode}}
 {{#editmode}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover {

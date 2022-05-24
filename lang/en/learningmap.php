@@ -39,6 +39,7 @@ $string['completiontype'] = 'Type of completion';
 $string['editorhelp'] = 'How to use the editor';
 $string['editplace'] = 'Edit place';
 $string['hidepaths'] = 'Hide paths';
+$string['hover'] = 'Hover animation for places';
 $string['intro'] = 'Learning map';
 $string['intro_help'] = '<ul><li><b>Add a new place:</b> Double click on background</li>
 <li><b>Add a path:</b> Single click on two places</li>
@@ -59,6 +60,7 @@ $string['places'] = 'Places';
 $string['pluginadministration'] = 'Learning map administration';
 $string['pluginname'] = 'Learning map';
 $string['privacy:metadata'] = '';
+$string['pulse'] = 'Pulse animation for univisited places';
 $string['showdescription'] = 'Show map on course page';
 $string['showdescription_help'] = 'If checked, the learning map will be displayed on the course page (like a label). Else there will be a link and the map will be displayed on a separate page.';
 $string['startingplace'] = 'Starting place';
