@@ -1,3 +1,12 @@
+.learningmap-menubar {
+    padding: 0px;
+}
+
+#learningmap-advanced-settings-icon {
+    font-size: x-large;
+    cursor: pointer;
+}
+
 .learningmap-mapcontainer {
     border-color: black;
     border-width: 1px;
