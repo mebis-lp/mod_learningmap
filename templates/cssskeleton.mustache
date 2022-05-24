@@ -76,6 +76,36 @@
     stroke: {{ strokecolor }};
     fill: none;
 }
+{{^editmode}}
+#learningmap-svgmap-{{mapid}} .learningmap-hidden {
+    visibility: hidden;
+}
+
+#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-reachable,
+#learningmap-svgmap-{{mapid}} .learningmap-path.learningmap-reachable {
+    visibility: visible;
+}
+
+#learningmap-svgmap-{{mapid}} .learningmap-place:hover {
+    stroke-width: 10px;
+}
+
+#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited) {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        stroke-width: 3px;
+    }
+    50% {
+        stroke-width: 7px;
+    }
+    100% {
+        stroke-width: 3px;
+    }
+}
+{{/editmode}}
 {{#editmode}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover {
     fill: blue;

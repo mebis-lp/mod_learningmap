@@ -29,5 +29,21 @@
  * @param int $oldversion Version number the plugin is being upgraded from.
  */
 function xmldb_learningmap_upgrade($oldversion) {
+    global $DB;
+
+    if ($oldversion < 2022052401) {
+        $entries = $DB->get_records('learningmap', []);
+        if ($entries) {
+            foreach ($entries as $entry) {
+                $placestore = json_decode($entry->placestore, true);
+                $placestore->version = 2022052401;
+                $mapworker = new \mod_learningmap\mapworker($entry->intro, $placestore);
+                $mapworker->replace_stylesheet([]);
+                $entry->intro = $mapworker->get_svgcode();
+                $entry->placestore = json_encode($placestore);
+                $DB->update_record('learningmap', $entry);
+            }
+        }
+    }
     return true;
 }
