@@ -86,7 +86,9 @@
     visibility: visible;
 }
 {{#hover}}
-#learningmap-svgmap-{{mapid}} .learningmap-place:hover {
+#learningmap-svgmap-{{mapid}} .learningmap-place:hover,
+#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited):hover {
+    animation: none;
     stroke-width: 10px;
 }
 {{/hover}}
