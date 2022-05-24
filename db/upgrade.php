@@ -36,7 +36,7 @@ function xmldb_learningmap_upgrade($oldversion) {
         if ($entries) {
             foreach ($entries as $entry) {
                 $placestore = json_decode($entry->placestore, true);
-                $placestore->version = 2022052401;
+                $placestore['version'] = 2022052401;
                 $mapworker = new \mod_learningmap\mapworker($entry->intro, $placestore);
                 $mapworker->replace_stylesheet([]);
                 $entry->intro = $mapworker->get_svgcode();
