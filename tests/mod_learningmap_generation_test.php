@@ -25,7 +25,7 @@ namespace mod_learningmap;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @group      mod_learningmap
  * @group      mebis
- * @covers     mod_learningmap_generator
+ * @covers     \mod_learningmap_generator
  */
 class mod_learningmap_generation_test extends \advanced_testcase {
     /**

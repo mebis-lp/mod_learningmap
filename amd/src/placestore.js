@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2021122301,
+    version: 2022052401,
     id: 0,
     places: [],
     paths: [],
@@ -14,6 +14,8 @@ let placestore = {
     mapid: '',
     usecheckmark: false,
     editmode: true,
+    pulse: false,
+    hover: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -24,6 +26,8 @@ let placestore = {
             Object.assign(this, fromjson);
             // eslint-disable-next-line no-empty
         } catch { }
+        // Update version (only relevant if learning map is saved)
+        this.version = 2022052401;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -276,7 +280,10 @@ let placestore = {
             hidepaths: this.hidepaths,
             mapid: this.mapid,
             usecheckmark: this.usecheckmark,
-            editmode: this.editmode
+            editmode: this.editmode,
+            version: this.version,
+            pulse: this.pulse,
+            hover: this.hover
         };
     },
     /**
@@ -292,6 +299,34 @@ let placestore = {
      */
     getHidePaths: function() {
         return this.hidepaths;
+    },
+    /**
+     * Sets pulse attribute
+     * @param {boolean} value
+     */
+    setPulse: function(value) {
+        this.pulse = value;
+    },
+    /**
+     * Returns the value of pulse attribute
+     * @returns {boolean}
+     */
+    getPulse: function() {
+        return this.pulse;
+    },
+    /**
+     * Sets hover attribute
+     * @param {boolean} value
+     */
+    setHover: function(value) {
+        this.hover = value;
+    },
+    /**
+     * Returns the value of hover attribute
+     * @returns {boolean}
+     */
+    getHover: function() {
+        return this.hover;
     },
     /**
      * Returns the mapid
