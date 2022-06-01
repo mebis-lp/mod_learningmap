@@ -50,6 +50,7 @@ class mapworker {
      *
      * @param string $svgcode
      * @param array $placestore
+     * @param cm_info $cm
      */
     public function __construct(string $svgcode, array $placestore, \cm_info $cm = null) {
         global $CFG;
@@ -113,7 +114,6 @@ class mapworker {
 
     /**
      * Process the map to show / hide paths and places
-     * @param cm_info $cm
      * @return void
      */
     public function process_map_objects() : void {
@@ -267,7 +267,7 @@ class mapworker {
      * Checks whether a given course module is completed (either by the user or at least one
      * of the users of the group, if groupmode is set for the activity).
      *
-     * @param $cm course module to check
+     * @param cm_info $cm course module to check
      */
     public function is_completed(\cm_info $cm) {
         global $USER;
