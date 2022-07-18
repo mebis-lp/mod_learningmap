@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2022052401,
+    version: 2022071804,
     id: 0,
     places: [],
     paths: [],
@@ -16,6 +16,7 @@ let placestore = {
     editmode: true,
     pulse: false,
     hover: false,
+    showall: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -27,7 +28,7 @@ let placestore = {
             // eslint-disable-next-line no-empty
         } catch { }
         // Update version (only relevant if learning map is saved)
-        this.version = 2022052401;
+        this.version = 2022071804;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -283,7 +284,8 @@ let placestore = {
             editmode: this.editmode,
             version: this.version,
             pulse: this.pulse,
-            hover: this.hover
+            hover: this.hover,
+            showall: this.showall
         };
     },
     /**
@@ -327,6 +329,20 @@ let placestore = {
      */
     getHover: function() {
         return this.hover;
+    },
+    /**
+     * Sets showall attribute
+     * @param {boolean} value
+     */
+    setShowall: function(value) {
+        this.showall = value;
+    },
+    /**
+     * Returns the value of hover attribute
+     * @returns {boolean}
+     */
+    getShowall: function() {
+        return this.showall;
     },
     /**
      * Returns the mapid

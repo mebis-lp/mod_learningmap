@@ -44,12 +44,18 @@
     stroke-width: 3px;
     stroke: {{ strokecolor }};
     {{^editmode}}
+    {{^showall}}
     visibility: hidden;
+    {{/showall}}
+    {{#showall}}
+    opacity: 0.5;
+    {{/showall}}
     {{/editmode}}
 }
 
 #learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-place-visited {
     visibility: visible;
+    opacity: 1;
     fill: {{ visitedcolor }};
 }
 
@@ -66,7 +72,12 @@
     {{/editmode}}
     {{/hidepaths}}
     {{^editmode}}
+    {{^showall}}
     visibility: hidden;
+    {{/showall}}
+    {{#showall}}
+    opacity: 0.5;
+    {{/showall}}
     {{/editmode}}
 }
 
@@ -78,12 +89,18 @@
 }
 {{^editmode}}
 #learningmap-svgmap-{{mapid}} .learningmap-hidden {
+    {{^showall}}
     visibility: hidden;
+    {{/showall}}
+    {{#showall}}
+    opacity: 0.5;
+    {{/showall}}
 }
 
 #learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-reachable,
 #learningmap-svgmap-{{mapid}} .learningmap-path.learningmap-reachable {
     visibility: visible;
+    opacity: 1;
 }
 {{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover,
