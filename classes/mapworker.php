@@ -115,6 +115,8 @@ class mapworker {
         $active = [];
         $completedplaces = [];
         $notavailable = [];
+        $allplaces = [];
+        $links = [];
 
         $completion = new \completion_info($cm->get_course());
 
@@ -124,6 +126,7 @@ class mapworker {
 
         // Walk through all places in the map.
         foreach ($this->placestore['places'] as $place) {
+            $allplaces[] = $place['id'];
             // Get the id of the link in the DOM.
             $link = $this->dom->getElementById($place['linkId']);
             // Only if the place is linked to an activity.
@@ -154,6 +157,7 @@ class mapworker {
                             'xlink:href',
                             $url
                         );
+                        $links[$place['id']] = $place['linkId'];
                         // Set the title element for the link (for accessibility) and for a tooltip when hovering
                         // the link.
                         $title = $this->dom->getElementById('title' . $place['id']);
@@ -239,6 +243,7 @@ class mapworker {
                 }
             }
         }
+        $notavailable = array_merge(array_diff($allplaces, $notavailable, $completedplaces, $active), $notavailable);
         // Make all places hidden if they are not availabile.
         foreach ($notavailable as $place) {
             $domplace = $this->dom->getElementById($place);
@@ -246,6 +251,10 @@ class mapworker {
                 continue;
             }
             $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
+            if (isset($links[$place])) {
+                $domlink = $this->dom->getElementById($links[$place]);
+                $domlink->removeAttribute('xlink:href');
+            }
         }
         $this->svgcode = $this->dom->saveXML();
     }
