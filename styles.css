@@ -24,6 +24,10 @@
     right: 0;
 }
 
+#learningmap-advanced-settings label {
+    justify-content: left;
+}
+
 #fitem_id_introeditor_text {
     display: none;
 }
