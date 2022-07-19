@@ -105,7 +105,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
 
         if (!isset($placestore->version) || $placestore->version < 2022052401) {
             $placestore->version = 2022052401;
-            $mapworker = new \mod_learningmap\mapworker($item->intro, $placestore);
+            $mapworker = new \mod_learningmap\mapworker($item->intro, (array)$placestore);
             $mapworker->replace_stylesheet([]);
             $item->intro = $mapworker->get_svgcode();
         }
