@@ -68,6 +68,7 @@
     visibility: hidden;
     {{/editmode}}
     {{/hidepaths}}
+    {{^hidepaths}}
     {{^editmode}}
     {{^showall}}
     visibility: hidden;
@@ -77,6 +78,7 @@
     opacity: 0.2;
     {{/showall}}
     {{/editmode}}
+    {{/hidepaths}}
 }
 
 #learningmap-svgmap-{{mapid}} .learningmap-checkmark {
