@@ -213,6 +213,15 @@ class mapworker {
                 }
                 $active[] = $path['sid'];
             }
+            // Hide paths that lead to unavailable places.
+            if ($this->placestore['showall']) {
+                if (in_array($path['sid'], $notavailable) || in_array($path['fid'], $notavailable)) {
+                    $dompath = $this->dom->getElementById($path['id']);
+                    if ($dompath) {
+                        $dompath->setAttribute('style', 'visibility: hidden;');
+                    }
+                }
+            }
         }
         // Set all active paths and places to visible.
         foreach ($active as $a) {
