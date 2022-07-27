@@ -338,7 +338,7 @@ let placestore = {
         this.showall = value;
     },
     /**
-     * Returns the value of hover attribute
+     * Returns the value of showall attribute
      * @returns {boolean}
      */
     getShowall: function() {

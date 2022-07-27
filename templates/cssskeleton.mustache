@@ -47,9 +47,6 @@
     {{^showall}}
     visibility: hidden;
     {{/showall}}
-    {{#showall}}
-    opacity: 0.5;
-    {{/showall}}
     {{/editmode}}
 }
 
@@ -76,7 +73,8 @@
     visibility: hidden;
     {{/showall}}
     {{#showall}}
-    opacity: 0.5;
+    filter: grayscale(50%);
+    opacity: 0.2;
     {{/showall}}
     {{/editmode}}
 }
@@ -93,6 +91,7 @@
     visibility: hidden;
     {{/showall}}
     {{#showall}}
+    filter: grayscale(50%);
     opacity: 0.5;
     {{/showall}}
 }
