@@ -258,16 +258,26 @@ class mapworker {
                 }
             }
         }
-        if (!$this->placestore['showall']) {
-            $impossible = array_merge($impossible, $notavailable);
-        }
-        // Make all places hidden if they are not availabile.
-        foreach ($impossible as $place) {
+        $notavailable = array_merge(array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible), $notavailable);
+        // Handle unavailable places.
+        foreach ($notavailable as $place) {
             $domplace = $this->dom->getElementById($place);
             if (!$domplace) {
                 continue;
             }
             $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
+            if (isset($links[$place])) {
+                $domlink = $this->dom->getElementById($links[$place]);
+                $domlink->removeAttribute('xlink:href');
+            }
+        }
+        // Make all places hidden if they are impossible to reach.
+        foreach ($impossible as $place) {
+            $domplace = $this->dom->getElementById($place);
+            if (!$domplace) {
+                continue;
+            }
+            $domplace->setAttribute('style', 'visibility: hidden;');
             if (isset($links[$place])) {
                 $domlink = $this->dom->getElementById($links[$place]);
                 $domlink->removeAttribute('xlink:href');
