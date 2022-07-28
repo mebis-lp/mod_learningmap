@@ -30,57 +30,64 @@ namespace mod_learningmap;
 class mod_learningmap_completion_test extends \advanced_testcase {
 
     /**
-     * Tests completion by reaching one target place
-     *
-     * @return void
+     * Prepare testing environment
+     * @param $completiontype
      */
-    public function test_completiontype1() : void {
+    public function prepare($completiontype): void {
         global $DB;
-        $this->resetAfterTest();
-        $this->setAdminUser();
+        $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
+        $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
+            ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype]);
 
-        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $learningmap = $this->getDataGenerator()->create_module('learningmap',
-            ['course' => $course, 'completion' => 2, 'completiontype' => 1]);
-
-        $activities = [];
+        $this->activities = [];
         for ($i = 0; $i < 9; $i++) {
-            $activities[] = $this->getDataGenerator()->create_module(
+            $this->activities[] = $this->getDataGenerator()->create_module(
                 'page',
-                ['name' => 'A', 'content' => 'B', 'course' => $course, 'completion' => 2, 'completionview' => 1]
+                ['name' => 'A', 'content' => 'B', 'course' => $this->course, 'completion' => 2, 'completionview' => 1]
             );
-            $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
+            $this->learningmap->placestore = str_replace(99990 + $i, $this->activities[$i]->cmid, $this->learningmap->placestore);
         }
-        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
+        $DB->set_field('learningmap', 'placestore', $this->learningmap->placestore, ['id' => $this->learningmap->id]);
 
-        $user1 = $this->getDataGenerator()->create_user(
+        $this->user1 = $this->getDataGenerator()->create_user(
             [
                 'email' => 'user1@example.com',
                 'username' => 'user1'
             ]
         );
 
-        $modinfo = get_fast_modinfo($course, $user1->id);
-        $completion = new \completion_info($modinfo->get_course());
-        $cm = $modinfo->get_cm($learningmap->cmid);
+        $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
+        $this->completion = new \completion_info($this->modinfo->get_course());
+        $this->cm = $this->modinfo->get_cm($this->learningmap->cmid);
+    }
+
+    /**
+     * Tests completion by reaching one target place
+     *
+     * @return void
+     */
+    public function test_completiontype1() : void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->prepare(1);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
-            $completion->get_data($cm, true, $user1->id)->completionstate
+            $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
         );
 
         for ($i = 0; $i < 9; $i++) {
-            $acm = $modinfo->get_cm($activities[$i]->cmid);
-            $completion->set_module_viewed($acm, $user1->id);
-            $completion->update_state($cm, COMPLETION_UNKNOWN, $user1->id);
+            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
             if ($i < 7) {
                 $this->assertEquals(
                     COMPLETION_INCOMPLETE,
-                    $completion->get_data($cm, true, $user1->id)->completionstate
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
             } else {
                 $this->assertEquals(
                     COMPLETION_COMPLETE,
-                    $completion->get_data($cm, true, $user1->id)->completionstate
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
             }
         }
@@ -92,52 +99,27 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      * @return void
      */
     public function test_completiontype2() : void {
-        global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
-
-        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $learningmap = $this->getDataGenerator()->create_module('learningmap',
-            ['course' => $course, 'completion' => 2, 'completiontype' => 2]);
-
-        $activities = [];
-        for ($i = 0; $i < 9; $i++) {
-            $activities[] = $this->getDataGenerator()->create_module(
-                'page',
-                ['name' => 'A', 'content' => 'B', 'course' => $course, 'completion' => 2, 'completionview' => 1]
-            );
-            $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
-        }
-        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
-
-        $user1 = $this->getDataGenerator()->create_user(
-            [
-                'email' => 'user1@example.com',
-                'username' => 'user1'
-            ]
-        );
-
-        $modinfo = get_fast_modinfo($course, $user1->id);
-        $completion = new \completion_info($modinfo->get_course());
-        $cm = $modinfo->get_cm($learningmap->cmid);
+        $this->prepare(2);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
-            $completion->get_data($cm, true, $user1->id)->completionstate
+            $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
         );
 
         for ($i = 0; $i < 9; $i++) {
-            $acm = $modinfo->get_cm($activities[$i]->cmid);
-            $completion->set_module_viewed($acm, $user1->id);
-            $completion->update_state($cm, COMPLETION_UNKNOWN, $user1->id);
+            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
             if ($i < 8) {
                 $this->assertEquals(
                     COMPLETION_INCOMPLETE,
-                    $completion->get_data($cm, true, $user1->id)->completionstate
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
             } else {
                 $this->assertEquals(
                     COMPLETION_COMPLETE,
-                    $completion->get_data($cm, true, $user1->id)->completionstate
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
             }
         }
@@ -152,49 +134,25 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
-
-        $course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $learningmap = $this->getDataGenerator()->create_module('learningmap',
-            ['course' => $course, 'completion' => 2, 'completiontype' => 3]);
-
-        $activities = [];
-        for ($i = 0; $i < 9; $i++) {
-            $activities[] = $this->getDataGenerator()->create_module(
-                'page',
-                ['name' => 'A', 'content' => 'B', 'course' => $course, 'completion' => 2, 'completionview' => 1]
-            );
-            $learningmap->placestore = str_replace(99990 + $i, $activities[$i]->cmid, $learningmap->placestore);
-        }
-        $DB->set_field('learningmap', 'placestore', $learningmap->placestore, ['id' => $learningmap->id]);
-
-        $user1 = $this->getDataGenerator()->create_user(
-            [
-                'email' => 'user1@example.com',
-                'username' => 'user1'
-            ]
-        );
-
-        $modinfo = get_fast_modinfo($course, $user1->id);
-        $completion = new \completion_info($modinfo->get_course());
-        $cm = $modinfo->get_cm($learningmap->cmid);
+        $this->prepare(3);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
-            $completion->get_data($cm, true, $user1->id)->completionstate
+            $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
         );
 
         for ($i = 0; $i < 9; $i++) {
-            $acm = $modinfo->get_cm($activities[$i]->cmid);
-            $completion->set_module_viewed($acm, $user1->id);
-            $completion->update_state($cm, COMPLETION_UNKNOWN, $user1->id);
+            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
             if ($i < 8) {
                 $this->assertEquals(
                     COMPLETION_INCOMPLETE,
-                    $completion->get_data($cm, true, $user1->id)->completionstate
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
             } else {
                 $this->assertEquals(
                     COMPLETION_COMPLETE,
-                    $completion->get_data($cm, true, $user1->id)->completionstate
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
             }
         }
