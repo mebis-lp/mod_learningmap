@@ -113,8 +113,9 @@ class mapworker {
     public function process_map_objects(\cm_info $cm) : void {
         global $CFG, $USER;
         $active = [];
-        $completedplaces = [];
+        $completedplaces = []; 
         $notavailable = [];
+        $impossible = [];
         $allplaces = [];
         $links = [];
 
@@ -130,7 +131,7 @@ class mapworker {
             // Get the id of the link in the DOM.
             $link = $this->dom->getElementById($place['linkId']);
             // Only if the place is linked to an activity.
-            if ($place['linkedActivity'] != null) {
+            if (!empty($place['linkedActivity'])) {
                 // Only get modinfo for the activity if it is in the array of course module ids.
                 if (in_array($place['linkedActivity'], $allcms)) {
                     $placecm = $modinfo->get_cm($place['linkedActivity']);
@@ -140,12 +141,12 @@ class mapworker {
                 // If the activity is not found or if there is no activity, add it to the list of not availabile places.
                 // Remove the place completely from the map.
                 if (!$placecm) {
-                    $notavailable[] = $place['id'];
+                    $impossible[] = $place['id'];
                     $link->parentNode->removeChild($link);
                 } else {
                     // Set the link URL in the map.
-                    if ($link) {
-                        if (!is_null($placecm->url)) {
+                    if (!empty($link)) {
+                        if (!empty($placecm->url)) {
                             // Link modules that have a view page to their corresponding url.
                             $url = '' . $placecm->url;
                         } else {
@@ -183,21 +184,26 @@ class mapworker {
                         $active[] = $place['id'];
                     }
                     // Places that are not accessible (e.g. because of additional availability restrictions)
-                    // are not shown on the map.
+                    // are only shown on the map if showall mode is active.
                     if (!$placecm->available) {
                         $notavailable[] = $place['id'];
                     }
+                    // Places that are not visible and not in stealth mode (i.e. reachable by link)
+                    // are impossible to reach
+                    if ($placecm->visible == 0 && !$placecm->is_stealth()) {
+                        $impossible[] = $place['id'];
+                    }
                 }
-                // If the place is not linked to an activity it is not availabile.
+                // If the place is not linked to an activity it is impossible to reach.
             } else {
-                $notavailable[] = $place['id'];
+                $impossible[] = $place['id'];
                 $link->parentNode->removeChild($link);
             }
         }
         foreach ($this->placestore['paths'] as $path) {
             // If the ending of the path is a completed place and this place is availabile,
             // show path and the place on the other end.
-            if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], $notavailable)) {
+            if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], $impossible)) {
                 // Only set paths visible if hidepaths is not set in placestore.
                 if (!$this->placestore['hidepaths']) {
                     $active[] = $path['id'];
@@ -206,16 +212,16 @@ class mapworker {
             }
             // If the beginning of the path is a completed place and this place is availabile,
             // show path and the place on the other end.
-            if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], $notavailable)) {
+            if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], $impossible)) {
                 // Only set paths visible if hidepaths is not set in placestore.
                 if (!$this->placestore['hidepaths']) {
                     $active[] = $path['id'];
                 }
                 $active[] = $path['sid'];
             }
-            // Hide paths that lead to unavailable places.
+            // Hide paths that lead to unreachable places.
             if ($this->placestore['showall']) {
-                if (in_array($path['sid'], $notavailable) || in_array($path['fid'], $notavailable)) {
+                if (in_array($path['sid'], $impossible) || in_array($path['fid'], $impossible)) {
                     $dompath = $this->dom->getElementById($path['id']);
                     if ($dompath) {
                         $dompath->setAttribute('style', 'visibility: hidden;');
@@ -252,9 +258,11 @@ class mapworker {
                 }
             }
         }
-        $notavailable = array_merge(array_diff($allplaces, $notavailable, $completedplaces, $active), $notavailable);
+        if (!$this->placestore['showall']) {
+            $impossible = array_merge($impossible, $notavailable);
+        }
         // Make all places hidden if they are not availabile.
-        foreach ($notavailable as $place) {
+        foreach ($impossible as $place) {
             $domplace = $this->dom->getElementById($place);
             if (!$domplace) {
                 continue;
