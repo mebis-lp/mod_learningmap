@@ -138,7 +138,7 @@ class mapworker {
                 } else {
                     $placecm = false;
                 }
-                // If the activity is not found or if there is no activity, add it to the list of not availabile places.
+                // If the activity is not found or if there is no activity, add it to the list of not available places.
                 // Remove the place completely from the map.
                 if (!$placecm) {
                     $impossible[] = $place['id'];
@@ -201,7 +201,7 @@ class mapworker {
             }
         }
         foreach ($this->placestore['paths'] as $path) {
-            // If the ending of the path is a completed place and this place is availabile,
+            // If the ending of the path is a completed place and this place is available,
             // show path and the place on the other end.
             if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], $impossible)) {
                 // Only set paths visible if hidepaths is not set in placestore.
@@ -210,7 +210,7 @@ class mapworker {
                 }
                 $active[] = $path['fid'];
             }
-            // If the beginning of the path is a completed place and this place is availabile,
+            // If the beginning of the path is a completed place and this place is available,
             // show path and the place on the other end.
             if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], $impossible)) {
                 // Only set paths visible if hidepaths is not set in placestore.
