@@ -113,7 +113,7 @@ class mapworker {
     public function process_map_objects(\cm_info $cm) : void {
         global $CFG, $USER;
         $active = [];
-        $completedplaces = []; 
+        $completedplaces = [];
         $notavailable = [];
         $impossible = [];
         $allplaces = [];
@@ -189,7 +189,7 @@ class mapworker {
                         $notavailable[] = $place['id'];
                     }
                     // Places that are not visible and not in stealth mode (i.e. reachable by link)
-                    // are impossible to reach
+                    // are impossible to reach.
                     if ($placecm->visible == 0 && !$placecm->is_stealth()) {
                         $impossible[] = $place['id'];
                     }
