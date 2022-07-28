@@ -31,7 +31,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
 
     /**
      * Prepare testing environment
-     * @param $completiontype
+     * @param int $completiontype Type for automatic completion
      */
     public function prepare($completiontype): void {
         global $DB;
