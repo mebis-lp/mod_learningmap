@@ -16,6 +16,8 @@
 
 namespace mod_learningmap\completion;
 
+use stdClass;
+
 /**
  * Custom completion rules for mod_learningmap
  *
@@ -77,7 +79,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
                     if (
                         !$placecm ||
-                        $completion->get_data($placecm, false, $this->userid)->completionstate == COMPLETION_INCOMPLETE
+                        !$this->is_completed($placecm)
                     ) {
                         // No way to fulfill condition.
                         if ($map->completiontype > 1) {
@@ -87,7 +89,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         // We need only one.
                         if (
                             $map->completiontype == 1 &&
-                            $completion->get_data($placecm, false, $this->userid)->completionstate != COMPLETION_INCOMPLETE
+                            $this->is_completed($placecm)
                         ) {
                             return COMPLETION_COMPLETE;
                         }
@@ -105,6 +107,36 @@ class custom_completion extends \core_completion\activity_custom_completion {
                 return COMPLETION_COMPLETE;
             }
         }
+    }
+
+    /**
+     * Checks whether a given course module is completed (either by the user or at least one
+     * of the users of the group, if groupmode is set for the activity).
+     *
+     * @param cm_info $cm course module to check
+     */
+    public function is_completed(\cm_info $cm) {
+        if (!isset($this->cm)) {
+            return false;
+        }
+        $completion = new \completion_info($cm->get_course());
+        if ($this->cm->groupmode > 0) {
+            $group = groups_get_activity_group($this->cm, false);
+        }
+        if (isset($group) && $group) {
+            $members = groups_get_members($group);
+        }
+        if (!isset($members) || !$members) {
+            $user = new stdClass;
+            $user->id = $this->userid;
+            $members = [$user];
+        }
+        foreach ($members as $member) {
+            if ($completion->get_data($cm, true, $member->id)->completionstate > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
