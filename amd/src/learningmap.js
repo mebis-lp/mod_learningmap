@@ -172,6 +172,22 @@ export const init = () => {
                 updateCSS();
             });
         }
+
+        let showall = document.getElementById('learningmap-showall');
+        // Attach a listener to the pulse checkbox
+        if (showall) {
+            if (placestore.getShowall()) {
+                showall.checked = true;
+            }
+            showall.addEventListener('change', function() {
+                if (showall.checked) {
+                    placestore.setShowall(true);
+                } else {
+                    placestore.setShowall(false);
+                }
+                updateCSS();
+            });
+        }
 }
 
     // Attach listener to the color choosers for paths
