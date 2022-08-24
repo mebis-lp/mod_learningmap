@@ -196,6 +196,7 @@ function learningmap_cm_info_view(cm_info $cm) : void {
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
         $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
             ['coursemodules' => learningmap_get_place_cm($cm)]);
+        $cm->set_custom_cmlist_item(true);
     }
 }
 
