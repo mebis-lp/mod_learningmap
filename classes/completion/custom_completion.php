@@ -28,11 +28,20 @@ use stdClass;
  */
 class custom_completion extends \core_completion\activity_custom_completion {
     /**
-     * Constants for completion types.
+     * No custom completion.
      */
     const NOCOMPLETION = 0;
+    /**
+     * Activity is completed when one target place is reached.
+     */
     const COMPLETION_WITH_ONE_TARGET = 1;
+    /**
+     * Activity is completed when all target places are reached.
+     */
     const COMPLETION_WITH_ALL_TARGETS = 2;
+    /**
+     * Activity is completed when all places are reached.
+     */
     const COMPLETION_WITH_ALL_PLACES = 3;
 
     /**
