@@ -207,7 +207,7 @@ class mapworker {
         foreach ($this->placestore['paths'] as $path) {
             // If the ending of the path is a completed place and this place is available,
             // show path and the place on the other end.
-            if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], $impossible)) {
+            if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], array_merge($notavailable, $impossible))) {
                 // Only set paths visible if hidepaths is not set in placestore.
                 if (!$this->placestore['hidepaths']) {
                     $active[] = $path['id'];
@@ -216,7 +216,7 @@ class mapworker {
             }
             // If the beginning of the path is a completed place and this place is available,
             // show path and the place on the other end.
-            if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], $impossible)) {
+            if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], array_merge($notavailable, $impossible))) {
                 // Only set paths visible if hidepaths is not set in placestore.
                 if (!$this->placestore['hidepaths']) {
                     $active[] = $path['id'];
