@@ -44,7 +44,7 @@ $completion->set_module_viewed($cm);
 
 echo $OUTPUT->header();
 
-if ($cm->groupmode > 0) {
+if (!empty($cm->groupmode)) {
     groups_print_activity_menu(
         $cm,
         new moodle_url('/mod/learningmap/view.php', ['id' => $cm->id])

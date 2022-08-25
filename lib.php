@@ -193,9 +193,9 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
         $prepend = '';
-        if ($cm->groupmode > 0) {
+        if (!empty($cm->groupmode)) {
             $prepend = groups_print_course_menu(
-                $cm->course,
+                $cm->get_course(),
                 new moodle_url('/course/view.php', ['section' => $cm->sectionnum], 'module-' . $cm->id),
                 true
             );
