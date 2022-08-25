@@ -139,13 +139,13 @@ class custom_completion extends \core_completion\activity_custom_completion {
             return false;
         }
         $completion = new \completion_info($cm->get_course());
-        if ($this->cm->groupmode > 0) {
+        if (!empty($this->cm->groupmode)) {
             $group = groups_get_activity_group($this->cm, false);
         }
-        if (isset($group) && $group) {
+        if (!empty($group)) {
             $members = groups_get_members($group);
         }
-        if (!isset($members) || !$members) {
+        if (!empty($members)) {
             $user = new stdClass;
             $user->id = $this->userid;
             $members = [$user];

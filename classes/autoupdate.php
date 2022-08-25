@@ -47,10 +47,10 @@ class autoupdate {
                         if ($i->groupmode > 0) {
                             $group = groups_get_activity_group($i);
                         }
-                        if (isset($group) && $group) {
+                        if (!empty($group)) {
                             $members = groups_get_members($group);
                         }
-                        if (!isset($members) || !$members) {
+                        if (!empty($members)) {
                             $user = new \stdClass;
                             $user->id = $data['userid'];
                             $members = [$user];

@@ -311,13 +311,13 @@ class mapworker {
             return false;
         }
         $completion = new \completion_info($cm->get_course());
-        if ($this->cm->groupmode > 0) {
+        if (!empty($this->cm->groupmode)) {
             $group = groups_get_activity_group($this->cm, true);
         }
-        if (isset($group) && $group) {
+        if (!empty($group)) {
             $members = groups_get_members($group);
         }
-        if (!isset($members) || !$members) {
+        if (!empty($members)) {
             $members = [$USER];
         }
         foreach ($members as $member) {
