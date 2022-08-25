@@ -145,7 +145,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         if (!empty($group)) {
             $members = groups_get_members($group);
         }
-        if (!empty($members)) {
+        if (empty($members)) {
             $user = new stdClass;
             $user->id = $this->userid;
             $members = [$user];

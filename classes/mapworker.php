@@ -317,7 +317,7 @@ class mapworker {
         if (!empty($group)) {
             $members = groups_get_members($group);
         }
-        if (!empty($members)) {
+        if (empty($members)) {
             $members = [$USER];
         }
         foreach ($members as $member) {

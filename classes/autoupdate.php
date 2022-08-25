@@ -50,7 +50,7 @@ class autoupdate {
                         if (!empty($group)) {
                             $members = groups_get_members($group);
                         }
-                        if (!empty($members)) {
+                        if (empty($members)) {
                             $user = new \stdClass;
                             $user->id = $data['userid'];
                             $members = [$user];
