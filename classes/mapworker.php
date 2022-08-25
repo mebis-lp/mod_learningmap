@@ -41,17 +41,24 @@ class mapworker {
      * @var $prepend String to prepend to the SVG code (for parsing by DOMDocument)
      */
     protected $prepend;
-
+    /**
+     * @var $cm Course module object belonging to the map - only needed for completion
+     */
+    protected $cm;
     /**
      * Creates mapworker from SVG code
      *
      * @param string $svgcode
      * @param array $placestore
+     * @param cm_info $cm
      */
-    public function __construct(string $svgcode, array $placestore) {
+    public function __construct(string $svgcode, array $placestore, \cm_info $cm = null) {
         global $CFG;
         $this->svgcode = $svgcode;
         $this->placestore = $placestore;
+        if (!is_null($cm)) {
+            $this->cm = $cm;
+        }
         // This fixes a problem for loading SVG DTD on Windows locally.
         if (strcasecmp(substr(PHP_OS, 0, 3), 'WIN') == 0) {
             $dtd = '' . new \moodle_url('/mod/learningmap/pix/svg11.dtd');
@@ -107,10 +114,9 @@ class mapworker {
 
     /**
      * Process the map to show / hide paths and places
-     * @param cm_info $cm
      * @return void
      */
-    public function process_map_objects(\cm_info $cm) : void {
+    public function process_map_objects() : void {
         global $CFG, $USER;
         $active = [];
         $completedplaces = [];
@@ -119,9 +125,7 @@ class mapworker {
         $allplaces = [];
         $links = [];
 
-        $completion = new \completion_info($cm->get_course());
-
-        $modinfo = get_fast_modinfo($cm->get_course(), $USER->id);
+        $modinfo = get_fast_modinfo($this->cm->get_course(), $USER->id);
 
         $allcms = array_keys($modinfo->get_cms());
 
@@ -179,7 +183,7 @@ class mapworker {
                     }
                     // If the activity linked to the place is already completed, add it to the completed
                     // and to the active places.
-                    if ($completion->get_data($placecm, true, $USER->id)->completionstate > 0) {
+                    if ($this->is_completed($placecm)) {
                         $completedplaces[] = $place['id'];
                         $active[] = $place['id'];
                     }
@@ -293,5 +297,34 @@ class mapworker {
      */
     public function get_svgcode(): string {
         return $this->svgcode;
+    }
+
+    /**
+     * Checks whether a given course module is completed (either by the user or at least one
+     * of the users of the group, if groupmode is set for the activity).
+     *
+     * @param cm_info $cm course module to check
+     */
+    public function is_completed(\cm_info $cm) {
+        global $USER;
+        if (!isset($this->cm)) {
+            return false;
+        }
+        $completion = new \completion_info($cm->get_course());
+        if ($this->cm->groupmode > 0) {
+            $group = groups_get_activity_group($this->cm, true);
+        }
+        if (isset($group) && $group) {
+            $members = groups_get_members($group);
+        }
+        if (!isset($members) || !$members) {
+            $members = [$USER];
+        }
+        foreach ($members as $member) {
+            if ($completion->get_data($cm, true, $member->id)->completionstate > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 }

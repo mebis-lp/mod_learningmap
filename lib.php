@@ -85,9 +85,9 @@ function learningmap_supports($feature) {
         case FEATURE_IDNUMBER:
             return true;
         case FEATURE_GROUPS:
-            return false;
+            return true;
         case FEATURE_GROUPINGS:
-            return false;
+            return true;
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
@@ -192,7 +192,15 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     global $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
-        $cm->set_content(learningmap_get_learningmap($cm), true);
+        $prepend = '';
+        if ($cm->groupmode > 0) {
+            $prepend = groups_print_course_menu(
+                $cm->course,
+                new moodle_url('/course/view.php', ['section' => $cm->sectionnum], 'module-' . $cm->id),
+                true
+            );
+        }
+        $cm->set_content($prepend . learningmap_get_learningmap($cm), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
         $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
             ['coursemodules' => learningmap_get_place_cm($cm)]);
@@ -245,8 +253,8 @@ function learningmap_get_learningmap(cm_info $cm) : string {
 
     $placestore = json_decode($map->placestore, true);
 
-    $worker = new \mod_learningmap\mapworker($svg, $placestore);
-    $worker->process_map_objects($cm);
+    $worker = new \mod_learningmap\mapworker($svg, $placestore, $cm);
+    $worker->process_map_objects();
     $worker->remove_tags_before_svg();
 
     return(
