@@ -28,6 +28,14 @@ use stdClass;
  */
 class custom_completion extends \core_completion\activity_custom_completion {
     /**
+     * Constants for completion types.
+     */
+    const NOCOMPLETION = 0;
+    const COMPLETION_WITH_ONE_TARGET = 1;
+    const COMPLETION_WITH_ALL_TARGETS = 2;
+    const COMPLETION_WITH_ALL_PLACES = 3;
+
+    /**
      * Returns completion state of the custom completion rules
      *
      * @param string $rule
@@ -40,12 +48,12 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         $map = $DB->get_record("learningmap", ["id" => $this->cm->instance], 'completiontype, placestore', MUST_EXIST);
 
-        if ($map->completiontype > 0) {
+        if ($map->completiontype > self::NOCOMPLETION) {
             $placestore = json_decode($map->placestore);
 
             // Return COMPLETION_INCOMPLETE if there are no target places and condition requires to have one.
             if (
-                ($map->completiontype < 3) &&
+                ($map->completiontype < self::COMPLETION_WITH_ALL_PLACES) &&
                 count($placestore->targetplaces) == 0
             ) {
                 return COMPLETION_INCOMPLETE;
@@ -63,7 +71,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     continue;
                 }
                 // Skip non-target places when there is no condition to visit all places.
-                if ($map->completiontype != 3 && !in_array($place->id, $placestore->targetplaces)) {
+                if ($map->completiontype != self::COMPLETION_WITH_ALL_PLACES && !in_array($place->id, $placestore->targetplaces)) {
                     continue;
                 }
                 if ($place->linkedActivity != null) {
@@ -71,7 +79,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         $placecm = $modinfo->get_cm($place->linkedActivity);
                     } else {
                         // No way to fulfill condition.
-                        if ($map->completiontype > 1) {
+                        if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
                             return COMPLETION_INCOMPLETE;
                         }
                         $placecm = false;
@@ -82,13 +90,13 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         !$this->is_completed($placecm)
                     ) {
                         // No way to fulfill condition.
-                        if ($map->completiontype > 1) {
+                        if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
                             return COMPLETION_INCOMPLETE;
                         }
                     } else {
                         // We need only one.
                         if (
-                            $map->completiontype == 1 &&
+                            $map->completiontype == self::COMPLETION_WITH_ONE_TARGET &&
                             $this->is_completed($placecm)
                         ) {
                             return COMPLETION_COMPLETE;
@@ -96,12 +104,12 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     }
                 } else {
                     // No way to fulfill condition.
-                    if ($map->completiontype > 1) {
+                    if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
                         return COMPLETION_INCOMPLETE;
                     }
                 }
             }
-            if ($map->completiontype == 1) {
+            if ($map->completiontype == self::COMPLETION_WITH_ONE_TARGET) {
                 return COMPLETION_INCOMPLETE;
             } else {
                 return COMPLETION_COMPLETE;
