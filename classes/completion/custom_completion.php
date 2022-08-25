@@ -132,8 +132,9 @@ class custom_completion extends \core_completion\activity_custom_completion {
      * of the users of the group, if groupmode is set for the activity).
      *
      * @param \cm_info $cm course module to check
+     * @return bool
      */
-    public function is_completed(\cm_info $cm) {
+    public function is_completed(\cm_info $cm): bool {
         if (!isset($this->cm)) {
             return false;
         }

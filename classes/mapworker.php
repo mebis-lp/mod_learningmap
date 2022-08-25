@@ -305,7 +305,7 @@ class mapworker {
      *
      * @param \cm_info $cm course module to check
      */
-    public function is_completed(\cm_info $cm) {
+    public function is_completed(\cm_info $cm): bool {
         global $USER;
         if (!isset($this->cm)) {
             return false;
