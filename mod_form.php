@@ -127,9 +127,15 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $this->add_action_buttons(true, false, null);
 
         $mform->addHelpButton('groupmode', 'groupmode', 'learningmap');
+    }
 
-        $mform->_elements[$mform->_elementIndex['groupmode']]->removeOption(VISIBLEGROUPS);
-
+    /**
+     * Remove visible groups here to avoid warning
+     *
+     * @return void
+     */
+    public function definition_after_data() {
+        $this->_form->_elements[$this->_form->_elementIndex['groupmode']]->removeOption(VISIBLEGROUPS);
     }
 
     /**
