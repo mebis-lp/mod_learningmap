@@ -194,9 +194,13 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     if ($cm->showdescription == 1) {
         $prepend = '';
         if (!empty($cm->groupmode)) {
-            $prepend = groups_print_course_menu(
-                $cm->get_course(),
-                new moodle_url('/course/view.php', ['section' => $cm->sectionnum], 'module-' . $cm->id),
+            $prepend = groups_print_activity_menu(
+                $cm,
+                new moodle_url(
+                    '/course/view.php',
+                    ['id' => $cm->get_course()->id, 'section' => $cm->sectionnum],
+                    'module-' . $cm->id
+                ),
                 true
             );
         }
