@@ -220,7 +220,7 @@ class mapworker {
                 $active[] = $path['sid'];
             }
             // Hide paths that lead to unreachable places.
-            if ($this->placestore['showall']) {
+            if (!empty($this->placestore['showall'])) {
                 if (in_array($path['sid'], $impossible) || in_array($path['fid'], $impossible)) {
                     $dompath = $this->dom->getElementById($path['id']);
                     if ($dompath) {
