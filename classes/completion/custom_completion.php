@@ -107,6 +107,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                 return COMPLETION_COMPLETE;
             }
         }
+        return COMPLETION_INCOMPLETE;
     }
 
     /**
