@@ -3,6 +3,9 @@ import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
 export const init = () => {
+    M.mod_learningmap = {
+        refreshBackgroundImage: refreshBackgroundImage
+    };
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
@@ -662,7 +665,11 @@ export const init = () => {
         let previewimage = document.getElementsByClassName('realpreview');
         if (previewimage.length > 0) {
             let background = document.getElementById('learningmap-background-image');
-            background.setAttribute('xlink:href', previewimage[0].getAttribute('src').split('?')[0]);
+            let backgroundurl = previewimage[0].getAttribute('src').split('?')[0];
+            if (previewimage[0].getAttribute('src').split('?')[1].includes('&oid=')) {
+                backgroundurl += '?oid=' + previewimage[0].getAttribute('src').split('&oid=')[1];
+            }
+            background.setAttribute('xlink:href', backgroundurl);
         }
     }
 
