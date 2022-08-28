@@ -68,8 +68,6 @@ class custom_completion extends \core_completion\activity_custom_completion {
                 return COMPLETION_INCOMPLETE;
             }
 
-            $completion = new \completion_info($this->cm->get_course());
-
             $modinfo = get_fast_modinfo($this->cm->get_course(), $this->userid);
             $cms = $modinfo->get_cms();
             $allcms = array_keys($cms);
