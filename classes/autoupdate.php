@@ -44,7 +44,20 @@ class autoupdate {
                         $i->completion == COMPLETION_TRACKING_AUTOMATIC &&
                         $i->instance != $data['contextinstanceid']
                     ) {
-                        $completion->update_state($i, COMPLETION_UNKNOWN, $data['userid']);
+                        if ($i->groupmode > 0) {
+                            $group = groups_get_activity_group($i);
+                        }
+                        if (!empty($group)) {
+                            $members = groups_get_members($group);
+                        }
+                        if (empty($members)) {
+                            $user = new \stdClass;
+                            $user->id = $data['userid'];
+                            $members = [$user];
+                        }
+                        foreach ($members as $member) {
+                            $completion->update_state($i, COMPLETION_UNKNOWN, $member->id);
+                        }
                     }
                 }
             }

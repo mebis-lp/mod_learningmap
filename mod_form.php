@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
+use mod_learningmap\completion\custom_completion;
 use mod_learningmap\mapworker;
 
 defined('MOODLE_INTERNAL') || die();
@@ -125,6 +126,18 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
 
         $this->add_action_buttons(true, false, null);
+
+        $mform->addHelpButton('groupmode', 'groupmode', 'learningmap');
+    }
+
+    /**
+     * Remove visible groups here to avoid warning
+     *
+     * @return void
+     */
+    public function definition_after_data() {
+        $this->_form->_elements[$this->_form->_elementIndex['groupmode']]->removeOption(VISIBLEGROUPS);
+        parent::definition_after_data();
     }
 
     /**
@@ -146,10 +159,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform = $this->_form;
 
         $completionoptions = [
-            get_string('nocompletion', 'learningmap'),
-            get_string('completion_with_one_target', 'learningmap'),
-            get_string('completion_with_all_targets', 'learningmap'),
-            get_string('completion_with_all_places', 'mod_learningmap')
+            custom_completion::NOCOMPLETION => get_string('nocompletion', 'learningmap'),
+            custom_completion::COMPLETION_WITH_ONE_TARGET => get_string('completion_with_one_target', 'learningmap'),
+            custom_completion::COMPLETION_WITH_ALL_TARGETS => get_string('completion_with_all_targets', 'learningmap'),
+            custom_completion::COMPLETION_WITH_ALL_PLACES => get_string('completion_with_all_places', 'mod_learningmap')
         ];
 
         $mform->addElement(

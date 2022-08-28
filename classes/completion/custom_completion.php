@@ -16,6 +16,8 @@
 
 namespace mod_learningmap\completion;
 
+use stdClass;
+
 /**
  * Custom completion rules for mod_learningmap
  *
@@ -25,6 +27,23 @@ namespace mod_learningmap\completion;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class custom_completion extends \core_completion\activity_custom_completion {
+    /**
+     * No custom completion.
+     */
+    const NOCOMPLETION = 0;
+    /**
+     * Activity is completed when one target place is reached.
+     */
+    const COMPLETION_WITH_ONE_TARGET = 1;
+    /**
+     * Activity is completed when all target places are reached.
+     */
+    const COMPLETION_WITH_ALL_TARGETS = 2;
+    /**
+     * Activity is completed when all places are reached.
+     */
+    const COMPLETION_WITH_ALL_PLACES = 3;
+
     /**
      * Returns completion state of the custom completion rules
      *
@@ -38,18 +57,16 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         $map = $DB->get_record("learningmap", ["id" => $this->cm->instance], 'completiontype, placestore', MUST_EXIST);
 
-        if ($map->completiontype > 0) {
+        if ($map->completiontype > self::NOCOMPLETION) {
             $placestore = json_decode($map->placestore);
 
             // Return COMPLETION_INCOMPLETE if there are no target places and condition requires to have one.
             if (
-                ($map->completiontype < 3) &&
+                ($map->completiontype < self::COMPLETION_WITH_ALL_PLACES) &&
                 count($placestore->targetplaces) == 0
             ) {
                 return COMPLETION_INCOMPLETE;
             }
-
-            $completion = new \completion_info($this->cm->get_course());
 
             $modinfo = get_fast_modinfo($this->cm->get_course(), $this->userid);
             $cms = $modinfo->get_cms();
@@ -61,7 +78,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                     continue;
                 }
                 // Skip non-target places when there is no condition to visit all places.
-                if ($map->completiontype != 3 && !in_array($place->id, $placestore->targetplaces)) {
+                if ($map->completiontype != self::COMPLETION_WITH_ALL_PLACES && !in_array($place->id, $placestore->targetplaces)) {
                     continue;
                 }
                 if ($place->linkedActivity != null) {
@@ -69,7 +86,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         $placecm = $modinfo->get_cm($place->linkedActivity);
                     } else {
                         // No way to fulfill condition.
-                        if ($map->completiontype > 1) {
+                        if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
                             return COMPLETION_INCOMPLETE;
                         }
                         $placecm = false;
@@ -77,34 +94,66 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
                     if (
                         !$placecm ||
-                        $completion->get_data($placecm, false, $this->userid)->completionstate == COMPLETION_INCOMPLETE
+                        !$this->is_completed($placecm)
                     ) {
                         // No way to fulfill condition.
-                        if ($map->completiontype > 1) {
+                        if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
                             return COMPLETION_INCOMPLETE;
                         }
                     } else {
                         // We need only one.
                         if (
-                            $map->completiontype == 1 &&
-                            $completion->get_data($placecm, false, $this->userid)->completionstate != COMPLETION_INCOMPLETE
+                            $map->completiontype == self::COMPLETION_WITH_ONE_TARGET &&
+                            $this->is_completed($placecm)
                         ) {
                             return COMPLETION_COMPLETE;
                         }
                     }
                 } else {
                     // No way to fulfill condition.
-                    if ($map->completiontype > 1) {
+                    if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
                         return COMPLETION_INCOMPLETE;
                     }
                 }
             }
-            if ($map->completiontype == 1) {
+            if ($map->completiontype == self::COMPLETION_WITH_ONE_TARGET) {
                 return COMPLETION_INCOMPLETE;
             } else {
                 return COMPLETION_COMPLETE;
             }
         }
+        return COMPLETION_INCOMPLETE;
+    }
+
+    /**
+     * Checks whether a given course module is completed (either by the user or at least one
+     * of the users of the group, if groupmode is set for the activity).
+     *
+     * @param \cm_info $cm course module to check
+     * @return bool
+     */
+    public function is_completed(\cm_info $cm): bool {
+        if (!isset($this->cm)) {
+            return false;
+        }
+        $completion = new \completion_info($cm->get_course());
+        if (!empty($this->cm->groupmode)) {
+            $group = groups_get_activity_group($this->cm, false);
+        }
+        if (!empty($group)) {
+            $members = groups_get_members($group);
+        }
+        if (empty($members)) {
+            $user = new stdClass;
+            $user->id = $this->userid;
+            $members = [$user];
+        }
+        foreach ($members as $member) {
+            if ($completion->get_data($cm, true, $member->id)->completionstate > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
