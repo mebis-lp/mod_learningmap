@@ -57,6 +57,7 @@ $string['name'] = 'Learning map name';
 $string['name_help'] = 'The name of the learning map is only displayed if the "Show map on course page" is not checked.';
 $string['nocompletion'] = 'No completion with map items';
 $string['nocompletionenabled'] = 'Not available because completion is not enabled';
+$string['ownprogress'] = 'My own progress';
 $string['paths'] = 'Paths';
 $string['places'] = 'Places';
 $string['pluginadministration'] = 'Learning map administration';

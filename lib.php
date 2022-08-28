@@ -192,9 +192,9 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     global $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
-        $prepend = '';
+        $groupdropdown = '';
         if (!empty($cm->groupmode)) {
-            $prepend = groups_print_activity_menu(
+            $groupdropdown = groups_print_activity_menu(
                 $cm,
                 new moodle_url(
                     '/course/view.php',
@@ -203,8 +203,15 @@ function learningmap_cm_info_view(cm_info $cm) : void {
                 ),
                 true
             );
+            // Since there is no way to replace the core string just for this dropdown
+            // we have to change it in this ugly way.
+            $groupdropdown = str_replace(
+                get_string('allparticipants'),
+                get_string('ownprogress', 'mod_learningmap'),
+                $groupdropdown
+            );
         }
-        $cm->set_content($prepend . learningmap_get_learningmap($cm), true);
+        $cm->set_content($groupdropdown . learningmap_get_learningmap($cm), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
         $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
             ['coursemodules' => learningmap_get_place_cm($cm)]);

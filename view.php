@@ -45,10 +45,15 @@ $completion->set_module_viewed($cm);
 echo $OUTPUT->header();
 
 if (!empty($cm->groupmode)) {
-    groups_print_activity_menu(
+    $groupdropdown = groups_print_activity_menu(
         $cm,
-        new moodle_url('/mod/learningmap/view.php', ['id' => $cm->id])
+        new moodle_url('/mod/learningmap/view.php', ['id' => $cm->id]),
+        true
     );
+    // Since there is no way to replace the core string just for this dropdown
+    // we have to change it in this ugly way.
+    $groupdropdown = str_replace(get_string('allparticipants'), get_string('ownprogress', 'mod_learningmap'), $groupdropdown);
+    $OUTPUT->box($groupdropdown);
 }
 
 echo $OUTPUT->box(learningmap_get_learningmap($cm));
