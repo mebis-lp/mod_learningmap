@@ -137,6 +137,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      */
     public function definition_after_data() {
         $this->_form->_elements[$this->_form->_elementIndex['groupmode']]->removeOption(VISIBLEGROUPS);
+        parent::definition_after_data();
     }
 
     /**
