@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['advancedsettings'] = 'Advanced settings';
 $string['backgroundfile'] = 'Background image';
 $string['backgroundfile_help'] = 'This file will be used as background for the map.';
+$string['backlink'] = 'Back to learningmap "{$a->name}"';
 $string['completion_with_all_places'] = 'Reaching all places is necessary for completion';
 $string['completion_with_all_targets'] = 'Reaching all target places is necessary for completion';
 $string['completion_with_one_target'] = 'Reaching one target place is necessary for completion';

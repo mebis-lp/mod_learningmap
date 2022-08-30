@@ -286,3 +286,43 @@ function learningmap_get_learningmap(cm_info $cm) : string {
 function learningmap_reset_userdata($data) {
     return [];
 }
+
+/**
+ * Generate "back to map" buttons in activities linked to from the learning map.
+ *
+ * @return void
+ */
+function learningmap_before_http_headers() {
+    global $PAGE, $DB, $OUTPUT;
+
+    if ($PAGE->context->contextlevel != CONTEXT_MODULE) {
+        return '';
+    }
+    $modinfo = get_fast_modinfo($PAGE->course);
+    $instances = $modinfo->get_instances_of('learningmap');
+    if (count($instances) > 0) {
+        $backlinks = '';
+        foreach ($instances as $i) {
+            // ToDo: Skip maps the user can't see
+            $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore');
+            $placestore = json_decode($record->placestore);
+            foreach ($placestore->places as $place) {
+                if ($place->linkedActivity == $PAGE->cm->id) {
+                    $backlinks .= $OUTPUT->render_from_template(
+                        'learningmap/backtomap',
+                        ['url' => (
+                            !empty($i->showdescription) ?
+                            new moodle_url('/course/view.php', [
+                                'id' => $PAGE->course->id,
+                                'section' => $i->sectionnum],
+                                'module-' . $i->id) :
+                            new moodle_url('/mod/learningmap/view.php', ['id' => $i->id])),
+                        'name' => $record->name]);
+                }
+            }
+        }
+        // ToDo: Description of activity gets lost here.
+        $PAGE->activityheader->set_description($backlinks);
+    }
+    return '';
+}
