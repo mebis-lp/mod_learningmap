@@ -303,7 +303,7 @@ function learningmap_before_http_headers() {
     if (count($instances) > 0) {
         $backlinks = '';
         foreach ($instances as $i) {
-            // ToDo: Skip maps the user can't see
+            // ToDo: Skip maps the user can't see.
             $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore');
             $placestore = json_decode($record->placestore);
             foreach ($placestore->places as $place) {
