@@ -30,7 +30,7 @@ if ($ADMIN->fulltree) {
         'mod_learningmap/usecaselink',
         get_string('usecaselink', 'learningmap'),
         '',
-        'https://www.mebis.bayern.de/p/70989',
+        'https://mebis.bycs.de/beitrag/lernlandkarten',
         PARAM_URL)
     );
 }
