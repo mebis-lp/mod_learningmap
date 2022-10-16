@@ -125,6 +125,22 @@ export const init = () => {
             });
         }
 
+        let hidestroke = document.getElementById('learningmap-hidestroke');
+        // Attach a listener to the hidestrokescheckbox
+        if (hidestroke) {
+            if (placestore.getStrokeOpacity() < 1) {
+                hidestroke.checked = true;
+            }
+            hidestroke.addEventListener('change', function() {
+                if (hidestroke.checked) {
+                    placestore.setStrokeOpacity(0);
+                } else {
+                    placestore.setStrokeOpacity(1);
+                }
+                updateCSS();
+            });
+        }
+
         let usecheckmark = document.getElementById('learningmap-usecheckmark');
         // Attach a listener to the usecheckmark checkbox
         if (usecheckmark) {

@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2022101001,
+    version: 2022101601,
     id: 0,
     places: [],
     paths: [],
@@ -7,6 +7,7 @@ let placestore = {
     targetplaces: [],
     placecolor: '#c01c28',
     strokecolor: '#ffffff',
+    strokeopacity: 1,
     visitedcolor: '#26a269',
     height: 100,
     width: 800,
@@ -28,7 +29,7 @@ let placestore = {
             // eslint-disable-next-line no-empty
         } catch { }
         // Update version (only relevant if learning map is saved)
-        this.version = 2022101001;
+        this.version = 2022101601;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -275,6 +276,7 @@ let placestore = {
             targetplaces: this.targetplaces,
             placecolor: this.placecolor,
             strokecolor: this.strokecolor,
+            strokeopacity: this.strokeopacity,
             visitedcolor: this.visitedcolor,
             height: this.height,
             width: this.width,
@@ -377,6 +379,20 @@ let placestore = {
             }
         });
         return activities;
+    },
+    /**
+     * Sets stroke opacity
+     * @param {number} value
+     */
+     setStrokeOpacity: function(value) {
+        this.strokeopacity = value;
+    },
+    /**
+     * Returns the current stroke opacity
+     * @returns {number}
+     */
+    getStrokeOpacity: function() {
+        return this.strokeopacity;
     }
 };
 
