@@ -41,6 +41,7 @@ $string['editplace'] = 'Edit place';
 $string['groupmode'] = 'Group mode';
 $string['groupmode_help'] = 'When group mode is active, it is sufficient that one member of the group has completed an activity to be able to have the connected places available.';
 $string['hidepaths'] = 'Hide paths';
+$string['hidestroke'] = 'Hide stroke for places';
 $string['hover'] = 'Hover animation for places';
 $string['intro'] = 'Learning map';
 $string['intro_help'] = '<ul><li><b>Add a new place:</b> Double click on background</li>
