@@ -60,7 +60,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
                     $s['coursemodules'][] = [
                         'id' => $cmid,
                         'name' => $module->name,
-                        'completionenabled' => $module->completion > 0
+                        'completionenabled' => $module->completion > 0,
+                        'hidden' => $module->visible == 0
                     ];
                 }
             }
