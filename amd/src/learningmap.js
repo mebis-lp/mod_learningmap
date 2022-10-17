@@ -174,7 +174,7 @@ export const init = () => {
         }
 
         let showall = document.getElementById('learningmap-showall');
-        // Attach a listener to the pulse checkbox
+        // Attach a listener to the showall checkbox
         if (showall) {
             if (placestore.getShowall()) {
                 showall.checked = true;
