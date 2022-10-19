@@ -22,13 +22,17 @@ export const init = () => {
     // Variable for storing the selected element for the activity selector
     var elementForActivitySelector = null;
 
+    // Variables for simulating double click on touch devices
+    var touchstart = false;
+    var touchmove = 0;
+    var touchend = false;
+
     // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
     let code = document.getElementById('id_introeditor_text');
     let colorChooserPlace = document.getElementById('learningmap-color-place');
     let colorChooserVisited = document.getElementById('learningmap-color-visited');
     let colorChooserPath = document.getElementById('learningmap-color-path');
-
 
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
@@ -359,6 +363,30 @@ export const init = () => {
         function startDrag(evt) {
             evt.preventDefault();
             if (evt.target.classList.contains('learningmap-draggable')) {
+                if (evt.type == 'touchstart') {
+                    if (!touchstart) {
+                        touchstart = true;
+                        touchmove = 0;
+                        touchend = false;
+                        setTimeout(
+                            function(evt) {
+                                if (touchmove < 3 && !touchend) {
+                                    showContextMenu(evt);
+                                }
+                            },
+                            2000,
+                            evt
+                        );
+                        setTimeout(
+                            function() {
+                                touchstart = false;
+                            },
+                        300 );
+                    } else {
+                        dblclickHandler(evt);
+                        touchstart = false;
+                    }
+                }
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "cx"));
@@ -366,6 +394,22 @@ export const init = () => {
                 // Get paths that need to be updated.
                 upd1 = placestore.getPathsWithFid(selectedElement.id);
                 upd2 = placestore.getPathsWithSid(selectedElement.id);
+            } else {
+                if (evt.type == 'touchstart') {
+                    if (!touchstart) {
+                        touchstart = true;
+                        touchend = false;
+                        touchmove = 0;
+                        setTimeout(
+                            function() {
+                                touchstart = false;
+                            },
+                        300 );
+                    } else {
+                        dblclickHandler(evt);
+                        touchstart = false;
+                    }
+                }
             }
         }
 
@@ -376,6 +420,7 @@ export const init = () => {
          */
         function drag(evt) {
             evt.preventDefault();
+            touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
                 let cx = coord.x - offset.x;
@@ -418,6 +463,12 @@ export const init = () => {
          * @param {*} evt
          */
         function endDrag(evt) {
+            if (evt.type == 'touchend') {
+                if (touchmove < 3 && touchstart) {
+                    clickHandler(evt);
+                }
+            }
+            touchend = true;
             evt.preventDefault();
             selectedElement = null;
             unselectAll();
@@ -560,7 +611,7 @@ export const init = () => {
     function clickHandler(event) {
         event.preventDefault();
         hideContextMenu();
-        if (event.target.classList.contains('learningmap-place') && selectedElement === null) {
+        if (event.target.classList.contains('learningmap-place') && (selectedElement === null || event.type == 'touchend')) {
             if (firstPlace === null) {
                 firstPlace = event.target.id;
                 document.getElementById(firstPlace).classList.add('learningmap-selected');
