@@ -29,7 +29,6 @@ export const init = () => {
     let colorChooserVisited = document.getElementById('learningmap-color-visited');
     let colorChooserPath = document.getElementById('learningmap-color-path');
 
-
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
     let activitySelector = document.getElementById('learningmap-activity-selector');
@@ -112,15 +111,9 @@ export const init = () => {
         let hidepaths = document.getElementById('learningmap-hidepaths');
         // Attach a listener to the hidepaths checkbox
         if (hidepaths) {
-            if (placestore.getHidePaths()) {
-                hidepaths.checked = true;
-            }
+            hidepaths.checked = placestore.getHidePaths();
             hidepaths.addEventListener('change', function() {
-                if (hidepaths.checked) {
-                    placestore.setHidePaths(true);
-                } else {
-                    placestore.setHidePaths(false);
-                }
+                placestore.setHidePaths(hidepaths.checked);
                 updateCSS();
             });
         }
@@ -128,15 +121,9 @@ export const init = () => {
         let hidestroke = document.getElementById('learningmap-hidestroke');
         // Attach a listener to the hidestrokescheckbox
         if (hidestroke) {
-            if (placestore.getStrokeOpacity() < 1) {
-                hidestroke.checked = true;
-            }
+            hidestroke.checked = placestore.getStrokeOpacity() < 1;
             hidestroke.addEventListener('change', function() {
-                if (hidestroke.checked) {
-                    placestore.setStrokeOpacity(0);
-                } else {
-                    placestore.setStrokeOpacity(1);
-                }
+                placestore.setStrokeOpacity(hidestroke.checked ? 0 : 1);
                 updateCSS();
             });
         }
@@ -144,15 +131,9 @@ export const init = () => {
         let usecheckmark = document.getElementById('learningmap-usecheckmark');
         // Attach a listener to the usecheckmark checkbox
         if (usecheckmark) {
-            if (placestore.getUseCheckmark()) {
-                usecheckmark.checked = true;
-            }
+            usecheckmark.checked = placestore.getUseCheckmark();
             usecheckmark.addEventListener('change', function() {
-                if (usecheckmark.checked) {
-                    placestore.setUseCheckmark(true);
-                } else {
-                    placestore.setUseCheckmark(false);
-                }
+                placestore.setUseCheckmark(usecheckmark.checked);
                 updateCSS();
             });
         }
@@ -160,15 +141,9 @@ export const init = () => {
         let hover = document.getElementById('learningmap-hover');
         // Attach a listener to the hover checkbox
         if (hover) {
-            if (placestore.getHover()) {
-                hover.checked = true;
-            }
+            hover.checked = placestore.getHover();
             hover.addEventListener('change', function() {
-                if (hover.checked) {
-                    placestore.setHover(true);
-                } else {
-                    placestore.setHover(false);
-                }
+                placestore.setHover(hover.checked);
                 updateCSS();
             });
         }
@@ -176,15 +151,9 @@ export const init = () => {
         let pulse = document.getElementById('learningmap-pulse');
         // Attach a listener to the pulse checkbox
         if (pulse) {
-            if (placestore.getPulse()) {
-                pulse.checked = true;
-            }
+            pulse.checked = placestore.getPulse();
             pulse.addEventListener('change', function() {
-                if (pulse.checked) {
-                    placestore.setPulse(true);
-                } else {
-                    placestore.setPulse(false);
-                }
+                placestore.setPulse(pulse.checked);
                 updateCSS();
             });
         }
@@ -192,15 +161,9 @@ export const init = () => {
         let showall = document.getElementById('learningmap-showall');
         // Attach a listener to the showall checkbox
         if (showall) {
-            if (placestore.getShowall()) {
-                showall.checked = true;
-            }
+            showall.checked = placestore.getShowall();
             showall.addEventListener('change', function() {
-                if (showall.checked) {
-                    placestore.setShowall(true);
-                } else {
-                    placestore.setShowall(false);
-                }
+                placestore.setShowall(showall.checked);
                 updateCSS();
             });
         }
@@ -286,16 +249,8 @@ export const init = () => {
                 activitySetting.setAttribute('style', vertical + ': ' + cy + 'px; ' + horizontal + ': ' + cx + 'px;');
                 activitySetting.removeAttribute('hidden');
                 document.getElementById('learningmap-activity-selector').value = activityId;
-                if (placestore.isStartingPlace(e.target.id)) {
-                    document.getElementById('learningmap-activity-starting').checked = true;
-                } else {
-                    document.getElementById('learningmap-activity-starting').checked = false;
-                }
-                if (placestore.isTargetPlace(e.target.id)) {
-                    document.getElementById('learningmap-activity-target').checked = true;
-                } else {
-                    document.getElementById('learningmap-activity-target').checked = false;
-                }
+                document.getElementById('learningmap-activity-starting').checked = placestore.isStartingPlace(e.target.id);
+                document.getElementById('learningmap-activity-target').checked = placestore.isTargetPlace(e.target.id);
                 elementForActivitySelector = e.target.id;
             } else {
                 hideContextMenu();
