@@ -32,6 +32,7 @@
     {
         "placecolor":"#c01c28",
         "strokecolor":"#ffffff",
+        "strokeopacity":1,
         "visitedcolor":"#26a269",
         "hidepaths":false,
         "mapid":"61e7dad7afb67",
@@ -43,6 +44,7 @@
     fill: {{ placecolor }};
     stroke-width: 3px;
     stroke: {{ strokecolor }};
+    stroke-opacity: {{ strokeopacity }};
     {{^editmode}}
     {{^showall}}
     visibility: hidden;
@@ -112,11 +114,13 @@
 #learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited):hover {
     animation: none;
     stroke-width: 5px;
+    stroke-opacity: 1;
 }
 {{/hover}}
 {{#pulse}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited) {
     animation: pulse 1.5s infinite;
+    stroke-opacity: 1;
 }
 
 @keyframes pulse {
