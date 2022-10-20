@@ -318,7 +318,9 @@ export const init = () => {
          * @param {*} evt
          */
         function startDrag(evt) {
-            evt.preventDefault();
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
             if (evt.target.classList.contains('learningmap-draggable')) {
                 if (evt.type == 'touchstart') {
                     if (!touchstart) {
@@ -376,7 +378,9 @@ export const init = () => {
          * @param {*} evt
          */
         function drag(evt) {
-            evt.preventDefault();
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
             touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
@@ -426,7 +430,9 @@ export const init = () => {
                 }
             }
             touchend = true;
-            evt.preventDefault();
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
             selectedElement = null;
             unselectAll();
             updateCode();
