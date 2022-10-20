@@ -105,6 +105,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
 
         if (!isset($placestore->version) || $placestore->version < 2022101601) {
             $placestore->version = 2022101601;
+            // Needs 1 as default value (otherwise all place strokes would be hidden).
             if (!isset($placestore->strokeopacity)) {
                 $placestore->strokeopacity = 1;
             }
