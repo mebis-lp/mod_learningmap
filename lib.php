@@ -27,6 +27,23 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . '/deprecatedlib.php');
 
+    /**
+     * No custom completion.
+     */
+    const LEARNINGMAP_NOCOMPLETION = 0;
+    /**
+     * Activity is completed when one target place is reached.
+     */
+    const LEARNINGMAP_COMPLETION_WITH_ONE_TARGET = 1;
+    /**
+     * Activity is completed when all target places are reached.
+     */
+    const LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS = 2;
+    /**
+     * Activity is completed when all places are reached.
+     */
+    const LEARNINGMAP_COMPLETION_WITH_ALL_PLACES = 3;
+
 /**
  * Adds a new learningmap instance
  *
@@ -152,10 +169,10 @@ function learningmap_get_coursemodule_info($cm) : cached_cm_info {
     $result = new cached_cm_info();
 
     $completiontypes = [
-        'nocompletion',
-        'completion_with_one_target',
-        'completion_with_all_targets',
-        'completion_with_all_places'
+        'LEARNINGMAP_nocompletion',
+        'LEARNINGMAP_completion_with_one_target',
+        'LEARNINGMAP_completion_with_all_targets',
+        'LEARNINGMAP_completion_with_all_places'
     ];
 
     if ($cm->completion == COMPLETION_TRACKING_AUTOMATIC && $map->completiontype > 0) {
