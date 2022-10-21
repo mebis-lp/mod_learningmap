@@ -57,7 +57,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
             $modinfo = get_fast_modinfo($cm->get_course(), $userid);
             $cms = $modinfo->get_cms();
             $allcms = array_keys($cms);
-
+            $completion = new \completion_info($course);
             foreach ($placestore->places as $place) {
                 // Prevent infinite loop.
                 if ($place->linkedActivity == $cm->id) {
