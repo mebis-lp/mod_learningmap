@@ -102,9 +102,9 @@ function learningmap_supports($feature) {
         case FEATURE_IDNUMBER:
             return true;
         case FEATURE_GROUPS:
-            return true;
+            return false;
         case FEATURE_GROUPINGS:
-            return true;
+            return false;
         case FEATURE_MOD_INTRO:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:

@@ -82,7 +82,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
 
                     if (
                         !$placecm ||
-                        learningmap_is_completed($placecm, $cm, $userid)
+                        $completion->get_data($placecm, true, $userid)->completionstate > 0
                     ) {
                         // No way to fulfill condition.
                         if ($map->completiontype > LEARNINGMAP_COMPLETION_WITH_ONE_TARGET) {
@@ -92,7 +92,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
                         // We need only one.
                         if (
                             $map->completiontype == LEARNINGMAP_COMPLETION_WITH_ONE_TARGET &&
-                            learningmap_is_completed($placecm, $cm, $userid)
+                            $completion->get_data($placecm, true, $userid)->completionstate > 0
                         ) {
                             return COMPLETION_COMPLETE;
                         }
@@ -112,37 +112,4 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
         }
         return COMPLETION_INCOMPLETE;
     }
-}
-
-/**
- * Checks whether a given course module is completed (either by the user or at least one
- * of the users of the group, if groupmode is set for the activity).
- *
- * @param \cm_info $cm course module to check
- * @param \cm_info $learningmapcm course module of the learningmap
- * @param int $userid 
- * @return bool
- */
-function learningmap_is_completed(\cm_info $cm, \cm_info $learningmapcm, int $userid): bool {
-    if (!isset($learningmapcm)) {
-        return false;
-    }
-    $completion = new \completion_info($cm->get_course());
-    if (!empty($learningmapcm->groupmode)) {
-        $group = groups_get_activity_group($learningmapcm, false);
-    }
-    if (!empty($group)) {
-        $members = groups_get_members($group);
-    }
-    if (empty($members)) {
-        $user = new stdClass;
-        $user->id = $userid;
-        $members = [$user];
-    }
-    foreach ($members as $member) {
-        if ($completion->get_data($cm, true, $member->id)->completionstate > 0) {
-            return true;
-        }
-    }
-    return false;
 }
