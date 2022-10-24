@@ -25,24 +25,24 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once(__DIR__ . '/deprecatedlib.php');
+/**
+ * No custom completion.
+ */
+define('LEARNINGMAP_NOCOMPLETION', 0);
+/**
+ * Activity is completed when one target place is reached.
+ */
+define('LEARNINGMAP_COMPLETION_WITH_ONE_TARGET', 1);
+/**
+ * Activity is completed when all target places are reached.
+ */
+define('LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS', 2);
+/**
+ * Activity is completed when all places are reached.
+ */
+define('LEARNINGMAP_COMPLETION_WITH_ALL_PLACES', 3);
 
-    /**
-     * No custom completion.
-     */
-    const LEARNINGMAP_NOCOMPLETION = 0;
-    /**
-     * Activity is completed when one target place is reached.
-     */
-    const LEARNINGMAP_COMPLETION_WITH_ONE_TARGET = 1;
-    /**
-     * Activity is completed when all target places are reached.
-     */
-    const LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS = 2;
-    /**
-     * Activity is completed when all places are reached.
-     */
-    const LEARNINGMAP_COMPLETION_WITH_ALL_PLACES = 3;
+require_once(__DIR__ . '/deprecatedlib.php');
 
 /**
  * Adds a new learningmap instance
