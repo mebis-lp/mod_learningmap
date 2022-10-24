@@ -290,11 +290,11 @@ export const init = () => {
             el.addEventListener('mousemove', drag);
             el.addEventListener('mouseup', endDrag);
             el.addEventListener('mouseleave', endDrag);
-            el.addEventListener('touchstart', startDrag);
+            el.addEventListener('touchstart', startTouch);
             el.addEventListener('touchmove', drag);
-            el.addEventListener('touchend', endDrag);
-            el.addEventListener('touchleave', endDrag);
-            el.addEventListener('touchcancel', endDrag);
+            el.addEventListener('touchend', endTouch);
+            el.addEventListener('touchleave', endTouch);
+            el.addEventListener('touchcancel', endTouch);
         }
 
         /**
@@ -322,30 +322,6 @@ export const init = () => {
                 evt.preventDefault();
             }
             if (evt.target.classList.contains('learningmap-draggable')) {
-                if (evt.type == 'touchstart') {
-                    if (!touchstart) {
-                        touchstart = true;
-                        touchmove = 0;
-                        touchend = false;
-                        setTimeout(
-                            function(evt) {
-                                if (touchmove < 3 && !touchend) {
-                                    showContextMenu(evt);
-                                }
-                            },
-                            2000,
-                            evt
-                        );
-                        setTimeout(
-                            function() {
-                                touchstart = false;
-                            },
-                        300 );
-                    } else {
-                        dblclickHandler(evt);
-                        touchstart = false;
-                    }
-                }
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "cx"));
@@ -353,22 +329,6 @@ export const init = () => {
                 // Get paths that need to be updated.
                 upd1 = placestore.getPathsWithFid(selectedElement.id);
                 upd2 = placestore.getPathsWithSid(selectedElement.id);
-            } else {
-                if (evt.type == 'touchstart') {
-                    if (!touchstart) {
-                        touchstart = true;
-                        touchend = false;
-                        touchmove = 0;
-                        setTimeout(
-                            function() {
-                                touchstart = false;
-                            },
-                        300 );
-                    } else {
-                        dblclickHandler(evt);
-                        touchstart = false;
-                    }
-                }
             }
         }
 
@@ -424,18 +384,77 @@ export const init = () => {
          * @param {*} evt
          */
         function endDrag(evt) {
-            if (evt.type == 'touchend') {
-                if (touchmove < 3 && touchstart) {
-                    clickHandler(evt);
-                }
-            }
-            touchend = true;
             if (evt.cancelable) {
                 evt.preventDefault();
             }
             selectedElement = null;
             unselectAll();
             updateCode();
+        }
+
+        /**
+         * Function called when touchstart event occurs.
+         * @param {*} evt
+        */
+        function startTouch(evt) {
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
+            if (evt.target.classList.contains('learningmap-draggable')) {
+                if (!touchstart) {
+                    touchstart = true;
+                    touchmove = 0;
+                    touchend = false;
+                    setTimeout(
+                        (evt) => {
+                            if (touchmove < 3 && !touchend) {
+                                showContextMenu(evt);
+                            }
+                        },
+                        2000,
+                        evt
+                    );
+                    setTimeout(
+                        () => {
+                            touchstart = false;
+                        },
+                    300 );
+                } else {
+                    dblclickHandler(evt);
+                    touchstart = false;
+                }
+                startDrag(evt);
+            } else {
+                if (!touchstart) {
+                    touchstart = true;
+                    touchend = false;
+                    touchmove = 0;
+                    setTimeout(
+                        () => {
+                            touchstart = false;
+                        },
+                    300 );
+                } else {
+                    dblclickHandler(evt);
+                    touchstart = false;
+                }
+            }
+        }
+
+        /**
+         * function called when touchend, touchleave or touchcancel event occurs.
+         * @param {*} evt
+         */
+        function endTouch(evt) {
+            if (touchmove < 3 && touchstart) {
+                clickHandler(evt);
+            }
+            touchend = true;
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
+            selectedElement = null;
+            endDrag(evt);
         }
     }
 
