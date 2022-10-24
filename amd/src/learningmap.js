@@ -1,7 +1,7 @@
 import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
-/* eslint-disable */
+
 export const init = () => {
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
