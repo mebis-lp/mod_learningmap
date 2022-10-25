@@ -22,10 +22,12 @@ export const init = () => {
     // Variable for storing the selected element for the activity selector
     var elementForActivitySelector = null;
 
-    // Variables for simulating double click on touch devices
+    // Variables for simulating double click on touch devices, set when the
+    // corresponding events are handled
     var touchstart = false;
-    var touchmove = 0;
     var touchend = false;
+    // Counter for touchmove events
+    var touchmove = 0;
 
     // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
@@ -341,6 +343,7 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
+            // Count touchmove events
             touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
@@ -418,7 +421,7 @@ export const init = () => {
                         () => {
                             touchstart = false;
                         },
-                    300 );
+                    300);
                 } else {
                     dblclickHandler(evt);
                     touchstart = false;
@@ -433,7 +436,7 @@ export const init = () => {
                         () => {
                             touchstart = false;
                         },
-                    300 );
+                    300);
                 } else {
                     dblclickHandler(evt);
                     touchstart = false;
@@ -446,6 +449,7 @@ export const init = () => {
          * @param {*} evt
          */
         function endTouch(evt) {
+            // If there was only a small move (<3 move events), this also counts as a click.
             if (touchmove < 3 && touchstart) {
                 clickHandler(evt);
             }
@@ -593,7 +597,7 @@ export const init = () => {
     function clickHandler(event) {
         event.preventDefault();
         hideContextMenu();
-        if (event.target.classList.contains('learningmap-place') && (selectedElement === null || event.type == 'touchend')) {
+        if (event.target.classList.contains('learningmap-place') && selectedElement === null) {
             if (firstPlace === null) {
                 firstPlace = event.target.id;
                 document.getElementById(firstPlace).classList.add('learningmap-selected');
