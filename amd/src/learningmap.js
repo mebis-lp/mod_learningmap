@@ -34,6 +34,7 @@ export const init = () => {
     let activitySelector = document.getElementById('learningmap-activity-selector');
     let activityStarting = document.getElementById('learningmap-activity-starting');
     let activityTarget = document.getElementById('learningmap-activity-target');
+    let activityHiddenWarning = document.getElementById('learningmap-activity-hidden-warning');
     let advancedSettingsIcon = document.getElementById('learningmap-advanced-settings-icon');
 
     // Hide tree view as there is no preview file we can attach to
@@ -679,6 +680,7 @@ export const init = () => {
 
     /**
      * Updates the activity selector to highlight the activities already used
+     * and to show the alert for hidden activities.
      */
     function updateActivities() {
         let activities = placestore.getAllActivities();
@@ -686,6 +688,13 @@ export const init = () => {
         options.forEach(function(n) {
             if (activities.includes(n.value)) {
                 n.classList.add('learningmap-used-activity');
+                if (n.selected) {
+                    if (n.getAttribute('data-activity-hidden') == true) {
+                        activityHiddenWarning.removeAttribute('hidden');
+                    } else {
+                        activityHiddenWarning.setAttribute('hidden', '');
+                    }
+                }
             } else {
                 n.classList.remove('learningmap-used-activity');
             }

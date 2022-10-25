@@ -37,12 +37,14 @@
                 {
                 "id":"1039",
                 "name":"Activity 1",
-                "completionenabled":"true"
+                "completionenabled":"true",
+                "hidden":"false"
                 },
                 {
                 "id":"1040",
                 "name":"Activity 2",
-                "completionenabled":"false"
+                "completionenabled":"false",
+                "hidden":"false"
                 }
             ]
         },
@@ -52,7 +54,8 @@
                 {
                 "id":"1043",
                 "name":"Activity 3",
-                "completionenabled":"true"
+                "completionenabled":"true",
+                "hidden":"false"
                 }
             ]
         }
@@ -71,11 +74,12 @@
         <option value="{{id}}" disabled class="learningmap-disabled-activity" title="{{#str}} nocompletionenabled, learningmap {{/str}}">{{#shortentext}} 30, {{{name}}} {{/shortentext}}</option>
         {{/completionenabled}}
         {{#completionenabled}}
-        <option value="{{id}}" title="{{name}}">{{#shortentext}} 30, {{{name}}} {{/shortentext}}</option>
+        <option value="{{id}}" title="{{name}}" data-activity-hidden="{{hidden}}">{{#shortentext}} 30, {{{name}}} {{/shortentext}}</option>
         {{/completionenabled}}
         {{/coursemodules}}
     {{/sections}}
     </select><br/>
+    <div class="alert alert-warning mt-3" hidden id="learningmap-activity-hidden-warning">{{#str}} hiddenactivitywarning, learningmap {{/str}}</div>
     <input type="checkbox" id="learningmap-activity-starting"/> {{#str}} startingplace, learningmap {{/str}}<br/>
     <input type="checkbox" id="learningmap-activity-target"/> {{#str}} targetplace, learningmap {{/str}}
     </div>
