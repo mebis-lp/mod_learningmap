@@ -9,6 +9,9 @@ export const init = () => {
     // Variable for storing the mouse offset
     var offset;
 
+    // Variable for draggable element
+    var dragel;
+
     // Variables for storing the paths that need update of the first (upd1) or
     // the second (upd2) coordinates.
     var upd1, upd2;
@@ -240,8 +243,9 @@ export const init = () => {
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = placestore.getActivityId(e.target.id);
-                let cy = e.offsetY;
-                let cx = e.offsetX;
+                let pos = getMousePosition(e);
+                let cy = pos.y;
+                let cx = pos.x;
                 let vertical = 'top';
                 let height = svg.getBoundingClientRect().height;
                 let width = svg.getBoundingClientRect().width;
@@ -282,11 +286,29 @@ export const init = () => {
         let observer = new MutationObserver(refreshBackgroundImage);
         observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
     }
+
+    /**
+     * Helper function for getting the right coordinates from the mouse
+     * @param {*} evt
+     * @returns {object}
+     */
+    function getMousePosition(evt) {
+        var CTM = dragel.getScreenCTM();
+        if (evt.touches) {
+            evt = evt.touches[0];
+        }
+        return {
+            x: (evt.clientX - CTM.e) / CTM.a,
+            y: (evt.clientY - CTM.f) / CTM.d
+        };
+    }
+
     /**
      * Enables dragging on an DOM node
      * @param {*} el
      */
     function makeDraggable(el) {
+        dragel = el;
         if (el) {
             el.addEventListener('mousedown', startDrag);
             el.addEventListener('mousemove', drag);
@@ -297,22 +319,6 @@ export const init = () => {
             el.addEventListener('touchend', endTouch);
             el.addEventListener('touchleave', endTouch);
             el.addEventListener('touchcancel', endTouch);
-        }
-
-        /**
-         * Helper function for getting the right coordinates from the mouse
-         * @param {*} evt
-         * @returns {object}
-         */
-        function getMousePosition(evt) {
-            var CTM = el.getScreenCTM();
-            if (evt.touches) {
-                evt = evt.touches[0];
-            }
-            return {
-                x: (evt.clientX - CTM.e) / CTM.a,
-                y: (evt.clientY - CTM.f) / CTM.d
-            };
         }
 
         /**
@@ -411,6 +417,9 @@ export const init = () => {
                     setTimeout(
                         (evt) => {
                             if (touchmove < 3 && !touchend) {
+                                if (evt.touches) {
+                                    evt = evt.touches[0];
+                                }
                                 showContextMenu(evt);
                             }
                         },
