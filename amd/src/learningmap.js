@@ -250,6 +250,7 @@ export const init = () => {
                 document.getElementById('learningmap-activity-starting').checked = placestore.isStartingPlace(e.target.id);
                 document.getElementById('learningmap-activity-target').checked = placestore.isTargetPlace(e.target.id);
                 elementForActivitySelector = e.target.id;
+                updateActivities();
             } else {
                 hideContextMenu();
             }
