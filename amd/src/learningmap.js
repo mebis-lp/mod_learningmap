@@ -243,23 +243,9 @@ export const init = () => {
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = placestore.getActivityId(e.target.id);
-                let pos = getMousePosition(e);
-                let cy = pos.y;
-                let cx = pos.x;
-                let vertical = 'top';
-                let height = svg.getBoundingClientRect().height;
-                let width = svg.getBoundingClientRect().width;
-                if (cy > height / 2) {
-                    vertical = 'bottom';
-                    cy = height - cy;
-                }
-                let horizontal = 'left';
-                if (cx > width / 2) {
-                    horizontal = 'right';
-                    cx = width - cx;
-                }
-                activitySetting.setAttribute('style', vertical + ': ' + cy + 'px; ' + horizontal + ': ' + cx + 'px;');
-                activitySetting.removeAttribute('hidden');
+                activitySetting.style.setProperty('--pos-x', e.clientX + 'px');
+                activitySetting.style.setProperty('--pos-y', e.clientY + 'px');
+                activitySetting.style.display = 'block';
                 document.getElementById('learningmap-activity-selector').value = activityId;
                 document.getElementById('learningmap-activity-starting').checked = placestore.isStartingPlace(e.target.id);
                 document.getElementById('learningmap-activity-target').checked = placestore.isTargetPlace(e.target.id);
@@ -278,7 +264,7 @@ export const init = () => {
         if (e) {
             e.classList.remove('learningmap-selected-activity-selector');
         }
-        activitySetting.setAttribute('hidden', '');
+        activitySetting.style.display = 'none';
     }
 
     let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
