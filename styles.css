@@ -17,10 +17,12 @@
     position: absolute;
     --pos-x: 0;
     --pos-y: 0;
+    --map-width: 800;
+    --map-height: 100;
     display: none;
     left: 0;
     top: 0;
-    transform: translateX(min(var(--pos-x), calc(95vw - 100%))) translateY(min(var(--pos-y), calc(95vh - 100%)));
+    transform: translateX(min(var(--pos-x), calc(var(--map-width) - 100%))) translateY(min(var(--pos-y), calc(var(--map-height) - 100%)));
     z-index: 1;
 }
 
