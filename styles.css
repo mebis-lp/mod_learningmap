@@ -14,13 +14,13 @@
 }
 
 #learningmap-activity-setting {
-    position: absolute;
+    position: fixed;
     --pos-x: 0;
     --pos-y: 0;
     display: none;
     left: 0;
     top: 0;
-    transform: translateX(min(var(--pos-x), calc(100vw - 100%))) translateY(min(var(--pos-y), calc(100vh - 100%)));
+    transform: translateX(min(var(--pos-x), calc(95vw - 100%))) translateY(min(var(--pos-y), calc(95vh - 100%)));
     z-index: 1;
 }
 
