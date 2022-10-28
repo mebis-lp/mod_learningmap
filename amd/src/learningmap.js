@@ -246,6 +246,7 @@ export const init = () => {
                 let coord = getMousePosition(e);
                 activitySetting.style.setProperty('--pos-x', coord.x + 'px');
                 activitySetting.style.setProperty('--pos-y', coord.y + 'px');
+                activitySetting.style.setProperty('--scaling-factor', mapdiv.clientWidth / 800);
                 activitySetting.style.setProperty('--map-width', mapdiv.clientWidth + 'px');
                 activitySetting.style.setProperty('--map-height', mapdiv.clientHeight + 'px');
                 activitySetting.style.display = 'block';
