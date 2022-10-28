@@ -26,13 +26,13 @@
     transform:
         translateX(
             min(
-                calc(var(--scaling-factor) * var(--pos-x)),
+                var(--pos-x),
                 calc(var(--map-width) - 100%)
             )
         )
         translateY(
             min(
-                calc(var(--scaling-factor) * var(--pos-y)),
+                var(--pos-y),
                 calc(var(--map-height) - 100%)
             )
         );

@@ -243,10 +243,9 @@ export const init = () => {
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = placestore.getActivityId(e.target.id);
-                let coord = getMousePosition(e);
-                activitySetting.style.setProperty('--pos-x', coord.x + 'px');
-                activitySetting.style.setProperty('--pos-y', coord.y + 'px');
-                activitySetting.style.setProperty('--scaling-factor', mapdiv.clientWidth / 800);
+                let scalingFactor = mapdiv.clientWidth / 800;
+                activitySetting.style.setProperty('--pos-x', e.target.cx.baseVal.value * scalingFactor + 'px');
+                activitySetting.style.setProperty('--pos-y', e.target.cy.baseVal.value * scalingFactor + 'px');
                 activitySetting.style.setProperty('--map-width', mapdiv.clientWidth + 'px');
                 activitySetting.style.setProperty('--map-height', mapdiv.clientHeight + 'px');
                 activitySetting.style.display = 'block';
