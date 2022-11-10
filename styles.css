@@ -19,18 +19,15 @@
     --pos-y: 0;
     --map-width: 800;
     --map-height: 100;
-    --scaling-factor: 1;
     display: none;
     left: 0;
     top: 0;
     transform:
-        translateX(
+        translate(
             min(
                 var(--pos-x),
                 calc(var(--map-width) - 100%)
-            )
-        )
-        translateY(
+            ),
             min(
                 var(--pos-y),
                 calc(var(--map-height) - 100%)
@@ -42,7 +39,7 @@
 #learningmap-advanced-settings {
     position: absolute;
     z-index: 1;
-    right: 0;
+    right: 0.8rem;
 }
 
 #learningmap-advanced-settings label {
@@ -69,6 +66,12 @@
 
 .learningmap-menubar input[type="color"] {
     width: 2rem;
+}
+
+.learningmap-editor-main {
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
 .learningmap-used-activity {

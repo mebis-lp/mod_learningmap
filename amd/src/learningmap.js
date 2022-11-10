@@ -110,7 +110,11 @@ export const init = () => {
     if (advancedSettingsIcon) {
         let advancedSettings = document.getElementById('learningmap-advanced-settings');
         advancedSettingsIcon.addEventListener('click', function() {
-            advancedSettings.removeAttribute('hidden');
+            if (advancedSettings.getAttribute('hidden') === null) {
+                advancedSettings.setAttribute('hidden', '');
+            } else {
+                advancedSettings.removeAttribute('hidden');
+            }
         });
         let advancedSettingsClose = document.getElementById('learningmap-advanced-settings-close');
         if (advancedSettingsClose) {
@@ -240,6 +244,9 @@ export const init = () => {
     function showContextMenu(e) {
         unselectAll();
         if (activitySetting) {
+            if (e.touches) {
+                e = e.touches[0];
+            }
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = placestore.getActivityId(e.target.id);
@@ -765,14 +772,13 @@ export const init = () => {
     function updateActivities() {
         let activities = placestore.getAllActivities();
         let options = Array.from(activitySelector.getElementsByTagName('option'));
+        activityHiddenWarning.setAttribute('hidden', '');
         options.forEach(function(n) {
             if (activities.includes(n.value)) {
                 n.classList.add('learningmap-used-activity');
                 if (n.selected) {
                     if (n.getAttribute('data-activity-hidden') == true) {
                         activityHiddenWarning.removeAttribute('hidden');
-                    } else {
-                        activityHiddenWarning.setAttribute('hidden', '');
                     }
                 }
             } else {
