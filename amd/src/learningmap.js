@@ -9,6 +9,9 @@ export const init = () => {
     // Variable for storing the mouse offset
     var offset;
 
+    // Variable for draggable element
+    var dragel;
+
     // Variables for storing the paths that need update of the first (upd1) or
     // the second (upd2) coordinates.
     var upd1, upd2;
@@ -21,6 +24,13 @@ export const init = () => {
 
     // Variable for storing the selected element for the activity selector
     var elementForActivitySelector = null;
+
+    // Variables for simulating double click on touch devices, set when the
+    // corresponding events are handled
+    var touchstart = false;
+    var touchend = false;
+    // Counter for touchmove events
+    var touchmove = 0;
 
     // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
@@ -100,7 +110,11 @@ export const init = () => {
     if (advancedSettingsIcon) {
         let advancedSettings = document.getElementById('learningmap-advanced-settings');
         advancedSettingsIcon.addEventListener('click', function() {
-            advancedSettings.removeAttribute('hidden');
+            if (advancedSettings.getAttribute('hidden') === null) {
+                advancedSettings.setAttribute('hidden', '');
+            } else {
+                advancedSettings.removeAttribute('hidden');
+            }
         });
         let advancedSettingsClose = document.getElementById('learningmap-advanced-settings-close');
         if (advancedSettingsClose) {
@@ -230,29 +244,23 @@ export const init = () => {
     function showContextMenu(e) {
         unselectAll();
         if (activitySetting) {
+            if (e.touches) {
+                e = e.touches[0];
+            }
             if (e.target.classList.contains('learningmap-place')) {
                 e.target.classList.add('learningmap-selected-activity-selector');
                 let activityId = placestore.getActivityId(e.target.id);
-                let cy = e.offsetY;
-                let cx = e.offsetX;
-                let vertical = 'top';
-                let height = svg.getBoundingClientRect().height;
-                let width = svg.getBoundingClientRect().width;
-                if (cy > height / 2) {
-                    vertical = 'bottom';
-                    cy = height - cy;
-                }
-                let horizontal = 'left';
-                if (cx > width / 2) {
-                    horizontal = 'right';
-                    cx = width - cx;
-                }
-                activitySetting.setAttribute('style', vertical + ': ' + cy + 'px; ' + horizontal + ': ' + cx + 'px;');
-                activitySetting.removeAttribute('hidden');
+                let scalingFactor = mapdiv.clientWidth / 800;
+                activitySetting.style.setProperty('--pos-x', e.target.cx.baseVal.value * scalingFactor + 'px');
+                activitySetting.style.setProperty('--pos-y', e.target.cy.baseVal.value * scalingFactor + 'px');
+                activitySetting.style.setProperty('--map-width', mapdiv.clientWidth + 'px');
+                activitySetting.style.setProperty('--map-height', mapdiv.clientHeight + 'px');
+                activitySetting.style.display = 'block';
                 document.getElementById('learningmap-activity-selector').value = activityId;
                 document.getElementById('learningmap-activity-starting').checked = placestore.isStartingPlace(e.target.id);
                 document.getElementById('learningmap-activity-target').checked = placestore.isTargetPlace(e.target.id);
                 elementForActivitySelector = e.target.id;
+                updateActivities();
             } else {
                 hideContextMenu();
             }
@@ -267,7 +275,7 @@ export const init = () => {
         if (e) {
             e.classList.remove('learningmap-selected-activity-selector');
         }
-        activitySetting.setAttribute('hidden', '');
+        activitySetting.style.display = 'none';
     }
 
     let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
@@ -275,37 +283,39 @@ export const init = () => {
         let observer = new MutationObserver(refreshBackgroundImage);
         observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});
     }
+
+    /**
+     * Helper function for getting the right coordinates from the mouse
+     * @param {*} evt
+     * @returns {object}
+     */
+    function getMousePosition(evt) {
+        var CTM = dragel.getScreenCTM();
+        if (evt.touches) {
+            evt = evt.touches[0];
+        }
+        return {
+            x: (evt.clientX - CTM.e) / CTM.a,
+            y: (evt.clientY - CTM.f) / CTM.d
+        };
+    }
+
     /**
      * Enables dragging on an DOM node
      * @param {*} el
      */
     function makeDraggable(el) {
+        dragel = el;
         if (el) {
             el.addEventListener('mousedown', startDrag);
             el.addEventListener('mousemove', drag);
             el.addEventListener('mouseup', endDrag);
             el.addEventListener('mouseleave', endDrag);
-            el.addEventListener('touchstart', startDrag);
+            el.addEventListener('touchstart', startTouch);
             el.addEventListener('touchmove', drag);
-            el.addEventListener('touchend', endDrag);
-            el.addEventListener('touchleave', endDrag);
-            el.addEventListener('touchcancel', endDrag);
-        }
-
-        /**
-         * Helper function for getting the right coordinates from the mouse
-         * @param {*} evt
-         * @returns {object}
-         */
-        function getMousePosition(evt) {
-            var CTM = el.getScreenCTM();
-            if (evt.touches) {
-                evt = evt.touches[0];
-            }
-            return {
-                x: (evt.clientX - CTM.e) / CTM.a,
-                y: (evt.clientY - CTM.f) / CTM.d
-            };
+            el.addEventListener('touchend', endTouch);
+            el.addEventListener('touchleave', endTouch);
+            el.addEventListener('touchcancel', endTouch);
         }
 
         /**
@@ -313,7 +323,9 @@ export const init = () => {
          * @param {*} evt
          */
         function startDrag(evt) {
-            evt.preventDefault();
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
             if (evt.target.classList.contains('learningmap-draggable')) {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
@@ -331,7 +343,11 @@ export const init = () => {
          * @param {*} evt
          */
         function drag(evt) {
-            evt.preventDefault();
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
+            // Count touchmove events
+            touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
                 let cx = coord.x - offset.x;
@@ -374,10 +390,81 @@ export const init = () => {
          * @param {*} evt
          */
         function endDrag(evt) {
-            evt.preventDefault();
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
             selectedElement = null;
             unselectAll();
             updateCode();
+        }
+
+        /**
+         * Function called when touchstart event occurs.
+         * @param {*} evt
+        */
+        function startTouch(evt) {
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
+            if (evt.target.classList.contains('learningmap-draggable')) {
+                if (!touchstart) {
+                    touchstart = true;
+                    touchmove = 0;
+                    touchend = false;
+                    setTimeout(
+                        (evt) => {
+                            if (touchmove < 3 && !touchend) {
+                                if (evt.touches) {
+                                    evt = evt.touches[0];
+                                }
+                                showContextMenu(evt);
+                            }
+                        },
+                        2000,
+                        evt
+                    );
+                    setTimeout(
+                        () => {
+                            touchstart = false;
+                        },
+                    300);
+                } else {
+                    dblclickHandler(evt);
+                    touchstart = false;
+                }
+                startDrag(evt);
+            } else {
+                if (!touchstart) {
+                    touchstart = true;
+                    touchend = false;
+                    touchmove = 0;
+                    setTimeout(
+                        () => {
+                            touchstart = false;
+                        },
+                    300);
+                } else {
+                    dblclickHandler(evt);
+                    touchstart = false;
+                }
+            }
+        }
+
+        /**
+         * function called when touchend, touchleave or touchcancel event occurs.
+         * @param {*} evt
+         */
+        function endTouch(evt) {
+            // If there was only a small move (<3 move events), this also counts as a click.
+            if (touchmove < 3 && touchstart) {
+                clickHandler(evt);
+            }
+            touchend = true;
+            if (evt.cancelable) {
+                evt.preventDefault();
+            }
+            selectedElement = null;
+            endDrag(evt);
         }
     }
 
@@ -685,14 +772,13 @@ export const init = () => {
     function updateActivities() {
         let activities = placestore.getAllActivities();
         let options = Array.from(activitySelector.getElementsByTagName('option'));
+        activityHiddenWarning.setAttribute('hidden', '');
         options.forEach(function(n) {
             if (activities.includes(n.value)) {
                 n.classList.add('learningmap-used-activity');
                 if (n.selected) {
                     if (n.getAttribute('data-activity-hidden') == true) {
                         activityHiddenWarning.removeAttribute('hidden');
-                    } else {
-                        activityHiddenWarning.setAttribute('hidden', '');
                     }
                 }
             } else {
