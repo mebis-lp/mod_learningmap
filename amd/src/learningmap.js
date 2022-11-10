@@ -401,7 +401,7 @@ export const init = () => {
         /**
          * Function called when touchstart event occurs.
          * @param {*} evt
-        */
+         */
         function startTouch(evt) {
             if (evt.cancelable) {
                 evt.preventDefault();
@@ -451,7 +451,7 @@ export const init = () => {
         }
 
         /**
-         * function called when touchend, touchleave or touchcancel event occurs.
+         * Function called when touchend, touchleave or touchcancel event occurs.
          * @param {*} evt
          */
         function endTouch(evt) {
