@@ -455,16 +455,17 @@ export const init = () => {
          * @param {*} evt
          */
         function endTouch(evt) {
+            selectedElement = null;
+            touchend = true;
             // If there was only a small move (<3 move events), this also counts as a click.
             if (touchmove < 3 && touchstart) {
                 clickHandler(evt);
+            } else {
+                endDrag(evt);
             }
-            touchend = true;
             if (evt.cancelable) {
                 evt.preventDefault();
             }
-            selectedElement = null;
-            endDrag(evt);
         }
     }
 
