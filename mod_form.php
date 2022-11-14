@@ -160,6 +160,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform = $this->_form;
 
         $completionoptions = [
+            // When dropping support for Moodle 3.9 and removing deprecatedlib.php, these constants
+            // need to be changed to those from classes/completion/custom_completion.php.
             LEARNINGMAP_NOCOMPLETION => get_string('nocompletion', 'learningmap'),
             LEARNINGMAP_COMPLETION_WITH_ONE_TARGET => get_string('completion_with_one_target', 'learningmap'),
             LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS => get_string('completion_with_all_targets', 'learningmap'),
