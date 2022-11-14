@@ -72,7 +72,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
             return COMPLETION_INCOMPLETE;
         }
 
-        $modinfo = get_fast_modinfo($cm->get_course(), $userid);
+        $modinfo = get_fast_modinfo($course, $userid);
         $cms = $modinfo->get_cms();
         $allcms = array_keys($cms);
 
