@@ -101,7 +101,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
 
                 if (
                     !$placecm ||
-                    !learningmap_is_completed($placecm, $cm, $userid)
+                    !learningmap_is_completed($course, $placecm, $cm, $userid)
                 ) {
                     // No way to fulfill condition.
                     if ($map->completiontype > LEARNINGMAP_COMPLETION_WITH_ONE_TARGET) {
@@ -111,7 +111,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
                     // We need only one.
                     if (
                         $map->completiontype == LEARNINGMAP_COMPLETION_WITH_ONE_TARGET &&
-                        learningmap_is_completed($placecm, $cm, $userid)
+                        learningmap_is_completed($course, $placecm, $cm, $userid)
                     ) {
                         return COMPLETION_COMPLETE;
                     }
@@ -135,16 +135,17 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
  * Checks whether a given course module is completed (either by the user or at least one
  * of the users of the group, if groupmode is set for the activity).
  *
- * @param \cm_info $cm course module to check
- * @param \cm_info $learningmapcm course module for the learning map
+ * @param object $course course containing the map
+ * @param object $cm course module to check
+ * @param object $learningmapcm course module for the learning map
  * @param int $userid id of the user to check completion for
  * @return bool
  */
-function learningmap_is_completed(\cm_info $cm, \cm_info $learningmapcm, int $userid): bool {
+function learningmap_is_completed(object $course, object $cm, object $learningmapcm, int $userid): bool {
     if (!isset($learningmapcm)) {
         return false;
     }
-    $completion = new \completion_info($cm->get_course());
+    $completion = new \completion_info($course);
     if (!empty($learningmapcm->groupmode)) {
         $group = groups_get_activity_group($learningmapcm, false);
     }
