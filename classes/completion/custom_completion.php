@@ -149,7 +149,8 @@ class custom_completion extends \core_completion\activity_custom_completion {
             $members = [$user];
         }
         foreach ($members as $member) {
-            if ($completion->get_data($cm, true, $member->id)->completionstate > 0) {
+            if ($completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
+                $completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
                 return true;
             }
         }
