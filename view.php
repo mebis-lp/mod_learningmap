@@ -27,6 +27,8 @@ require('../../config.php');
 require_once('lib.php');
 
 $id = required_param('id', PARAM_INT);
+$embed = optional_param('embed', 0, PARAM_INT);
+
 list ($course, $cm) = get_course_and_cm_from_cmid($id, 'learningmap');
 
 require_course_login($course, true, $cm);
@@ -42,6 +44,11 @@ $PAGE->activityheader->set_description('');
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
+if ($embed) {
+    $PAGE->set_pagelayout('embedded');
+    $PAGE->activityheader->disable();
+}
+
 echo $OUTPUT->header();
 
 if (!empty($cm->groupmode)) {
@@ -56,6 +63,6 @@ if (!empty($cm->groupmode)) {
     $OUTPUT->box($groupdropdown);
 }
 
-echo $OUTPUT->box(learningmap_get_learningmap($cm));
+echo $OUTPUT->container(learningmap_get_learningmap($cm, $embed));
 
 echo $OUTPUT->footer();

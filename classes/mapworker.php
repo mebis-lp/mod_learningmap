@@ -507,4 +507,19 @@ class mapworker {
         $element = $this->dom->getElementById($id);
         return $element === null ? null : $element->getAttribute($attribute);
     }
+
+    /**
+     * Sets the target attribute of all links in the map that have xlink:href set.
+     * @param string $target Value for the target attribute
+     * @return void
+     */
+    public function set_link_target(string $target) {
+        $links = $this->dom->getElementsByTagName('a');
+        foreach ($links as $link) {
+            if ($link->getAttribute('xlink:href') != '') {
+                $link->setAttribute('target', $target);
+            }
+        }
+        $this->svgcode = $this->dom->saveXML();
+    }
 }

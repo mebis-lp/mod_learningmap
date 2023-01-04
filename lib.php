@@ -207,29 +207,20 @@ function learningmap_cm_info_view(cm_info $cm) : void {
     global $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
-        $groupdropdown = '';
-        if (!empty($cm->groupmode)) {
-            $groupdropdown = groups_print_activity_menu(
-                $cm,
-                new moodle_url(
-                    '/course/view.php',
-                    ['id' => $cm->get_course()->id, 'section' => $cm->sectionnum],
-                    'module-' . $cm->id
-                ),
-                true
-            );
-            // Since there is no way to replace the core string just for this dropdown
-            // we have to change it in this ugly way.
-            $groupdropdown = str_replace(
-                get_string('allparticipants'),
-                get_string('ownprogress', 'mod_learningmap'),
-                $groupdropdown
-            );
-        }
-        $cm->set_content($groupdropdown . learningmap_get_learningmap($cm), true);
+        $iframeid = 'learningmap-iframe-' . $cm->id;
+        $cm->set_content(html_writer::start_tag('iframe', [
+            'src' => new moodle_url('/mod/learningmap/view.php', ['id' => $cm->id, 'embed' => 1]),
+            'frameborder' => 0,
+            'allowfullscreen' => true,
+            'seamless' => 'seamlesss',
+            'class' => 'learningmap-iframe',
+            'id' => $iframeid,
+        ]) . html_writer::end_tag('iframe'), true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
         $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
-            ['coursemodules' => learningmap_get_place_cm($cm)]);
+            ['coursemodules' => learningmap_get_place_cm($cm), 'iframeid' => $iframeid]);
+        $PAGE->requires->js_call_amd('mod_learningmap/embed-resize', 'init',
+            ['iframeid' => $iframeid]);
         // This method check is needed to provide backwards compatibility to moodle versions below 4.0.
         if (method_exists($cm, 'set_custom_cmlist_item')) {
             $cm->set_custom_cmlist_item(true);
@@ -259,9 +250,10 @@ function learningmap_get_place_cm(cm_info $cm) : array {
  * Returns the code of the learningmap.
  *
  * @param cm_info $cm
+ * @param int $embed
  * @return string
  */
-function learningmap_get_learningmap(cm_info $cm) : string {
+function learningmap_get_learningmap(cm_info $cm, int $embed = 0) : string {
     global $DB, $OUTPUT;
 
     $context = context_module::instance($cm->id);
@@ -282,6 +274,9 @@ function learningmap_get_learningmap(cm_info $cm) : string {
     $worker = new \mod_learningmap\mapworker($svg, $placestore, $cm);
     $worker->process_map_objects();
     $worker->remove_tags_before_svg();
+    if ($embed) {
+        $worker->set_link_target('_parent');
+    }
 
     return(
         $OUTPUT->render_from_template(

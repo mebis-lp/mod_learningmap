@@ -65,7 +65,6 @@
     position: relative;
     min-height: 100px;
     width: 100%;
-    max-width: 90vw;
 }
 
 .learningmap-scaling-svg.learningmap-slicemode {
@@ -95,4 +94,10 @@
 
 .learningmap-disabled-activity {
     color: lightsalmon;
+}
+
+.learningmap-iframe {
+    max-width: 90vw;
+    width: 100%;
+    display: block;
 }

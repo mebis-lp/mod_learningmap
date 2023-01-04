@@ -1,11 +1,12 @@
-export const init = (coursemodules) => {
+export const init = (coursemodules, iframeid) => {
     coursemodules.forEach((c) => {
         let selector = '[data-action="toggle-manual-completion"][data-cmid="' + c + '"]';
         let el = document.querySelector(selector);
         if (el) {
             el.addEventListener('click', function() {
                 setTimeout(() => {
-                    window.location.reload();
+                    document.getElementById(iframeid).contentWindow.location.reload();
+                    init([c], iframeid);
                 }, 500);
             });
         }
@@ -17,7 +18,8 @@ export const init = (coursemodules) => {
             if (idfield && idfield.getAttribute('value') == c) {
                 el.addEventListener('submit', function() {
                     setTimeout(() => {
-                        window.location.reload();
+                        document.getElementById(iframeid).contentWindow.location.reload();
+                        init([c], iframeid);
                     }, 500);
                 });
             }
