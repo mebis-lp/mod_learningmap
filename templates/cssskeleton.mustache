@@ -109,9 +109,13 @@
     visibility: visible;
     opacity: 1;
 }
+#learningmap-svgmap-{{mapid}} a:focus .learningmap-place {
+    filter: invert();
+}
 {{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover,
-#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited):hover {
+#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited):hover,
+#learningmap-svgmap-{{mapid}} a:focus .learningmap-place {
     animation: none;
     stroke-width: 5px;
     stroke-opacity: 1;

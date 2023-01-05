@@ -175,6 +175,7 @@ class mapworker {
                                     ' (' . get_string('targetplace', 'learningmap') . ')' :
                                     ''
                                 );
+                            $link->setAttribute('aria-labeledby', 'title' . $place['id']);
                         }
                     }
                     // If the place is a starting place, add it to the active places.
@@ -259,6 +260,7 @@ class mapworker {
                     $use->setAttribute('transform', 'translate(' . $x . ' '. $y . ')');
                     $use->setAttribute('class', 'learningmap-checkmark');
                     $domplace->parentNode->appendChild($use);
+                    $domplace->parentNode->setAttribute('aria-checked', 'true');
                 }
             }
         }
@@ -270,6 +272,7 @@ class mapworker {
                 continue;
             }
             $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
+            $domplace->parentNode->setAttribute('aria-hidden', 'true');
             if (isset($links[$place])) {
                 $domlink = $this->dom->getElementById($links[$place]);
                 $domlink->removeAttribute('xlink:href');
