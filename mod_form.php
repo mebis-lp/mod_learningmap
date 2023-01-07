@@ -220,14 +220,18 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 'intro',
                 null
             );
-
+            $modinfo = get_fast_modinfo($defaultvalues['course']);
+            $cm = $modinfo->get_cm($defaultvalues['coursemodule']);
             // Replace the stylesheet for editing mode.
             $mapworker = new mapworker(
                 $defaultvalues['intro'],
-                json_decode($defaultvalues['placestore'], true)
+                json_decode($defaultvalues['placestore'], true),
+                $cm,
+                true
             );
-            $mapworker->replace_stylesheet(['editmode' => true]);
-            $defaultvalues['introeditor']['intro'] = $mapworker->get_svgcode();
+            $mapworker->process_map_objects();
+            $mapworker->replace_stylesheet();
+            $defaultvalues['intro'] = $mapworker->get_svgcode();
             // Make the introeditor use the values of the intro field.
             // This is necessary to avoid inconsistencies.
             $defaultvalues['introeditor']['text'] = $defaultvalues['intro'];
@@ -246,7 +250,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $data->introeditor['text'],
             json_decode($data->placestore, true)
         );
-        $mapworker->replace_stylesheet(['editmode' => false]);
+        $mapworker->replace_stylesheet();
         $data->introeditor['text'] = $mapworker->get_svgcode();
     }
 }

@@ -12,9 +12,9 @@ export const init = () => {
     // Variable for draggable element
     var dragel;
 
-    // Variables for storing the paths that need update of the first (upd1) or
-    // the second (upd2) coordinates.
-    var upd1, upd2;
+    // Variables for storing the paths that need update of the first or
+    // the second coordinates.
+    var pathsToUpdateFirstPoint, pathsToUpdateSecondPoint;
 
     // Variables for handling the currently selected elements
     var selectedElement = null,
@@ -68,6 +68,10 @@ export const init = () => {
         activitySelector.addEventListener('change', function() {
             placestore.setActivityId(elementForActivitySelector, activitySelector.value);
             if (activitySelector.value) {
+                let text = document.getElementById('text' + elementForActivitySelector);
+                if (text) {
+                    text.textContent = activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent;
+                }
                 document.getElementById(elementForActivitySelector).classList.remove('learningmap-emptyplace');
             } else {
                 document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
@@ -182,12 +186,40 @@ export const init = () => {
                 updateCSS();
             });
         }
-}
+
+        let showtext = document.getElementById('learningmap-showtext');
+        // Attach a listener to the showall checkbox
+        if (showtext) {
+            showtext.checked = placestore.getShowText();
+            showtext.addEventListener('change', function() {
+                placestore.setShowText(showtext.checked);
+                let options = Array.from(activitySelector.getElementsByTagName('option'));
+                let places = placestore.getPlaces();
+                for (const place of places) {
+                    if (document.getElementById('text' + place.id) === null) {
+                        let content = '';
+                        for (const option of options) {
+                            if (option.value == place.linkedActivity) {
+                                content = option.textContent;
+                                break;
+                            }
+                        }
+                        let placeNode = document.getElementById(place.id);
+                        let textNode = text('text' + place.id, content, placeNode.cx.baseVal.value, placeNode.cy.baseVal.value);
+                        placeNode.parentNode.appendChild(textNode);
+                    }
+                }
+                updateCSS();
+
+            });
+        }
+    }
 
     // Attach listener to the color choosers for paths
     if (colorChooserPath) {
         colorChooserPath.addEventListener('change', function() {
             placestore.setColor('stroke', colorChooserPath.value);
+            placestore.setColor('text', colorChooserPath.value);
             updateCSS();
         });
         colorChooserPath.value = placestore.getColor('stroke');
@@ -332,8 +364,16 @@ export const init = () => {
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "cx"));
                 offset.y -= parseInt(selectedElement.getAttributeNS(null, "cy"));
                 // Get paths that need to be updated.
-                upd1 = placestore.getPathsWithFid(selectedElement.id);
-                upd2 = placestore.getPathsWithSid(selectedElement.id);
+                pathsToUpdateFirstPoint = placestore.getPathsWithFid(selectedElement.id);
+                pathsToUpdateSecondPoint = placestore.getPathsWithSid(selectedElement.id);
+            } else if (evt.target.nodeName == 'text') {
+                selectedElement = evt.target;
+                let place = selectedElement.parentNode.querySelector('.learningmap-place');
+                offset = getMousePosition(evt);
+                offset.x -= parseInt(selectedElement.getAttributeNS(null, "dx")) + place.cx.baseVal.value;
+                offset.y -= parseInt(selectedElement.getAttributeNS(null, "dy")) + place.cy.baseVal.value;
+                pathsToUpdateFirstPoint = [];
+                pathsToUpdateSecondPoint = [];
             }
         }
 
@@ -350,38 +390,54 @@ export const init = () => {
             touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
-                let cx = coord.x - offset.x;
-                let cy = coord.y - offset.y;
-                selectedElement.setAttributeNS(null, "cx", cx);
-                selectedElement.setAttributeNS(null, "cy", cy);
-
-                upd1.forEach(function(p) {
-                    let d = document.getElementById(p.id);
-                    if (!(d === null)) {
-                        if (d.nodeName == 'path') {
-                            let pathDeclaration = d.getAttribute('d');
-                            let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
-                            d.setAttribute('d', newPathDeclaration);
-                        } else {
-                            d.setAttribute('x1', cx);
-                            d.setAttribute('y1', cy);
-                        }
+                if (selectedElement.nodeName == 'text') {
+                    let place = selectedElement.parentNode.querySelector('.learningmap-place');
+                    // Calculate the delta from the current mouse position to the corresponding place.
+                    // coord: current mouse position
+                    // offset: delta from the mouse position to the coordinates of the text node
+                    let dx = coord.x - offset.x - place.cx.baseVal.value;
+                    let dy = coord.y - offset.y - place.cy.baseVal.value;
+                    selectedElement.setAttributeNS(null, "dx", dx);
+                    selectedElement.setAttributeNS(null, "dy", dy);
+                }
+                if (selectedElement.nodeName == 'circle') {
+                    let cx = coord.x - offset.x;
+                    let cy = coord.y - offset.y;
+                    selectedElement.setAttributeNS(null, "cx", cx);
+                    selectedElement.setAttributeNS(null, "cy", cy);
+                    let textNoode = document.getElementById('text' + selectedElement.id);
+                    if (!(textNoode === null)) {
+                        textNoode.setAttributeNS(null, 'x', cx);
+                        textNoode.setAttributeNS(null, 'y', cy);
                     }
-                });
-
-                upd2.forEach(function(p) {
-                    let d = document.getElementById(p.id);
-                    if (!(d === null)) {
-                        if (d.nodeName == 'path') {
-                            let pathDeclaration = d.getAttribute('d');
-                            let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
-                            d.setAttribute('d', newPathDeclaration);
-                        } else {
-                            d.setAttribute('x2', cx);
-                            d.setAttribute('y2', cy);
+                    pathsToUpdateFirstPoint.forEach(function(path) {
+                        let pathNode = document.getElementById(path.id);
+                        if (!(pathNode === null)) {
+                            if (pathNode.nodeName == 'path') {
+                                let pathDeclaration = pathNode.getAttribute('d');
+                                let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
+                                pathNode.setAttribute('d', newPathDeclaration);
+                            } else {
+                                pathNode.setAttribute('x1', cx);
+                                pathNode.setAttribute('y1', cy);
+                            }
                         }
-                    }
-                });
+                    });
+
+                    pathsToUpdateSecondPoint.forEach(function(path) {
+                        let pathNode = document.getElementById(path.id);
+                        if (!(pathNode === null)) {
+                            if (pathNode.nodeName == 'path') {
+                                let pathDeclaration = pathNode.getAttribute('d');
+                                let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
+                                pathNode.setAttribute('d', newPathDeclaration);
+                            } else {
+                                pathNode.setAttribute('x2', cx);
+                                pathNode.setAttribute('y2', cy);
+                            }
+                        }
+                    });
+                }
             }
         }
 
@@ -406,7 +462,7 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
-            if (evt.target.classList.contains('learningmap-draggable')) {
+            if (evt.target.classList.contains('learningmap-draggable') || evt.target.nodeName == 'text') {
                 if (!touchstart) {
                     touchstart = true;
                     touchmove = 0;
@@ -516,6 +572,26 @@ export const init = () => {
     }
 
     /**
+     * Returns an text tag with the given id.
+     * @param {*} id id for the text
+     * @param {*} content content of the tag
+     * @param {*} x x coordinate of the text
+     * @param {*} y y coordinate of the text
+     * @returns {any}
+     */
+     function text(id, content, x, y) {
+        let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('id', id);
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        // Default value for delta: Circle radius * 1.5 (as a padding)
+        text.setAttribute('dx', 10 * 1.5);
+        text.setAttribute('dy', 10 * 1.5);
+        text.textContent = content;
+        return text;
+    }
+
+    /**
      * Returns a circle tag with the given dimensions.
      * @param {*} x x coordinate of the center
      * @param {*} y y coordinate of the center
@@ -558,15 +634,19 @@ export const init = () => {
      * @param {*} child child item to set the link on
      * @param {*} id id of the link
      * @param {*} title title of the link
+     * @param {*} text text to describe the link
      * @returns {any}
      */
-    function link(child, id, title = null) {
+    function link(child, id, title = null, text = null) {
         let link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
         link.setAttribute('id', id);
         link.setAttribute('xlink:href', '');
         link.appendChild(child);
         if (!(title === null)) {
             link.appendChild(title);
+        }
+        if (!(text === null)) {
+            link.appendChild(text);
         }
         return link;
     }
@@ -590,7 +670,8 @@ export const init = () => {
             link(
                 circle(cx, cy, 10, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
                 linkId,
-                title('title' + placeId)
+                title('title' + placeId),
+                text('text' + placeId, '', cx, cy)
             )
         );
         placestore.addPlace(placeId, linkId);

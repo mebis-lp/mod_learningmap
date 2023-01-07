@@ -46,16 +46,23 @@ class mapworker {
      */
     protected $cm;
     /**
+     * @var $edit Whether to prepare the code for edit mode
+     */
+    protected $edit;
+    /**
      * Creates mapworker from SVG code
      *
-     * @param string $svgcode
-     * @param array $placestore
-     * @param cm_info $cm
+     * @param string $svgcode The SVG code to build the map from
+     * @param array $placestore The placestore data to use while processing the map
+     * @param cm_info $cm The course module that belongs to the map (null by default)
+     * @param bool $edit Whether the mapworker should prepare the map for edit mode (false by default)
      */
-    public function __construct(string $svgcode, array $placestore, \cm_info $cm = null) {
+    public function __construct(string $svgcode, array $placestore, \cm_info $cm = null, bool $edit = false) {
         global $CFG;
         $this->svgcode = $svgcode;
         $this->placestore = $placestore;
+        $this->edit = $edit;
+        $placestore['editmode'] = $this->edit;
         if (!is_null($cm)) {
             $this->cm = $cm;
         }
@@ -93,10 +100,15 @@ class mapworker {
      */
     public function replace_stylesheet(array $placestoreoverride = []) : void {
         global $OUTPUT;
-        $this->placestore_local = array_merge($this->placestore, $placestoreoverride);
+        $placestorelocal = array_merge($this->placestore, $placestoreoverride);
+        if ($this->edit) {
+            $placestorelocal = array_merge($placestorelocal, ['editmode' => true]);
+        } else {
+            $placestorelocal = array_merge($placestorelocal, ['editmode' => false]);
+        }
         $this->svgcode = preg_replace(
             '/<style[\s\S]*style>/i',
-            $OUTPUT->render_from_template('mod_learningmap/cssskeleton', $this->placestore_local),
+            $OUTPUT->render_from_template('mod_learningmap/cssskeleton', $placestorelocal),
             $this->svgcode
         );
         $this->load_dom();
@@ -146,7 +158,9 @@ class mapworker {
                 // Remove the place completely from the map.
                 if (!$placecm) {
                     $impossible[] = $place['id'];
-                    $link->parentNode->removeChild($link);
+                    if (!$this->edit) {
+                        $link->parentNode->removeChild($link);
+                    }
                 } else {
                     // Set the link URL in the map.
                     if (!empty($link)) {
@@ -158,10 +172,12 @@ class mapworker {
                             $url = $CFG->wwwroot . '/course/view.php?id=' . $placecm->course .
                                 '&section=' . $placecm->sectionnum . '#module-' . $placecm->id;
                         }
-                        $link->setAttribute(
-                            'xlink:href',
-                            $url
-                        );
+                        if (!$this->edit) {
+                            $link->setAttribute(
+                                'xlink:href',
+                                $url
+                            );
+                        }
                         $links[$place['id']] = $place['linkId'];
                         // Set the title element for the link (for accessibility) and for a tooltip when hovering
                         // the link.
@@ -175,6 +191,11 @@ class mapworker {
                                     ' (' . get_string('targetplace', 'learningmap') . ')' :
                                     ''
                                 );
+                        }
+                        // Set the text element for the link.
+                        $text = $this->dom->getElementById('text' . $place['id']);
+                        if ($text) {
+                            $text->nodeValue = $placecm->get_formatted_name();
                         }
                     }
                     // If the place is a starting place, add it to the active places.
@@ -199,92 +220,97 @@ class mapworker {
                     }
                 }
                 // If the place is not linked to an activity it is impossible to reach.
-            } else {
+            } else if (!($this->edit)) {
                 $impossible[] = $place['id'];
                 $link->parentNode->removeChild($link);
             }
         }
-        foreach ($this->placestore['paths'] as $path) {
-            // If the ending of the path is a completed place and this place is available,
-            // show path and the place on the other end.
-            if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], array_merge($notavailable, $impossible))) {
-                // Only set paths visible if hidepaths is not set in placestore.
-                if (!$this->placestore['hidepaths']) {
-                    $active[] = $path['id'];
+        if (!($this->edit)) {
+            foreach ($this->placestore['paths'] as $path) {
+                // If the ending of the path is a completed place and this place is available,
+                // show path and the place on the other end.
+                if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], array_merge($notavailable, $impossible))) {
+                    // Only set paths visible if hidepaths is not set in placestore.
+                    if (!$this->placestore['hidepaths']) {
+                        $active[] = $path['id'];
+                    }
+                    $active[] = $path['fid'];
                 }
-                $active[] = $path['fid'];
-            }
-            // If the beginning of the path is a completed place and this place is available,
-            // show path and the place on the other end.
-            if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], array_merge($notavailable, $impossible))) {
-                // Only set paths visible if hidepaths is not set in placestore.
-                if (!$this->placestore['hidepaths']) {
-                    $active[] = $path['id'];
+                // If the beginning of the path is a completed place and this place is available,
+                // show path and the place on the other end.
+                if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], array_merge($notavailable, $impossible))) {
+                    // Only set paths visible if hidepaths is not set in placestore.
+                    if (!$this->placestore['hidepaths']) {
+                        $active[] = $path['id'];
+                    }
+                    $active[] = $path['sid'];
                 }
-                $active[] = $path['sid'];
-            }
-            // Hide paths that lead to unreachable places.
-            if (!empty($this->placestore['showall'])) {
-                if (in_array($path['sid'], $impossible) || in_array($path['fid'], $impossible)) {
-                    $dompath = $this->dom->getElementById($path['id']);
-                    if ($dompath) {
-                        $dompath->setAttribute('style', 'visibility: hidden;');
+                // Hide paths that lead to unreachable places.
+                if (!empty($this->placestore['showall'])) {
+                    if (in_array($path['sid'], $impossible) || in_array($path['fid'], $impossible)) {
+                        $dompath = $this->dom->getElementById($path['id']);
+                        if ($dompath) {
+                            $dompath->setAttribute('style', 'visibility: hidden;');
+                        }
                     }
                 }
             }
-        }
-        // Set all active paths and places to visible.
-        foreach ($active as $a) {
-            $domplace = $this->dom->getElementById($a);
-            if (!$domplace) {
-                continue;
-            }
-            $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-reachable');
-        }
-        // Make all completed places visible and set color for visited places.
-        foreach ($completedplaces as $place) {
-            $domplace = $this->dom->getElementById($place);
-            if ($domplace) {
-                if (!isset($this->placestore['version'])) {
-                    $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
-                } else {
-                    $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-place-visited');
+            // Set all active paths and places to visible.
+            foreach ($active as $a) {
+                $domplace = $this->dom->getElementById($a);
+                if (!$domplace) {
+                    continue;
                 }
-                // If the option "usecheckmark" is selected, add the checkmark to the circle.
-                if ($this->placestore['usecheckmark']) {
-                    $x = $domplace->getAttribute('cx');
-                    $y = $domplace->getAttribute('cy');
-                    $use = $this->dom->createElement('use');
-                    $use->setAttribute('xlink:href', '#checkmark');
-                    $use->setAttribute('transform', 'translate(' . $x . ' '. $y . ')');
-                    $use->setAttribute('class', 'learningmap-checkmark');
-                    $domplace->parentNode->appendChild($use);
+                $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-reachable');
+            }
+            // Make all completed places visible and set color for visited places.
+            foreach ($completedplaces as $place) {
+                $domplace = $this->dom->getElementById($place);
+                if ($domplace) {
+                    if (!isset($this->placestore['version'])) {
+                        $domplace->setAttribute('style', 'visibility: visible; fill: ' . $this->placestore['visitedcolor'] . ';');
+                    } else {
+                        $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-place-visited');
+                    }
+                    // If the option "usecheckmark" is selected, add the checkmark to the circle.
+                    if ($this->placestore['usecheckmark']) {
+                        $x = $domplace->getAttribute('cx');
+                        $y = $domplace->getAttribute('cy');
+                        $use = $this->dom->createElement('use');
+                        $use->setAttribute('xlink:href', '#checkmark');
+                        $use->setAttribute('transform', 'translate(' . $x . ' '. $y . ')');
+                        $use->setAttribute('class', 'learningmap-checkmark');
+                        $domplace->parentNode->appendChild($use);
+                    }
                 }
             }
-        }
-        $notavailable = array_merge(array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible), $notavailable);
-        // Handle unavailable places.
-        foreach ($notavailable as $place) {
-            $domplace = $this->dom->getElementById($place);
-            if (!$domplace) {
-                continue;
+            $notavailable = array_merge(
+                array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible),
+                $notavailable
+            );
+            // Handle unavailable places.
+            foreach ($notavailable as $place) {
+                $domplace = $this->dom->getElementById($place);
+                if (!$domplace) {
+                    continue;
+                }
+                if (isset($links[$place])) {
+                    $domlink = $this->dom->getElementById($links[$place]);
+                    $domlink->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
+                    $domlink->removeAttribute('xlink:href');
+                }
             }
-            $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-hidden');
-            if (isset($links[$place])) {
-                $domlink = $this->dom->getElementById($links[$place]);
-                $domlink->removeAttribute('xlink:href');
-            }
-        }
-        // Make all places hidden if they are impossible to reach.
-        foreach ($impossible as $place) {
-            $domplace = $this->dom->getElementById($place);
-            if (!$domplace) {
-                continue;
-            }
-            $domplace->setAttribute('style', 'visibility: hidden;');
-            if (isset($links[$place])) {
-                $domlink = $this->dom->getElementById($links[$place]);
-                $domlink->removeAttribute('xlink:href');
+            // Make all places hidden if they are impossible to reach.
+            foreach ($impossible as $place) {
+                $domplace = $this->dom->getElementById($place);
+                if (!$domplace) {
+                    continue;
+                }
+                if (isset($links[$place])) {
+                    $domlink = $this->dom->getElementById($links[$place]);
+                    $domlink->setAttribute('style', 'visibility: hidden;');
+                    $domlink->removeAttribute('xlink:href');
+                }
             }
         }
         $this->svgcode = $this->dom->saveXML();

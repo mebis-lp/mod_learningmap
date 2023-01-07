@@ -103,14 +103,14 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $item->intro = str_replace('learningmap-svgmap-' . $oldmapid, 'learningmap-svgmap-' . $newmapid, $item->intro);
         $placestore->mapid = $newmapid;
 
-        if (!isset($placestore->version) || $placestore->version < 2022111301) {
-            $placestore->version = 2022111301;
+        if (!isset($placestore->version) || $placestore->version < 2023010601) {
+            $placestore->version = 2023010601;
             // Needs 1 as default value (otherwise all place strokes would be hidden).
             if (!isset($placestore->strokeopacity)) {
                 $placestore->strokeopacity = 1;
             }
             $mapworker = new \mod_learningmap\mapworker($item->intro, (array)$placestore);
-            $mapworker->replace_stylesheet(['editmode' => false]);
+            $mapworker->replace_stylesheet();
             $item->intro = $mapworker->get_svgcode();
         }
 

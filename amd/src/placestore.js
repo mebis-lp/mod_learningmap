@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2022111301,
+    version: 2023010601,
     id: 0,
     places: [],
     paths: [],
@@ -8,6 +8,7 @@ let placestore = {
     placecolor: '#c01c28',
     strokecolor: '#ffffff',
     strokeopacity: 1,
+    textcolor: '#ffffff',
     visitedcolor: '#26a269',
     height: 100,
     width: 800,
@@ -18,6 +19,7 @@ let placestore = {
     pulse: false,
     hover: false,
     showall: false,
+    showtext: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -25,11 +27,14 @@ let placestore = {
     loadJSON: function(json) {
         try {
             let fromjson = JSON.parse(json);
+            if (fromjson.textcolor === null) {
+                fromjson.textcolor = fromjson.strokecolor;
+            }
             Object.assign(this, fromjson);
             // eslint-disable-next-line no-empty
         } catch { }
         // Update version (only relevant if learning map is saved)
-        this.version = 2022111301;
+        this.version = 2023010601;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -209,6 +214,9 @@ let placestore = {
             case 'visited':
                 this.visitedcolor = color;
                 break;
+            case 'text':
+                this.textcolor = color;
+                break;
         }
     },
     /**
@@ -224,6 +232,8 @@ let placestore = {
                 return this.placecolor;
             case 'visited':
                 return this.visitedcolor;
+            case 'text':
+                return this.textcolor;
         }
         return null;
     },
@@ -277,6 +287,7 @@ let placestore = {
             placecolor: this.placecolor,
             strokecolor: this.strokecolor,
             strokeopacity: this.strokeopacity,
+            textcolor: this.textcolor,
             visitedcolor: this.visitedcolor,
             height: this.height,
             width: this.width,
@@ -287,7 +298,8 @@ let placestore = {
             version: this.version,
             pulse: this.pulse,
             hover: this.hover,
-            showall: this.showall
+            showall: this.showall,
+            showtext: this.showtext,
         };
     },
     /**
@@ -393,7 +405,28 @@ let placestore = {
      */
     getStrokeOpacity: function() {
         return this.strokeopacity;
-    }
+    },
+    /**
+     * Returns the value of showtext attribute
+     * @returns {boolean}
+     */
+    getShowText: function() {
+        return this.showtext;
+    },
+    /**
+     * Sets the value of showtext attribute
+     * @param {boolean} value
+     */
+    setShowText: function(value) {
+        this.showtext = value;
+    },
+    /**
+     * Returns an array with all place identifiers
+     * @returns {array}
+     */
+     getPlaces: function() {
+        return this.places;
+    },
 };
 
 export default placestore;
