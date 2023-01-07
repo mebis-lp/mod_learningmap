@@ -101,11 +101,7 @@ class mapworker {
     public function replace_stylesheet(array $placestoreoverride = []) : void {
         global $OUTPUT;
         $placestorelocal = array_merge($this->placestore, $placestoreoverride);
-        if ($this->edit) {
-            $placestorelocal = array_merge($placestorelocal, ['editmode' => true]);
-        } else {
-            $placestorelocal = array_merge($placestorelocal, ['editmode' => false]);
-        }
+        $placestorelocal = array_merge($placestorelocal, ['editmode' => $this->edit]);
         $this->svgcode = preg_replace(
             '/<style[\s\S]*style>/i',
             $OUTPUT->render_from_template('mod_learningmap/cssskeleton', $placestorelocal),
@@ -220,9 +216,11 @@ class mapworker {
                     }
                 }
                 // If the place is not linked to an activity it is impossible to reach.
-            } else if (!($this->edit)) {
+            } else {
                 $impossible[] = $place['id'];
-                $link->parentNode->removeChild($link);
+                if (!$this->edit) {
+                    $link->parentNode->removeChild($link);
+                }
             }
         }
         if (!($this->edit)) {

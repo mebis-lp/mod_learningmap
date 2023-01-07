@@ -3,6 +3,8 @@ import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
 export const init = () => {
+    const circleRadius = 10;
+
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
@@ -301,13 +303,13 @@ export const init = () => {
                     selectedElement.setAttributeNS(null, "cx", cx);
                     selectedElement.setAttributeNS(null, "cy", cy);
                     let textNoode = document.getElementById('text' + selectedElement.id);
-                    if (!(textNoode === null)) {
+                    if (textNoode !== null) {
                         textNoode.setAttributeNS(null, 'x', cx);
                         textNoode.setAttributeNS(null, 'y', cy);
                     }
                     pathsToUpdateFirstPoint.forEach(function(path) {
                         let pathNode = document.getElementById(path.id);
-                        if (!(pathNode === null)) {
+                        if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
                                 let pathDeclaration = pathNode.getAttribute('d');
                                 let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
@@ -480,8 +482,8 @@ export const init = () => {
         text.setAttribute('x', x);
         text.setAttribute('y', y);
         // Default value for delta: Circle radius * 1.5 (as a padding)
-        text.setAttribute('dx', 10 * 1.5);
-        text.setAttribute('dy', 10 * 1.5);
+        text.setAttribute('dx', circleRadius * 1.5);
+        text.setAttribute('dy', circleRadius * 1.5);
         text.textContent = content;
         return text;
     }
@@ -563,7 +565,7 @@ export const init = () => {
         let cy = (event.clientY - CTM.f) / CTM.d;
         placesgroup.appendChild(
             link(
-                circle(cx, cy, 10, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
+                circle(cx, cy, circleRadius, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
                 linkId,
                 title('title' + placeId),
                 text('text' + placeId, '', cx, cy)
