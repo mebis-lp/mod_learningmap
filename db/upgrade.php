@@ -31,24 +31,24 @@
 function xmldb_learningmap_upgrade($oldversion) {
     global $DB;
 
-    if ($oldversion < 2022111301) {
+    if ($oldversion < 2023010601) {
         $entries = $DB->get_records('learningmap', []);
         if ($entries) {
             foreach ($entries as $entry) {
                 $placestore = json_decode($entry->placestore, true);
-                $placestore['version'] = 2022111301;
+                $placestore['version'] = 2023010601;
                 // Needs 1 as default value (otherwise all place strokes would be hidden).
                 if (!isset($placestore['strokeopacity'])) {
                     $placestore['strokeopacity'] = 1;
                 }
                 $mapworker = new \mod_learningmap\mapworker($entry->intro, $placestore);
-                $mapworker->replace_stylesheet(['editmode' => false]);
+                $mapworker->replace_stylesheet();
                 $entry->intro = $mapworker->get_svgcode();
                 $entry->placestore = json_encode($placestore);
                 $DB->update_record('learningmap', $entry);
             }
         }
-        upgrade_mod_savepoint(true, 2022111301, 'learningmap');
+        upgrade_mod_savepoint(true, 2023010601, 'learningmap');
     }
     return true;
 }

@@ -83,6 +83,12 @@
     {{/hidepaths}}
 }
 
+#learningmap-svgmap-{{mapid}} text {
+    fill: {{ textcolor }};
+    stroke: none;
+    {{^showtext}}display: none;{{/showtext}}
+}
+
 #learningmap-svgmap-{{mapid}} .learningmap-targetplace {
     stroke-dasharray: 1,1;
 }
@@ -94,7 +100,7 @@
     fill: none;
 }
 {{^editmode}}
-#learningmap-svgmap-{{mapid}} .learningmap-hidden {
+#learningmap-svgmap-{{mapid}} .learningmap-hidden * {
     {{^showall}}
     visibility: hidden;
     {{/showall}}

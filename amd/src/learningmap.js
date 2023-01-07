@@ -3,6 +3,8 @@ import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
 export const init = () => {
+    const circleRadius = 10;
+
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
@@ -12,9 +14,9 @@ export const init = () => {
     // Variable for draggable element
     var dragel;
 
-    // Variables for storing the paths that need update of the first (upd1) or
-    // the second (upd2) coordinates.
-    var upd1, upd2;
+    // Variables for storing the paths that need update of the first or
+    // the second coordinates.
+    var pathsToUpdateFirstPoint, pathsToUpdateSecondPoint;
 
     // Variables for handling the currently selected elements
     var selectedElement = null,
@@ -35,9 +37,6 @@ export const init = () => {
     // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
     let code = document.getElementById('id_introeditor_text');
-    let colorChooserPlace = document.getElementById('learningmap-color-place');
-    let colorChooserVisited = document.getElementById('learningmap-color-visited');
-    let colorChooserPath = document.getElementById('learningmap-color-path');
 
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
@@ -68,6 +67,10 @@ export const init = () => {
         activitySelector.addEventListener('change', function() {
             placestore.setActivityId(elementForActivitySelector, activitySelector.value);
             if (activitySelector.value) {
+                let text = document.getElementById('text' + elementForActivitySelector);
+                if (text) {
+                    text.textContent = activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent;
+                }
                 document.getElementById(elementForActivitySelector).classList.remove('learningmap-emptyplace');
             } else {
                 document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
@@ -123,93 +126,19 @@ export const init = () => {
             });
         }
 
-        let hidepaths = document.getElementById('learningmap-hidepaths');
-        // Attach a listener to the hidepaths checkbox
-        if (hidepaths) {
-            hidepaths.checked = placestore.getHidePaths();
-            hidepaths.addEventListener('change', function() {
-                placestore.setHidePaths(hidepaths.checked);
-                updateCSS();
-            });
-        }
-
-        let hidestroke = document.getElementById('learningmap-hidestroke');
-        // Attach a listener to the hidestrokescheckbox
-        if (hidestroke) {
-            hidestroke.checked = placestore.getStrokeOpacity() < 1;
-            hidestroke.addEventListener('change', function() {
-                placestore.setStrokeOpacity(hidestroke.checked ? 0 : 1);
-                updateCSS();
-            });
-        }
-
-        let usecheckmark = document.getElementById('learningmap-usecheckmark');
-        // Attach a listener to the usecheckmark checkbox
-        if (usecheckmark) {
-            usecheckmark.checked = placestore.getUseCheckmark();
-            usecheckmark.addEventListener('change', function() {
-                placestore.setUseCheckmark(usecheckmark.checked);
-                updateCSS();
-            });
-        }
-
-        let hover = document.getElementById('learningmap-hover');
-        // Attach a listener to the hover checkbox
-        if (hover) {
-            hover.checked = placestore.getHover();
-            hover.addEventListener('change', function() {
-                placestore.setHover(hover.checked);
-                updateCSS();
-            });
-        }
-
-        let pulse = document.getElementById('learningmap-pulse');
-        // Attach a listener to the pulse checkbox
-        if (pulse) {
-            pulse.checked = placestore.getPulse();
-            pulse.addEventListener('change', function() {
-                placestore.setPulse(pulse.checked);
-                updateCSS();
-            });
-        }
-
-        let showall = document.getElementById('learningmap-showall');
-        // Attach a listener to the showall checkbox
-        if (showall) {
-            showall.checked = placestore.getShowall();
-            showall.addEventListener('change', function() {
-                placestore.setShowall(showall.checked);
-                updateCSS();
-            });
-        }
-}
-
-    // Attach listener to the color choosers for paths
-    if (colorChooserPath) {
-        colorChooserPath.addEventListener('change', function() {
-            placestore.setColor('stroke', colorChooserPath.value);
-            updateCSS();
-        });
-        colorChooserPath.value = placestore.getColor('stroke');
+        advancedSettingsLogic('hidepaths', placestore.getHidePaths, placestore.setHidePaths);
+        advancedSettingsLogic('usecheckmark', placestore.getUseCheckmark, placestore.setUseCheckmark);
+        advancedSettingsLogic('hover', placestore.getHover, placestore.setHover);
+        advancedSettingsLogic('pulse', placestore.getPulse, placestore.setPulse);
+        advancedSettingsLogic('showall', placestore.getShowall, placestore.setShowall);
+        advancedSettingsLogic('hidestroke', placestore.getHideStroke, placestore.setHideStroke);
+        advancedSettingsLogic('showtext', placestore.getShowText, placestore.setShowText, fixPlaceLabels);
     }
 
-    // Attach listener to the color choosers for places
-    if (colorChooserPlace) {
-        colorChooserPlace.addEventListener('change', function() {
-            placestore.setColor('place', colorChooserPlace.value);
-            updateCSS();
-        });
-        colorChooserPlace.value = placestore.getColor('place');
-    }
-
-    // Attach listener to the color choosers for visited places
-    if (colorChooserVisited) {
-        colorChooserVisited.addEventListener('change', function() {
-            placestore.setColor('visited', colorChooserVisited.value);
-            updateCSS();
-        });
-        colorChooserVisited.value = placestore.getColor('visited');
-    }
+    // Attach listener to the color choosers
+    colorChooserLogic('stroke', 'text');
+    colorChooserLogic('place');
+    colorChooserLogic('visited');
 
     // Get SVG code from the (hidden) textarea field
     if (code && mapdiv) {
@@ -332,8 +261,16 @@ export const init = () => {
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "cx"));
                 offset.y -= parseInt(selectedElement.getAttributeNS(null, "cy"));
                 // Get paths that need to be updated.
-                upd1 = placestore.getPathsWithFid(selectedElement.id);
-                upd2 = placestore.getPathsWithSid(selectedElement.id);
+                pathsToUpdateFirstPoint = placestore.getPathsWithFid(selectedElement.id);
+                pathsToUpdateSecondPoint = placestore.getPathsWithSid(selectedElement.id);
+            } else if (evt.target.nodeName == 'text') {
+                selectedElement = evt.target;
+                let place = selectedElement.parentNode.querySelector('.learningmap-place');
+                offset = getMousePosition(evt);
+                offset.x -= parseInt(selectedElement.getAttributeNS(null, "dx")) + place.cx.baseVal.value;
+                offset.y -= parseInt(selectedElement.getAttributeNS(null, "dy")) + place.cy.baseVal.value;
+                pathsToUpdateFirstPoint = [];
+                pathsToUpdateSecondPoint = [];
             }
         }
 
@@ -350,38 +287,54 @@ export const init = () => {
             touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
-                let cx = coord.x - offset.x;
-                let cy = coord.y - offset.y;
-                selectedElement.setAttributeNS(null, "cx", cx);
-                selectedElement.setAttributeNS(null, "cy", cy);
-
-                upd1.forEach(function(p) {
-                    let d = document.getElementById(p.id);
-                    if (!(d === null)) {
-                        if (d.nodeName == 'path') {
-                            let pathDeclaration = d.getAttribute('d');
-                            let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
-                            d.setAttribute('d', newPathDeclaration);
-                        } else {
-                            d.setAttribute('x1', cx);
-                            d.setAttribute('y1', cy);
-                        }
+                if (selectedElement.nodeName == 'text') {
+                    let place = selectedElement.parentNode.querySelector('.learningmap-place');
+                    // Calculate the delta from the current mouse position to the corresponding place.
+                    // coord: current mouse position
+                    // offset: delta from the mouse position to the coordinates of the text node
+                    let dx = coord.x - offset.x - place.cx.baseVal.value;
+                    let dy = coord.y - offset.y - place.cy.baseVal.value;
+                    selectedElement.setAttributeNS(null, "dx", dx);
+                    selectedElement.setAttributeNS(null, "dy", dy);
+                }
+                if (selectedElement.nodeName == 'circle') {
+                    let cx = coord.x - offset.x;
+                    let cy = coord.y - offset.y;
+                    selectedElement.setAttributeNS(null, "cx", cx);
+                    selectedElement.setAttributeNS(null, "cy", cy);
+                    let textNode = document.getElementById('text' + selectedElement.id);
+                    if (textNode !== null) {
+                        textNode.setAttributeNS(null, 'x', cx);
+                        textNode.setAttributeNS(null, 'y', cy);
                     }
-                });
-
-                upd2.forEach(function(p) {
-                    let d = document.getElementById(p.id);
-                    if (!(d === null)) {
-                        if (d.nodeName == 'path') {
-                            let pathDeclaration = d.getAttribute('d');
-                            let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
-                            d.setAttribute('d', newPathDeclaration);
-                        } else {
-                            d.setAttribute('x2', cx);
-                            d.setAttribute('y2', cy);
+                    pathsToUpdateFirstPoint.forEach(function(path) {
+                        let pathNode = document.getElementById(path.id);
+                        if (pathNode !== null) {
+                            if (pathNode.nodeName == 'path') {
+                                let pathDeclaration = pathNode.getAttribute('d');
+                                let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
+                                pathNode.setAttribute('d', newPathDeclaration);
+                            } else {
+                                pathNode.setAttribute('x1', cx);
+                                pathNode.setAttribute('y1', cy);
+                            }
                         }
-                    }
-                });
+                    });
+
+                    pathsToUpdateSecondPoint.forEach(function(path) {
+                        let pathNode = document.getElementById(path.id);
+                        if (pathNode !== null) {
+                            if (pathNode.nodeName == 'path') {
+                                let pathDeclaration = pathNode.getAttribute('d');
+                                let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
+                                pathNode.setAttribute('d', newPathDeclaration);
+                            } else {
+                                pathNode.setAttribute('x2', cx);
+                                pathNode.setAttribute('y2', cy);
+                            }
+                        }
+                    });
+                }
             }
         }
 
@@ -406,7 +359,7 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
-            if (evt.target.classList.contains('learningmap-draggable')) {
+            if (evt.target.classList.contains('learningmap-draggable') || evt.target.nodeName == 'text') {
                 if (!touchstart) {
                     touchstart = true;
                     touchmove = 0;
@@ -516,6 +469,26 @@ export const init = () => {
     }
 
     /**
+     * Returns an text tag with the given id.
+     * @param {*} id id for the text
+     * @param {*} content content of the tag
+     * @param {*} x x coordinate of the text
+     * @param {*} y y coordinate of the text
+     * @returns {any}
+     */
+     function text(id, content, x, y) {
+        let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('id', id);
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        // Default value for delta: Circle radius * 1.5 (as a padding)
+        text.setAttribute('dx', circleRadius * 1.5);
+        text.setAttribute('dy', circleRadius * 1.5);
+        text.textContent = content;
+        return text;
+    }
+
+    /**
      * Returns a circle tag with the given dimensions.
      * @param {*} x x coordinate of the center
      * @param {*} y y coordinate of the center
@@ -558,15 +531,19 @@ export const init = () => {
      * @param {*} child child item to set the link on
      * @param {*} id id of the link
      * @param {*} title title of the link
+     * @param {*} text text to describe the link
      * @returns {any}
      */
-    function link(child, id, title = null) {
+    function link(child, id, title = null, text = null) {
         let link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
         link.setAttribute('id', id);
         link.setAttribute('xlink:href', '');
         link.appendChild(child);
-        if (!(title === null)) {
+        if (title !== null) {
             link.appendChild(title);
+        }
+        if (text !== null) {
+            link.appendChild(text);
         }
         return link;
     }
@@ -588,9 +565,10 @@ export const init = () => {
         let cy = (event.clientY - CTM.f) / CTM.d;
         placesgroup.appendChild(
             link(
-                circle(cx, cy, 10, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
+                circle(cx, cy, circleRadius, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
                 linkId,
-                title('title' + placeId)
+                title('title' + placeId),
+                text('text' + placeId, '', cx, cy)
             )
         );
         placestore.addPlace(placeId, linkId);
@@ -709,7 +687,7 @@ export const init = () => {
      */
     function removePath(id) {
         let path = document.getElementById(id);
-        if (!(path === null)) {
+        if (path !== null) {
             path.parentNode.removeChild(path);
             placestore.removePath(id);
         }
@@ -786,5 +764,67 @@ export const init = () => {
                 n.classList.remove('learningmap-used-activity');
             }
         });
+    }
+
+    /**
+     * Adds the event listener to the color chooser buttons.
+     * @param {*} name name of the color
+     * @param {*} secondValue name of a second placestore value that has to be changed along
+     */
+    function colorChooserLogic(name, secondValue = '') {
+        let colorChooser = document.getElementById('learningmap-color-' + name);
+        if (colorChooser) {
+            colorChooser.addEventListener('change', function() {
+                placestore.setColor(name, colorChooser.value);
+                if (secondValue != '') {
+                    placestore.setColor(secondValue, colorChooser.value);
+                }
+                updateCSS();
+            });
+            colorChooser.value = placestore.getColor(name);
+        }
+    }
+
+    /**
+     * Adds the event listener to advanced settings menu items
+     * @param {*} name Name of the item
+     * @param {*} getCall Method of placestore to call to read value
+     * @param {*} setCall Method of placestore to call to save value
+     * @param {*} callback Additional callback after value is saved
+     */
+    function advancedSettingsLogic(name, getCall, setCall, callback = null) {
+        let settingItem = document.getElementById('learningmap-advanced-setting-' + name);
+        if (settingItem) {
+            settingItem.checked = getCall.call(placestore);
+            settingItem.addEventListener('change', function() {
+                setCall.call(placestore, settingItem.checked);
+                if (callback !== null) {
+                    callback();
+                }
+                updateCSS();
+            });
+        }
+    }
+
+    /**
+     * Adds missing text nodes
+     */
+    function fixPlaceLabels() {
+        let options = Array.from(activitySelector.getElementsByTagName('option'));
+        let places = placestore.getPlaces();
+        for (const place of places) {
+            if (document.getElementById('text' + place.id) === null) {
+                let content = '';
+                for (const option of options) {
+                    if (option.value == place.linkedActivity) {
+                        content = option.textContent;
+                        break;
+                    }
+                }
+                let placeNode = document.getElementById(place.id);
+                let textNode = text('text' + place.id, content, placeNode.cx.baseVal.value, placeNode.cy.baseVal.value);
+                placeNode.parentNode.appendChild(textNode);
+            }
+        }
     }
 };
