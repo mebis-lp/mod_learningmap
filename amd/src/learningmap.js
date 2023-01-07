@@ -302,10 +302,10 @@ export const init = () => {
                     let cy = coord.y - offset.y;
                     selectedElement.setAttributeNS(null, "cx", cx);
                     selectedElement.setAttributeNS(null, "cy", cy);
-                    let textNoode = document.getElementById('text' + selectedElement.id);
-                    if (textNoode !== null) {
-                        textNoode.setAttributeNS(null, 'x', cx);
-                        textNoode.setAttributeNS(null, 'y', cy);
+                    let textNode = document.getElementById('text' + selectedElement.id);
+                    if (textNode !== null) {
+                        textNode.setAttributeNS(null, 'x', cx);
+                        textNode.setAttributeNS(null, 'y', cy);
                     }
                     pathsToUpdateFirstPoint.forEach(function(path) {
                         let pathNode = document.getElementById(path.id);
