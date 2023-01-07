@@ -323,7 +323,7 @@ export const init = () => {
 
                     pathsToUpdateSecondPoint.forEach(function(path) {
                         let pathNode = document.getElementById(path.id);
-                        if (!(pathNode === null)) {
+                        if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
                                 let pathDeclaration = pathNode.getAttribute('d');
                                 let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
@@ -539,10 +539,10 @@ export const init = () => {
         link.setAttribute('id', id);
         link.setAttribute('xlink:href', '');
         link.appendChild(child);
-        if (!(title === null)) {
+        if (title !== null) {
             link.appendChild(title);
         }
-        if (!(text === null)) {
+        if (text !== null) {
             link.appendChild(text);
         }
         return link;
@@ -687,7 +687,7 @@ export const init = () => {
      */
     function removePath(id) {
         let path = document.getElementById(id);
-        if (!(path === null)) {
+        if (path !== null) {
             path.parentNode.removeChild(path);
             placestore.removePath(id);
         }
