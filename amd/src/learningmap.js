@@ -219,13 +219,23 @@ export const init = () => {
      * @returns {object}
      */
     function getMousePosition(evt) {
-        var CTM = dragel.getScreenCTM();
         if (evt.touches) {
             evt = evt.touches[0];
         }
+        return transformCoordinates(evt.clientX, evt.clientY);
+    }
+
+    /**
+     * Transforms client coordinates to SVG coordinates
+     * @param {*} x
+     * @param {*} y
+     * @returns {object}
+     */
+    function transformCoordinates(x, y) {
+        var CTM = dragel.getScreenCTM();
         return {
-            x: (evt.clientX - CTM.e) / CTM.a,
-            y: (evt.clientY - CTM.f) / CTM.d
+            x: (x - CTM.e) / CTM.a,
+            y: (y - CTM.f) / CTM.d
         };
     }
 
@@ -271,6 +281,14 @@ export const init = () => {
                 offset.y -= parseInt(selectedElement.getAttributeNS(null, "dy")) + place.cy.baseVal.value;
                 pathsToUpdateFirstPoint = [];
                 pathsToUpdateSecondPoint = [];
+            } else if (evt.target.nodeName == 'path') {
+                selectedElement = evt.target;
+                offset = getMousePosition(evt);
+                let pathPoint = transformCoordinates(evt.layerX, evt.layerY);
+                offset.x += pathPoint.x;
+                offset.y += pathPoint.y;
+                pathsToUpdateFirstPoint = [];
+                pathsToUpdateSecondPoint = [];
             }
         }
 
@@ -287,6 +305,8 @@ export const init = () => {
             touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
+                let cx = coord.x - offset.x;
+                let cy = coord.y - offset.y;
                 if (selectedElement.nodeName == 'text') {
                     let place = selectedElement.parentNode.querySelector('.learningmap-place');
                     // Calculate the delta from the current mouse position to the corresponding place.
@@ -297,9 +317,13 @@ export const init = () => {
                     selectedElement.setAttributeNS(null, "dx", dx);
                     selectedElement.setAttributeNS(null, "dy", dy);
                 }
+                if (selectedElement.nodeName == 'path') {
+                    selectedElement.setAttribute(
+                        'd',
+                        updatePathDeclaration(selectedElement.getAttribute('d'), coord.x, coord.y, 3)
+                    );
+                }
                 if (selectedElement.nodeName == 'circle') {
-                    let cx = coord.x - offset.x;
-                    let cy = coord.y - offset.y;
                     selectedElement.setAttributeNS(null, "cx", cx);
                     selectedElement.setAttributeNS(null, "cy", cy);
                     let textNode = document.getElementById('text' + selectedElement.id);
@@ -311,9 +335,7 @@ export const init = () => {
                         let pathNode = document.getElementById(path.id);
                         if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
-                                let pathDeclaration = pathNode.getAttribute('d');
-                                let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
-                                pathNode.setAttribute('d', newPathDeclaration);
+                                pathNode.setAttribute('d', updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, 1));
                             } else {
                                 pathNode.setAttribute('x1', cx);
                                 pathNode.setAttribute('y1', cy);
@@ -325,9 +347,7 @@ export const init = () => {
                         let pathNode = document.getElementById(path.id);
                         if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
-                                let pathDeclaration = pathNode.getAttribute('d');
-                                let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
-                                pathNode.setAttribute('d', newPathDeclaration);
+                                pathNode.setAttribute('d', updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, 2));
                             } else {
                                 pathNode.setAttribute('x2', cx);
                                 pathNode.setAttribute('y2', cy);
@@ -418,6 +438,72 @@ export const init = () => {
             }
             if (evt.cancelable) {
                 evt.preventDefault();
+            }
+        }
+
+        /**
+         * Updates the path declaration of lines and quadratic bezier curves.
+         * @param {*} oldDefinition
+         * @param {*} targetX
+         * @param {*} targetY
+         * @param {*} targetP
+         * @returns {string}
+         */
+        function updatePathDeclaration(oldDefinition, targetX, targetY, targetP = 1) {
+            let parts = oldDefinition.split(' ');
+            let fromx = 0;
+            let fromy = 0;
+            let tox = 0;
+            let toy = 0;
+            let betweenx = 0;
+            let betweeny = 0;
+            let pathtype = 'line';
+
+            for (let i = 0; i < parts.length; i++) {
+                if (parts[i] == 'M') {
+                    fromx = parseInt(parts[i + 1]);
+                    fromy = parseInt(parts[i + 2]);
+                    i += 2;
+                }
+                if (parts[i] == 'L') {
+                    tox = parseInt(parts[i + 1]);
+                    toy = parseInt(parts[i + 2]);
+                    i += 2;
+                    pathtype = 'line';
+                }
+                if (parts[i] == 'Q') {
+                    betweenx = parseInt(parts[i + 1]);
+                    betweeny = parseInt(parts[i + 2]);
+                    tox = parseInt(parts[i + 3]);
+                    toy = parseInt(parts[i + 4]);
+                    i += 4;
+                    pathtype = 'quadraticbezier';
+                }
+            }
+
+            switch (targetP) {
+                // first point
+                case 1:
+                    fromx = targetX;
+                    fromy = targetY;
+                    break;
+                // second point
+                case 2:
+                    tox = targetX;
+                    toy = targetY;
+                    break;
+                // additional point for bezier curve
+                case 3:
+                    betweenx = targetX * 2 - (fromx + tox) * 0.5;
+                    betweeny = targetY * 2 - (fromy + toy) * 0.5;
+                    pathtype = 'quadraticbezier';
+                    break;
+            }
+
+            if (pathtype == 'quadraticbezier') {
+                return 'M ' + fromx + ' ' + fromy + ' Q ' + betweenx + ' ' + betweeny + ', ' + tox + ' ' + toy;
+            } else {
+                return 'M ' + fromx + ' ' + fromy + ' L ' + tox + ' ' + toy;
             }
         }
     }
