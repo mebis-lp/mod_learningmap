@@ -407,6 +407,20 @@ let placestore = {
         return this.strokeopacity;
     },
     /**
+     * Sets stroke opacity to 0
+     * @param {number} value
+     */
+    setHideStroke: function(value) {
+        this.strokeopacity = (value ? 0 : 1);
+    },
+    /**
+     * Returns the current stroke opacity
+     * @returns {number}
+     */
+    getHideStroke: function() {
+        return this.strokeopacity < 1;
+    },
+    /**
      * Returns the value of showtext attribute
      * @returns {boolean}
      */

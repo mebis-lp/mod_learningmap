@@ -35,9 +35,6 @@ export const init = () => {
     // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
     let code = document.getElementById('id_introeditor_text');
-    let colorChooserPlace = document.getElementById('learningmap-color-place');
-    let colorChooserVisited = document.getElementById('learningmap-color-visited');
-    let colorChooserPath = document.getElementById('learningmap-color-path');
 
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
@@ -127,121 +124,19 @@ export const init = () => {
             });
         }
 
-        let hidepaths = document.getElementById('learningmap-hidepaths');
-        // Attach a listener to the hidepaths checkbox
-        if (hidepaths) {
-            hidepaths.checked = placestore.getHidePaths();
-            hidepaths.addEventListener('change', function() {
-                placestore.setHidePaths(hidepaths.checked);
-                updateCSS();
-            });
-        }
-
-        let hidestroke = document.getElementById('learningmap-hidestroke');
-        // Attach a listener to the hidestrokescheckbox
-        if (hidestroke) {
-            hidestroke.checked = placestore.getStrokeOpacity() < 1;
-            hidestroke.addEventListener('change', function() {
-                placestore.setStrokeOpacity(hidestroke.checked ? 0 : 1);
-                updateCSS();
-            });
-        }
-
-        let usecheckmark = document.getElementById('learningmap-usecheckmark');
-        // Attach a listener to the usecheckmark checkbox
-        if (usecheckmark) {
-            usecheckmark.checked = placestore.getUseCheckmark();
-            usecheckmark.addEventListener('change', function() {
-                placestore.setUseCheckmark(usecheckmark.checked);
-                updateCSS();
-            });
-        }
-
-        let hover = document.getElementById('learningmap-hover');
-        // Attach a listener to the hover checkbox
-        if (hover) {
-            hover.checked = placestore.getHover();
-            hover.addEventListener('change', function() {
-                placestore.setHover(hover.checked);
-                updateCSS();
-            });
-        }
-
-        let pulse = document.getElementById('learningmap-pulse');
-        // Attach a listener to the pulse checkbox
-        if (pulse) {
-            pulse.checked = placestore.getPulse();
-            pulse.addEventListener('change', function() {
-                placestore.setPulse(pulse.checked);
-                updateCSS();
-            });
-        }
-
-        let showall = document.getElementById('learningmap-showall');
-        // Attach a listener to the showall checkbox
-        if (showall) {
-            showall.checked = placestore.getShowall();
-            showall.addEventListener('change', function() {
-                placestore.setShowall(showall.checked);
-                updateCSS();
-            });
-        }
-
-        let showtext = document.getElementById('learningmap-showtext');
-        // Attach a listener to the showall checkbox
-        if (showtext) {
-            showtext.checked = placestore.getShowText();
-            showtext.addEventListener('change', function() {
-                placestore.setShowText(showtext.checked);
-                let options = Array.from(activitySelector.getElementsByTagName('option'));
-                let places = placestore.getPlaces();
-                for (const place of places) {
-                    if (document.getElementById('text' + place.id) === null) {
-                        let content = '';
-                        for (const option of options) {
-                            if (option.value == place.linkedActivity) {
-                                content = option.textContent;
-                                break;
-                            }
-                        }
-                        let placeNode = document.getElementById(place.id);
-                        let textNode = text('text' + place.id, content, placeNode.cx.baseVal.value, placeNode.cy.baseVal.value);
-                        placeNode.parentNode.appendChild(textNode);
-                    }
-                }
-                updateCSS();
-
-            });
-        }
+        advancedSettingsLogic('hidepaths', placestore.getHidePaths, placestore.setHidePaths);
+        advancedSettingsLogic('usecheckmark', placestore.getUseCheckmark, placestore.setUseCheckmark);
+        advancedSettingsLogic('hover', placestore.getHover, placestore.setHover);
+        advancedSettingsLogic('pulse', placestore.getPulse, placestore.setPulse);
+        advancedSettingsLogic('showall', placestore.getShowall, placestore.setShowall);
+        advancedSettingsLogic('hidestroke', placestore.getHideStroke, placestore.setHideStroke);
+        advancedSettingsLogic('showtext', placestore.getShowText, placestore.setShowText, fixPlaceLabels);
     }
 
-    // Attach listener to the color choosers for paths
-    if (colorChooserPath) {
-        colorChooserPath.addEventListener('change', function() {
-            placestore.setColor('stroke', colorChooserPath.value);
-            placestore.setColor('text', colorChooserPath.value);
-            updateCSS();
-        });
-        colorChooserPath.value = placestore.getColor('stroke');
-    }
-
-    // Attach listener to the color choosers for places
-    if (colorChooserPlace) {
-        colorChooserPlace.addEventListener('change', function() {
-            placestore.setColor('place', colorChooserPlace.value);
-            updateCSS();
-        });
-        colorChooserPlace.value = placestore.getColor('place');
-    }
-
-    // Attach listener to the color choosers for visited places
-    if (colorChooserVisited) {
-        colorChooserVisited.addEventListener('change', function() {
-            placestore.setColor('visited', colorChooserVisited.value);
-            updateCSS();
-        });
-        colorChooserVisited.value = placestore.getColor('visited');
-    }
+    // Attach listener to the color choosers
+    colorChooserLogic('stroke', 'text');
+    colorChooserLogic('place');
+    colorChooserLogic('visited');
 
     // Get SVG code from the (hidden) textarea field
     if (code && mapdiv) {
@@ -867,5 +762,67 @@ export const init = () => {
                 n.classList.remove('learningmap-used-activity');
             }
         });
+    }
+
+    /**
+     * Adds the event listener to the color chooser buttons.
+     * @param {*} name name of the color
+     * @param {*} secondValue name of a second placestore value that has to be changed along
+     */
+    function colorChooserLogic(name, secondValue = '') {
+        let colorChooser = document.getElementById('learningmap-color-' + name);
+        if (colorChooser) {
+            colorChooser.addEventListener('change', function() {
+                placestore.setColor(name, colorChooser.value);
+                if (secondValue != '') {
+                    placestore.setColor(secondValue, colorChooser.value);
+                }
+                updateCSS();
+            });
+            colorChooser.value = placestore.getColor(name);
+        }
+    }
+
+    /**
+     * Adds the event listener to advanced settings menu items
+     * @param {*} name Name of the item
+     * @param {*} getCall Method of placestore to call to read value
+     * @param {*} setCall Method of placestore to call to save value
+     * @param {*} callback Additional callback after value is saved
+     */
+    function advancedSettingsLogic(name, getCall, setCall, callback = null) {
+        let settingItem = document.getElementById('learningmap-advanced-setting-' + name);
+        if (settingItem) {
+            settingItem.checked = getCall.call(placestore);
+            settingItem.addEventListener('change', function() {
+                setCall.call(placestore, settingItem.checked);
+                if (callback !== null) {
+                    callback();
+                }
+                updateCSS();
+            });
+        }
+    }
+
+    /**
+     * Adds missing text nodes
+     */
+    function fixPlaceLabels() {
+        let options = Array.from(activitySelector.getElementsByTagName('option'));
+        let places = placestore.getPlaces();
+        for (const place of places) {
+            if (document.getElementById('text' + place.id) === null) {
+                let content = '';
+                for (const option of options) {
+                    if (option.value == place.linkedActivity) {
+                        content = option.textContent;
+                        break;
+                    }
+                }
+                let placeNode = document.getElementById(place.id);
+                let textNode = text('text' + place.id, content, placeNode.cx.baseVal.value, placeNode.cy.baseVal.value);
+                placeNode.parentNode.appendChild(textNode);
+            }
+        }
     }
 };
