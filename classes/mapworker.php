@@ -254,20 +254,6 @@ class mapworker {
         }
         if (!($this->edit)) {
             foreach ($this->placestore['paths'] as $path) {
-                $pathnode = $this->dom->getElementById($path['id']);
-                if ($pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
-                    $parts = explode(' ', $pathnode->getAttribute('d'));
-                    $fromx = intval($parts[1]);
-                    $fromy = intval($parts[2]);
-                    $betweenx = intval($parts[4]);
-                    $betweeny = intval($parts[5]);
-                    $tox = intval($parts[6]);
-                    $toy = intval($parts[7]);
-                    $coordx = $betweenx * 0.5 + ($fromx + $tox) * 0.25;
-                    $coordy = $betweeny * 0.5 + ($fromy + $toy) * 0.25;
-                    $this->coordinates[$path['id']]['x'] = intval($coordx);
-                    $this->coordinates[$path['id']]['y'] = intval($coordy);
-                }
                 // If the ending of the path is a completed place and this place is available,
                 // show path and the place on the other end.
                 if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], array_merge($notavailable, $impossible))) {
@@ -293,7 +279,22 @@ class mapworker {
                         if ($dompath) {
                             $dompath->setAttribute('style', 'visibility: hidden;');
                         }
+                        array_remove_by_value($active, $path['id']);
                     }
+                }
+                $pathnode = $this->dom->getElementById($path['id']);
+                if (in_array($path['id'], $active) && $pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
+                    $parts = explode(' ', $pathnode->getAttribute('d'));
+                    $fromx = intval($parts[1]);
+                    $fromy = intval($parts[2]);
+                    $betweenx = intval($parts[4]);
+                    $betweeny = intval($parts[5]);
+                    $tox = intval($parts[6]);
+                    $toy = intval($parts[7]);
+                    $coordx = $betweenx * 0.5 + ($fromx + $tox) * 0.25;
+                    $coordy = $betweeny * 0.5 + ($fromy + $toy) * 0.25;
+                    $this->coordinates[$path['id']]['x'] = intval($coordx);
+                    $this->coordinates[$path['id']]['y'] = intval($coordy);
                 }
             }
             // Set all active paths and places to visible.
@@ -348,6 +349,10 @@ class mapworker {
             // Make all places hidden if they are impossible to reach.
             foreach ($impossible as $place) {
                 $domplace = $this->dom->getElementById($place);
+                unset($this->coordinates[$place]);
+                for ($i = 1; $i < 5; $i++) {
+                    unset($this->coordinates['text' . $i . $place]);
+                }
                 if (!$domplace) {
                     continue;
                 }
@@ -365,6 +370,8 @@ class mapworker {
             count($this->coordinates) > 0 &&
             count($notavailable) + count($impossible) > 0
         ) {
+            $backgroundnode = $this->dom->getElementById('learningmap-background-image');
+            $height = $backgroundnode->getAttribute('height');
             $c = array_pop($this->coordinates);
             $minx = $c['x'];
             $miny = $c['y'];
@@ -386,7 +393,7 @@ class mapworker {
             $minx = max(0, $minx - $padding);
             $miny = max(0, $miny - $padding);
             $maxx = min(800, $maxx + $padding);
-            $maxy = $maxy + $padding;
+            $maxy = min($height, $maxy + $padding);
 
             $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
                 'viewBox',
