@@ -334,7 +334,7 @@ class mapworker {
                 $domplace = $this->dom->getElementById($place);
                 unset($this->coordinates[$place]);
                 for ($i = 1; $i < 5; $i++) {
-                    unset($this->coordinates['text' + $i + $place]);
+                    unset($this->coordinates['text' . $i . $place]);
                 }
                 if (!$domplace) {
                     continue;
