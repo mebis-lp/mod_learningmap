@@ -50,6 +50,11 @@ class mapworker {
      */
     protected $edit;
     /**
+     * @var array $this->coordinates Stores the coordinates of visible places and paths
+     */
+    protected $coordinates;
+
+    /**
      * Creates mapworker from SVG code
      *
      * @param string $svgcode The SVG code to build the map from
@@ -63,6 +68,7 @@ class mapworker {
         $this->placestore = $placestore;
         $this->edit = $edit;
         $placestore['editmode'] = $this->edit;
+        $this->coordinates = [];
         if (!is_null($cm)) {
             $this->cm = $cm;
         }
@@ -150,6 +156,11 @@ class mapworker {
                 } else {
                     $placecm = false;
                 }
+                $placenode = $this->dom->getElementById($place['id']);
+                if ($placenode) {
+                    $this->coordinates[$place['id']]['x'] = intval($placenode->getAttribute('cx'));
+                    $this->coordinates[$place['id']]['y'] = intval($placenode->getAttribute('cy'));
+                }
                 // If the activity is not found or if there is no activity, add it to the list of not available places.
                 // Remove the place completely from the map.
                 if (!$placecm) {
@@ -225,6 +236,20 @@ class mapworker {
         }
         if (!($this->edit)) {
             foreach ($this->placestore['paths'] as $path) {
+                $pathnode = $this->dom->getElementById($path['id']);
+                if ($pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
+                    $parts = explode(' ', $pathnode->getAttribute('d'));
+                    $fromx = intval($parts[1]);
+                    $fromy = intval($parts[2]);
+                    $betweenx = intval($parts[4]);
+                    $betweeny = intval($parts[5]);
+                    $tox = intval($parts[6]);
+                    $toy = intval($parts[7]);
+                    $coordx = $betweenx * 0.5 + ($fromx + $tox) * 0.25;
+                    $coordy = $betweeny * 0.5 - ($fromy + $toy) * 0.25;
+                    $this->coordinates[$path['id']]['x'] = intval($coordx);
+                    $this->coordinates[$path['id']]['y'] = intval($coordy);
+                }
                 // If the ending of the path is a completed place and this place is available,
                 // show path and the place on the other end.
                 if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], array_merge($notavailable, $impossible))) {
@@ -289,6 +314,7 @@ class mapworker {
             // Handle unavailable places.
             foreach ($notavailable as $place) {
                 $domplace = $this->dom->getElementById($place);
+                unset($this->coordinates[$place]);
                 if (!$domplace) {
                     continue;
                 }
@@ -311,6 +337,37 @@ class mapworker {
                 }
             }
         }
+
+        if (!empty($this->placestore['slicemode']) && count($this->coordinates) > 0) {
+            $c = array_pop($this->coordinates);
+            $minx = $c['x'];
+            $miny = $c['y'];
+            $maxx = $c['x'];
+            $maxy = $c['y'];
+
+            foreach ($this->coordinates as $coord) {
+                $minx = min($minx, $coord['x']);
+                $miny = min($miny, $coord['y']);
+                $maxx = max($maxx, $coord['x']);
+                $maxy = max($maxy, $coord['y']);
+            }
+
+            if (count($this->coordinates) == 0 || ($maxx - $minx < 100 && $maxy - $miny < 100)) {
+                $padding = 50;
+            } else {
+                $padding = 15;
+            }
+            $minx = max(0, $minx - $padding);
+            $miny = max(0, $miny - $padding);
+            $maxx = min(800, $maxx + $padding);
+            $maxy = min(600, $maxy + $padding);
+
+            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
+                'viewBox',
+                $minx . ' ' . $miny . ' ' . ($maxx - $minx) . ' ' . ($maxy - $miny)
+            );
+        }
+
         $this->svgcode = $this->dom->saveXML();
     }
 

@@ -70,6 +70,7 @@ $string['showall'] = 'Show all paths and places';
 $string['showdescription'] = 'Show map on course page';
 $string['showdescription_help'] = 'If checked, the learning map will be displayed on the course page (like a label). Else there will be a link and the map will be displayed on a separate page.';
 $string['showtext'] = 'Show activity names';
+$string['slicemode'] = 'Reveal map with places';
 $string['startingplace'] = 'Starting place';
 $string['svgcode'] = 'SVG code';
 $string['targetplace'] = 'Target place';
