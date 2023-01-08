@@ -5,6 +5,18 @@ import placestore from 'mod_learningmap/placestore';
 export const init = () => {
     const circleRadius = 10;
 
+    // Constants for updatePathDeclaration.
+    const targetPoints = {
+        firstPoint: 1,
+        secondPoint: 2,
+        bezierPoint: 3,
+    };
+
+    const pathTypes = {
+        line: 1,
+        quadraticbezier: 2,
+    };
+
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
@@ -227,9 +239,9 @@ export const init = () => {
 
     /**
      * Transforms client coordinates to SVG coordinates
-     * @param {*} x
-     * @param {*} y
-     * @returns {object}
+     * @param {number} x x coordinate to transform
+     * @param {number} y y coordinate to transform
+     * @returns {object} Object containing transformed x and y coordinate
      */
     function transformCoordinates(x, y) {
         var CTM = dragel.getScreenCTM();
@@ -265,6 +277,8 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
+            pathsToUpdateFirstPoint = [];
+            pathsToUpdateSecondPoint = [];
             if (evt.target.classList.contains('learningmap-draggable')) {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
@@ -279,16 +293,12 @@ export const init = () => {
                 offset = getMousePosition(evt);
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "dx")) + place.cx.baseVal.value;
                 offset.y -= parseInt(selectedElement.getAttributeNS(null, "dy")) + place.cy.baseVal.value;
-                pathsToUpdateFirstPoint = [];
-                pathsToUpdateSecondPoint = [];
             } else if (evt.target.nodeName == 'path') {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
                 let pathPoint = transformCoordinates(evt.layerX, evt.layerY);
                 offset.x += pathPoint.x;
                 offset.y += pathPoint.y;
-                pathsToUpdateFirstPoint = [];
-                pathsToUpdateSecondPoint = [];
             }
         }
 
@@ -379,7 +389,11 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
-            if (evt.target.classList.contains('learningmap-draggable') || evt.target.nodeName == 'text') {
+            if (
+                evt.target.classList.contains('learningmap-draggable') ||
+                evt.target.nodeName == 'text' ||
+                evt.target.nodeName == 'path'
+            ) {
                 if (!touchstart) {
                     touchstart = true;
                     touchmove = 0;
@@ -442,68 +456,71 @@ export const init = () => {
         }
 
         /**
-         * Updates the path declaration of lines and quadratic bezier curves.
-         * @param {*} oldDefinition
-         * @param {*} targetX
-         * @param {*} targetY
-         * @param {*} targetP
-         * @returns {string}
+         * Updates the path declaration of lines and quadratic bezier curves setting one of the points.
+         * @param {string} oldDefinition SVG path definition string
+         * @param {number} targetX x coordinate of the point to set
+         * @param {number} targetY y coordinate of the point to set
+         * @param {number} targetP Which point to change (you can use the targetPoints constants here)
+         * @returns {string} Updated SVG path definition
          */
-        function updatePathDeclaration(oldDefinition, targetX, targetY, targetP = 1) {
+        function updatePathDeclaration(oldDefinition, targetX, targetY, targetP = targetPoints.firstPoint) {
             let parts = oldDefinition.split(' ');
-            let fromx = 0;
-            let fromy = 0;
-            let tox = 0;
-            let toy = 0;
-            let betweenx = 0;
-            let betweeny = 0;
-            let pathtype = 'line';
+            let fromX = 0;
+            let fromY = 0;
+            let toX = 0;
+            let toY = 0;
+            let bezierX = 0;
+            let bezierY = 0;
+            let pathType = pathTypes.line;
 
+            // The d attribute of an SVG path in a learning map can have two different formats (in this version):
+            // "M x1 y1 L x2 y2"        Line from x1, y1 to x2, y2
+            // "M x1 y2 Q x3 y3 x2 y2"  Quadratic bezier curve inside the triangle defined by x1, y1, x2, y2 and x3, y3.
             for (let i = 0; i < parts.length; i++) {
+                // Every path contains the first point in that way.
                 if (parts[i] == 'M') {
-                    fromx = parseInt(parts[i + 1]);
-                    fromy = parseInt(parts[i + 2]);
+                    fromX = parseInt(parts[i + 1]);
+                    fromY = parseInt(parts[i + 2]);
                     i += 2;
                 }
+                // This path is a direct line, so there are only two points in total.
                 if (parts[i] == 'L') {
-                    tox = parseInt(parts[i + 1]);
-                    toy = parseInt(parts[i + 2]);
+                    toX = parseInt(parts[i + 1]);
+                    toY = parseInt(parts[i + 2]);
                     i += 2;
-                    pathtype = 'line';
                 }
+                // This path is a bezier curve, there are three points in total.
                 if (parts[i] == 'Q') {
-                    betweenx = parseInt(parts[i + 1]);
-                    betweeny = parseInt(parts[i + 2]);
-                    tox = parseInt(parts[i + 3]);
-                    toy = parseInt(parts[i + 4]);
+                    bezierX = parseInt(parts[i + 1]);
+                    bezierY = parseInt(parts[i + 2]);
+                    toX = parseInt(parts[i + 3]);
+                    toY = parseInt(parts[i + 4]);
                     i += 4;
-                    pathtype = 'quadraticbezier';
+                    pathType = pathType.quadraticbezier;
                 }
             }
 
             switch (targetP) {
-                // first point
-                case 1:
-                    fromx = targetX;
-                    fromy = targetY;
+                case targetPoints.firstPoint:
+                    fromX = targetX;
+                    fromY = targetY;
                     break;
-                // second point
-                case 2:
-                    tox = targetX;
-                    toy = targetY;
+                case targetPoints.secondPoint:
+                    toX = targetX;
+                    toY = targetY;
                     break;
-                // additional point for bezier curve
-                case 3:
-                    betweenx = targetX * 2 - (fromx + tox) * 0.5;
-                    betweeny = targetY * 2 - (fromy + toy) * 0.5;
-                    pathtype = 'quadraticbezier';
+                case targetPoints.bezierPoint:
+                    // Calculate the third triangle point for the bezier curve.
+                    bezierX = targetX * 2 - (fromX + toX) * 0.5;
+                    bezierY = targetY * 2 - (fromY + toY) * 0.5;
+                    pathType = pathType = pathTypes.quadraticbezier;
                     break;
             }
 
-            if (pathtype == 'quadraticbezier') {
-                return 'M ' + fromx + ' ' + fromy + ' Q ' + betweenx + ' ' + betweeny + ', ' + tox + ' ' + toy;
+            if (pathType == pathTypes.quadraticbezier) {
+                return 'M ' + fromX + ' ' + fromY + ' Q ' + bezierX + ' ' + bezierY + ', ' + toX + ' ' + toY;
             } else {
-                return 'M ' + fromx + ' ' + fromy + ' L ' + tox + ' ' + toy;
+                return 'M ' + fromX + ' ' + fromY + ' L ' + toX + ' ' + toY;
             }
         }
     }
