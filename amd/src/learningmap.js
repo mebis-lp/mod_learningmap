@@ -519,7 +519,7 @@ export const init = () => {
                     // Calculate the third triangle point for the bezier curve.
                     bezierX = targetX * 2 - (fromX + toX) * 0.5;
                     bezierY = targetY * 2 - (fromY + toY) * 0.5;
-                    pathType = pathType = pathTypes.quadraticbezier;
+                    pathType = pathTypes.quadraticbezier;
                     break;
             }
 
