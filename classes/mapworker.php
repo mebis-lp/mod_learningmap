@@ -264,7 +264,7 @@ class mapworker {
                     $tox = intval($parts[6]);
                     $toy = intval($parts[7]);
                     $coordx = $betweenx * 0.5 + ($fromx + $tox) * 0.25;
-                    $coordy = $betweeny * 0.5 - ($fromy + $toy) * 0.25;
+                    $coordy = $betweeny * 0.5 + ($fromy + $toy) * 0.25;
                     $this->coordinates[$path['id']]['x'] = intval($coordx);
                     $this->coordinates[$path['id']]['y'] = intval($coordy);
                 }
