@@ -25,7 +25,7 @@ namespace mod_learningmap;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @group      mod_learningmap
  * @group      mebis
- * @covers     \mod_learningmap\completion\custom_completion
+ * @covers     \mod_learningmap\mapworker
  */
 class mod_learningmap_mapworker_test extends \advanced_testcase {
 
