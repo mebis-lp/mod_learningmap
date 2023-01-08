@@ -448,4 +448,15 @@ class mapworker {
         }
         return false;
     }
+
+    /**
+     * Get attribute value (for unit testing)
+     *
+     * @param string $id The id of the DOM element
+     * @param string $attribute The name of the attribute
+     * @return string
+     */
+    public function getattribute(string $id, string $attribute): string {
+        return $this->dom->getElementById($id)->getAttribute($attribute);
+    }
 }

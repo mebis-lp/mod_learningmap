@@ -1,22 +1,135 @@
-<svg id="learningmap-svgmap-abc" class="learningmap-scaling-svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" viewBox="0 0 800 600">
-<style id="learningmap-svgstyle" type="text/css">
-.learningmap-place {
-    fill: #c01c28;
-    stroke-width: 3px;
-    stroke: #ffffff;
-    visibility: hidden;
-}
-.learningmap-path {
-    stroke: #ffffff;
-    stroke-width: 3px;
-    visibility: hidden;
-    visibility: hidden;
-}
-</style><g id="backgroundGroup">
-    <image x="0" y="0" width="800" class="learningmap-background-image" id="learningmap-background-image" xlink:href="@@PLUGINFILE@@/Beispiel%20Hintergrund.jpg"></image>
-</g>
-<g id="pathsGroup">
-<line class="learningmap-path" id="p0_1" x1="289.08392333984375" y1="504.9983215332031" x2="221.68171180207287" y2="396.94082246740226"></line><line class="learningmap-path" id="p1_2" x1="221.68171180207287" y1="396.94082246740226" x2="100.78569040454697" y2="342.3771313941825"></line><line class="learningmap-path" id="p2_3" x1="100.78569040454697" y1="342.3771313941825" x2="138.23135375976562" y2="156.21865844726562"></line><line class="learningmap-path" id="p3_5" x1="138.23135375976562" y1="156.21865844726562" x2="350.0668640136719" y2="197.94383239746094"></line><line class="learningmap-path" id="p4_5" x1="328.6693420410156" y1="287.8134460449219" x2="350.0668640136719" y2="197.94383239746094"></line><line class="learningmap-path" id="p1_4" x1="221.68171180207287" y1="396.94082246740226" x2="328.6693420410156" y2="287.8134460449219"></line><line class="learningmap-path" id="p4_9" x1="328.6693420410156" y1="287.8134460449219" x2="599.3480224609375" y2="365.9143981933594"></line><line class="learningmap-path" id="p5_6" x1="350.0668640136719" y1="197.94383239746094" x2="431.3774719238281" y2="53.51053237915039"></line><line class="learningmap-path" id="p6_8" x1="431.3774719238281" y1="53.51053237915039" x2="688.1477661132812" y2="49.23102569580078"></line></g>
-<g id="placesGroup">
-<a id="a0" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p0" cx="289.0839184219325" cy="504.9983283182882" r="10"></circle><title id="titlep0"></title></a><a id="a1" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p1" cx="221.68171180207287" cy="396.94082246740226" r="10"></circle><title id="titlep1"></title></a><a id="a2" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p2" cx="100.78569040454697" cy="342.3771313941825" r="10"></circle><title id="titlep2"></title></a><a id="a3" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p3" cx="138.2313607489134" cy="156.21865596790371" r="10"></circle><title id="titlep3"></title></a><a id="a4" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p4" cx="328.66934135740553" cy="287.8134403209629" r="10"></circle><title id="titlep4"></title></a><a id="a5" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p5" cx="350.0668672684721" cy="197.94383149448345" r="10"></circle><title id="titlep5"></title></a><a id="a6" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p6" cx="431.37746573052493" cy="53.510531594784354" r="10"></circle><title id="titlep6"></title></a><a id="a8" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p8" cx="688.1477766633233" cy="49.23102641257105" r="10"></circle><title id="titlep8"></title></a><a id="a9" xlink:href=""><circle class="learningmap-place learningmap-draggable" id="p9" cx="599.3480441323971" cy="365.9144098963557" r="10"></circle><title id="titlep9"></title></a></g>
+<svg id="learningmap-svgmap-63bb1c8edb6af" class="learningmap-scaling-svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" viewBox="0 0 800 2111">
+    <defs>
+        <path id="checkmark" d="M -5 0 L -2 3 L 4 -2" class="learningmap-checkmark"></path>
+    </defs>
+    <style id="learningmap-svgstyle" type="text/css">
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-place {
+            fill: #c01c28;
+            stroke-width: 3px;
+            stroke: #ffffff;
+            stroke-opacity: 1;
+            visibility: hidden;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-place.learningmap-place-visited {
+            visibility: visible;
+            opacity: 1;
+            fill: #26a269;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-path {
+            stroke: #ffffff;
+            stroke-width: 3px;
+            stroke-linecap: round;
+            fill: none;
+            visibility: hidden;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af text {
+            fill: #ffffff;
+            stroke: none;
+            font-family: FreeSans;
+            font-size: 20px;
+            display: none;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-targetplace {
+            stroke-dasharray: 1, 1;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-checkmark {
+            stroke-width: 3px;
+            stroke-linecap: round;
+            stroke: #ffffff;
+            fill: none;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-hidden * {
+            visibility: hidden;
+        }
+
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-place.learningmap-reachable,
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-path.learningmap-reachable {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+    <g id="backgroundGroup">
+        <image x="0" y="0" width="800" class="learningmap-background-image" id="learningmap-background-image"
+            xlink:href="@@PLUGINFILE@@/Hintergrund%20hoch.jpg?oid=1673206943" height="2111"></image>
+    </g>
+    <g id="pathsGroup">
+        <path class="learningmap-path" id="p0_1"
+            d="M 87.69087219238281 62.086090087890625 L 323.2491149902344 93.0622787475586"></path>
+        <path class="learningmap-path" id="p1_4"
+            d="M 323.2491149902344 93.0622787475586 L 241.72088623046875 227.8011474609375"></path>
+        <path class="learningmap-path" id="p4_5"
+            d="M 241.72088623046875 227.8011474609375 L 159.92562866210938 318.0946044921875"></path>
+        <path class="learningmap-path" id="p5_6"
+            d="M 159.92562866210938 318.0946044921875 L 300.14605712890625 334.02874755859375"></path>
+        <path class="learningmap-path" id="p3_6"
+            d="M 405.3113708496094 235.23707580566406 L 300.14605712890625 334.02874755859375"></path>
+        <path class="learningmap-path" id="p2_3"
+            d="M 466.92340087890625 150.25498962402344 L 405.3113708496094 235.23707580566406"></path>
+        <path class="learningmap-path" id="p2_7"
+            d="M 466.92340087890625 150.25498962402344 L 486.04437255859375 285.1640319824219"></path>
+        <path class="learningmap-path" id="p7_8"
+            d="M 486.04437255859375 285.1640319824219 L 634.7630004882812 151.31727600097656"></path>
+        <path class="learningmap-path" id="p8_9"
+            d="M 634.7630004882812 151.31727600097656 L 310.7688293457031 1610.8843994140625"></path>
+    </g>
+    <g id="placesGroup">
+        <a id="a0" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p0"
+                cx="87.69086869147608" cy="62.08608864410135" r="10"></circle>
+            <title id="titlep0"></title><text id="textp0" x="87.69086869147608" y="62.08608864410135" dx="15"
+                dy="15"></text>
+        </a><a id="a1" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p1"
+                cx="323.24910389624284" cy="93.06227597406071" r="10"></circle>
+            <title id="titlep1"></title><text id="textp1" x="323.24910389624284" y="93.06227597406071" dx="15"
+                dy="15"></text>
+        </a><a id="a2" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p2"
+                cx="466.9233914311517" cy="150.25499449114076" r="10"></circle>
+            <title id="titlep2"></title><text id="textp2" x="466.9233914311517" y="150.25499449114076" dx="15"
+                dy="15"></text>
+        </a><a id="a3" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p3"
+                cx="405.31138493563014" cy="235.23707241599806" r="10"></circle>
+            <title id="titlep3"></title><text id="textp3" x="405.31138493563014" y="235.23707241599806" dx="15"
+                dy="15"></text>
+        </a><a id="a4" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p4"
+                cx="241.7208849302799" cy="227.80114059757304" r="10"></circle>
+            <title id="titlep4"></title><text id="textp4" x="241.7208849302799" y="227.80114059757304" dx="15"
+                dy="15"></text>
+        </a><a id="a5" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p5"
+                cx="159.92563492760476" cy="318.0945983927339" r="10"></circle>
+            <title id="titlep5"></title><text id="textp5" x="159.92563492760476" y="318.0945983927339" dx="15"
+                dy="15"></text>
+        </a><a id="a6" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p6"
+                cx="300.14606350361925" cy="334.0287380036446" r="10"></circle>
+            <title id="titlep6"></title><text id="textp6" x="300.14606350361925" y="334.0287380036446" dx="15"
+                dy="15"></text>
+        </a><a id="a7" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p7"
+                cx="486.04435896424457" cy="285.1640431968517" r="10"></circle>
+            <title id="titlep7"></title><text id="textp7" x="486.04435896424457" y="285.1640431968517" dx="15"
+                dy="15"></text>
+        </a><a id="a8" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace learningmap-targetplace"
+                id="p8" cx="634.7629953327448" cy="151.3172704652015" r="10"></circle>
+            <title id="titlep8"></title><text id="textp8" x="634.7629953327448" y="151.3172704652015" dx="15"
+                dy="15"></text>
+        </a><a id="a9" xlink:href="">
+            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace learningmap-targetplace"
+                id="p9" cx="310.76882324422644" cy="1610.8844588246252" r="10"></circle>
+            <title id="titlep9"></title><text id="textp9" x="310.76882324422644" y="1610.8844588246252" dx="15"
+                dy="15"></text>
+        </a>
+    </g>
 </svg>
