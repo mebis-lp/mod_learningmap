@@ -57,6 +57,10 @@
     max-width: 90vw;
 }
 
+.learningmap-scaling-svg.learningmap-slicemode {
+    width: auto;
+}
+
 .learningmap-scaling-svg {
     vertical-align: top;
     width: 100%;

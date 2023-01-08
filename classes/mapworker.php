@@ -158,8 +158,26 @@ class mapworker {
                 }
                 $placenode = $this->dom->getElementById($place['id']);
                 if ($placenode) {
-                    $this->coordinates[$place['id']]['x'] = intval($placenode->getAttribute('cx'));
-                    $this->coordinates[$place['id']]['y'] = intval($placenode->getAttribute('cy'));
+                    $cx = intval($placenode->getAttribute('cx'));
+                    $cy = intval($placenode->getAttribute('cy'));
+                    $this->coordinates[$place['id']]['x'] = $cx;
+                    $this->coordinates[$place['id']]['y'] = $cy;
+                    if ($this->placestore['showtext']) {
+                        $text = $this->dom->getElementById('text' . $place['id']);
+                        if ($text) {
+                            $dx = $text->getAttribute('dx');
+                            $dy = $text->getAttribute('dy');
+                            $bbox = imagettfbbox(20, 0, $CFG->dirroot . '/lib/default.ttf', $text->nodeValue);
+                            $this->coordinates['text1' . $place['id']]['x'] = $cx + $dx + $bbox[0];
+                            $this->coordinates['text1' . $place['id']]['y'] = $cy + $dy + $bbox[1];
+                            $this->coordinates['text2' . $place['id']]['x'] = $cx + $dx + $bbox[2];
+                            $this->coordinates['text2' . $place['id']]['y'] = $cy + $dy + $bbox[3];
+                            $this->coordinates['text3' . $place['id']]['x'] = $cx + $dx + $bbox[4];
+                            $this->coordinates['text3' . $place['id']]['y'] = $cy + $dy + $bbox[5];
+                            $this->coordinates['text4' . $place['id']]['x'] = $cx + $dx + $bbox[6];
+                            $this->coordinates['text4' . $place['id']]['y'] = $cy + $dy + $bbox[7];
+                        }
+                    }
                 }
                 // If the activity is not found or if there is no activity, add it to the list of not available places.
                 // Remove the place completely from the map.
@@ -315,6 +333,9 @@ class mapworker {
             foreach ($notavailable as $place) {
                 $domplace = $this->dom->getElementById($place);
                 unset($this->coordinates[$place]);
+                for ($i = 1; $i < 5; $i++) {
+                    unset($this->coordinates['text' + $i + $place]);
+                }
                 if (!$domplace) {
                     continue;
                 }
@@ -338,14 +359,19 @@ class mapworker {
             }
         }
 
-        if (!empty($this->placestore['slicemode']) && count($this->coordinates) > 0) {
+        if (
+            !$this->edit &&
+            !empty($this->placestore['slicemode']) &&
+            count($this->coordinates) > 0 &&
+            count($notavailable) + count($impossible) > 0
+        ) {
             $c = array_pop($this->coordinates);
             $minx = $c['x'];
             $miny = $c['y'];
             $maxx = $c['x'];
             $maxy = $c['y'];
 
-            foreach ($this->coordinates as $coord) {
+            foreach ($this->coordinates as $item => $coord) {
                 $minx = min($minx, $coord['x']);
                 $miny = min($miny, $coord['y']);
                 $maxx = max($maxx, $coord['x']);
@@ -365,6 +391,12 @@ class mapworker {
             $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
                 'viewBox',
                 $minx . ' ' . $miny . ' ' . ($maxx - $minx) . ' ' . ($maxy - $miny)
+            );
+            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute('width', $maxx - $minx);
+            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute('height', $maxy - $miny);
+            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
+                'class',
+                'learningmap-scaling-svg learningmap-slicemode'
             );
         }
 

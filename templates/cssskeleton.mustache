@@ -40,6 +40,7 @@
     }
 }}
 <style id="learningmap-svgstyle" type="text/css">
+
 #learningmap-svgmap-{{mapid}} .learningmap-place {
     fill: {{ placecolor }};
     stroke-width: 3px;
@@ -87,6 +88,8 @@
 #learningmap-svgmap-{{mapid}} text {
     fill: {{ textcolor }};
     stroke: none;
+    font-family: FreeSans;
+    font-size: 20px;
     {{^showtext}}display: none;{{/showtext}}
 }
 
