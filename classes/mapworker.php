@@ -378,7 +378,7 @@ class mapworker {
                 $maxy = max($maxy, $coord['y']);
             }
 
-            if (count($this->coordinates) == 0 || ($maxx - $minx < 100 && $maxy - $miny < 100)) {
+            if ($maxx - $minx < 100 && $maxy - $miny < 100) {
                 $padding = 50;
             } else {
                 $padding = 15;
@@ -386,7 +386,7 @@ class mapworker {
             $minx = max(0, $minx - $padding);
             $miny = max(0, $miny - $padding);
             $maxx = min(800, $maxx + $padding);
-            $maxy = min(600, $maxy + $padding);
+            $maxy = $maxy + $padding;
 
             $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
                 'viewBox',
