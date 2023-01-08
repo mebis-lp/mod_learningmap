@@ -2,21 +2,21 @@ import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
+const circleRadius = 10;
+
+// Constants for updatePathDeclaration.
+const targetPoints = {
+    firstPoint: 1,
+    secondPoint: 2,
+    bezierPoint: 3,
+};
+
+const pathTypes = {
+    line: 1,
+    quadraticbezier: 2,
+};
+
 export const init = () => {
-    const circleRadius = 10;
-
-    // Constants for updatePathDeclaration.
-    const targetPoints = {
-        firstPoint: 1,
-        secondPoint: 2,
-        bezierPoint: 3,
-    };
-
-    const pathTypes = {
-        line: 1,
-        quadraticbezier: 2,
-    };
-
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
@@ -330,7 +330,7 @@ export const init = () => {
                 if (selectedElement.nodeName == 'path') {
                     selectedElement.setAttribute(
                         'd',
-                        updatePathDeclaration(selectedElement.getAttribute('d'), coord.x, coord.y, 3)
+                        updatePathDeclaration(selectedElement.getAttribute('d'), coord.x, coord.y, targetPoints.bezierPoint)
                     );
                 }
                 if (selectedElement.nodeName == 'circle') {
@@ -345,7 +345,10 @@ export const init = () => {
                         let pathNode = document.getElementById(path.id);
                         if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
-                                pathNode.setAttribute('d', updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, 1));
+                                pathNode.setAttribute(
+                                    'd',
+                                    updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, targetPoints.firstPoint)
+                                );
                             } else {
                                 pathNode.setAttribute('x1', cx);
                                 pathNode.setAttribute('y1', cy);
@@ -357,7 +360,10 @@ export const init = () => {
                         let pathNode = document.getElementById(path.id);
                         if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
-                                pathNode.setAttribute('d', updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, 2));
+                                pathNode.setAttribute(
+                                    'd',
+                                    updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, targetPoints.secondPoint)
+                                );
                             } else {
                                 pathNode.setAttribute('x2', cx);
                                 pathNode.setAttribute('y2', cy);
@@ -496,7 +502,7 @@ export const init = () => {
                     toX = parseInt(parts[i + 3]);
                     toY = parseInt(parts[i + 4]);
                     i += 4;
-                    pathType = pathType.quadraticbezier;
+                    pathType = pathTypes.quadraticbezier;
                 }
             }
 
