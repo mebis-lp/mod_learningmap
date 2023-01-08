@@ -2,9 +2,21 @@ import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
-export const init = () => {
-    const circleRadius = 10;
+const circleRadius = 10;
 
+// Constants for updatePathDeclaration.
+const targetPoints = {
+    firstPoint: 1,
+    secondPoint: 2,
+    bezierPoint: 3,
+};
+
+const pathTypes = {
+    line: 1,
+    quadraticbezier: 2,
+};
+
+export const init = () => {
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
 
@@ -219,13 +231,23 @@ export const init = () => {
      * @returns {object}
      */
     function getMousePosition(evt) {
-        var CTM = dragel.getScreenCTM();
         if (evt.touches) {
             evt = evt.touches[0];
         }
+        return transformCoordinates(evt.clientX, evt.clientY);
+    }
+
+    /**
+     * Transforms client coordinates to SVG coordinates
+     * @param {number} x x coordinate to transform
+     * @param {number} y y coordinate to transform
+     * @returns {object} Object containing transformed x and y coordinate
+     */
+    function transformCoordinates(x, y) {
+        var CTM = dragel.getScreenCTM();
         return {
-            x: (evt.clientX - CTM.e) / CTM.a,
-            y: (evt.clientY - CTM.f) / CTM.d
+            x: (x - CTM.e) / CTM.a,
+            y: (y - CTM.f) / CTM.d
         };
     }
 
@@ -255,6 +277,8 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
+            pathsToUpdateFirstPoint = [];
+            pathsToUpdateSecondPoint = [];
             if (evt.target.classList.contains('learningmap-draggable')) {
                 selectedElement = evt.target;
                 offset = getMousePosition(evt);
@@ -269,8 +293,12 @@ export const init = () => {
                 offset = getMousePosition(evt);
                 offset.x -= parseInt(selectedElement.getAttributeNS(null, "dx")) + place.cx.baseVal.value;
                 offset.y -= parseInt(selectedElement.getAttributeNS(null, "dy")) + place.cy.baseVal.value;
-                pathsToUpdateFirstPoint = [];
-                pathsToUpdateSecondPoint = [];
+            } else if (evt.target.nodeName == 'path') {
+                selectedElement = evt.target;
+                offset = getMousePosition(evt);
+                let pathPoint = transformCoordinates(evt.layerX, evt.layerY);
+                offset.x += pathPoint.x;
+                offset.y += pathPoint.y;
             }
         }
 
@@ -287,6 +315,8 @@ export const init = () => {
             touchmove++;
             if (selectedElement) {
                 var coord = getMousePosition(evt);
+                let cx = coord.x - offset.x;
+                let cy = coord.y - offset.y;
                 if (selectedElement.nodeName == 'text') {
                     let place = selectedElement.parentNode.querySelector('.learningmap-place');
                     // Calculate the delta from the current mouse position to the corresponding place.
@@ -297,9 +327,13 @@ export const init = () => {
                     selectedElement.setAttributeNS(null, "dx", dx);
                     selectedElement.setAttributeNS(null, "dy", dy);
                 }
+                if (selectedElement.nodeName == 'path') {
+                    selectedElement.setAttribute(
+                        'd',
+                        updatePathDeclaration(selectedElement.getAttribute('d'), coord.x, coord.y, targetPoints.bezierPoint)
+                    );
+                }
                 if (selectedElement.nodeName == 'circle') {
-                    let cx = coord.x - offset.x;
-                    let cy = coord.y - offset.y;
                     selectedElement.setAttributeNS(null, "cx", cx);
                     selectedElement.setAttributeNS(null, "cy", cy);
                     let textNode = document.getElementById('text' + selectedElement.id);
@@ -311,9 +345,10 @@ export const init = () => {
                         let pathNode = document.getElementById(path.id);
                         if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
-                                let pathDeclaration = pathNode.getAttribute('d');
-                                let newPathDeclaration = 'M ' + cx + ' ' + cy + ' L' + pathDeclaration.split('L')[1];
-                                pathNode.setAttribute('d', newPathDeclaration);
+                                pathNode.setAttribute(
+                                    'd',
+                                    updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, targetPoints.firstPoint)
+                                );
                             } else {
                                 pathNode.setAttribute('x1', cx);
                                 pathNode.setAttribute('y1', cy);
@@ -325,9 +360,10 @@ export const init = () => {
                         let pathNode = document.getElementById(path.id);
                         if (pathNode !== null) {
                             if (pathNode.nodeName == 'path') {
-                                let pathDeclaration = pathNode.getAttribute('d');
-                                let newPathDeclaration = pathDeclaration.split('L')[0] + 'L ' + cx + ' ' + cy;
-                                pathNode.setAttribute('d', newPathDeclaration);
+                                pathNode.setAttribute(
+                                    'd',
+                                    updatePathDeclaration(pathNode.getAttribute('d'), cx, cy, targetPoints.secondPoint)
+                                );
                             } else {
                                 pathNode.setAttribute('x2', cx);
                                 pathNode.setAttribute('y2', cy);
@@ -359,7 +395,11 @@ export const init = () => {
             if (evt.cancelable) {
                 evt.preventDefault();
             }
-            if (evt.target.classList.contains('learningmap-draggable') || evt.target.nodeName == 'text') {
+            if (
+                evt.target.classList.contains('learningmap-draggable') ||
+                evt.target.nodeName == 'text' ||
+                evt.target.nodeName == 'path'
+            ) {
                 if (!touchstart) {
                     touchstart = true;
                     touchmove = 0;
@@ -418,6 +458,75 @@ export const init = () => {
             }
             if (evt.cancelable) {
                 evt.preventDefault();
+            }
+        }
+
+        /**
+         * Updates the path declaration of lines and quadratic bezier curves setting one of the points.
+         * @param {string} oldDefinition SVG path definition string
+         * @param {number} targetX x coordinate of the point to set
+         * @param {number} targetY y coordinate of the point to set
+         * @param {number} targetP Which point to change (you can use the targetPoints constants here)
+         * @returns {string} Updated SVG path definition
+         */
+        function updatePathDeclaration(oldDefinition, targetX, targetY, targetP = targetPoints.firstPoint) {
+            let parts = oldDefinition.split(' ');
+            let fromX = 0;
+            let fromY = 0;
+            let toX = 0;
+            let toY = 0;
+            let bezierX = 0;
+            let bezierY = 0;
+            let pathType = pathTypes.line;
+
+            // The d attribute of an SVG path in a learning map can have two different formats (in this version):
+            // "M x1 y1 L x2 y2"        Line from x1, y1 to x2, y2
+            // "M x1 y2 Q x3 y3 x2 y2"  Quadratic bezier curve inside the triangle defined by x1, y1, x2, y2 and x3, y3.
+            for (let i = 0; i < parts.length; i++) {
+                // Every path contains the first point in that way.
+                if (parts[i] == 'M') {
+                    fromX = parseInt(parts[i + 1]);
+                    fromY = parseInt(parts[i + 2]);
+                    i += 2;
+                }
+                // This path is a direct line, so there are only two points in total.
+                if (parts[i] == 'L') {
+                    toX = parseInt(parts[i + 1]);
+                    toY = parseInt(parts[i + 2]);
+                    i += 2;
+                }
+                // This path is a bezier curve, there are three points in total.
+                if (parts[i] == 'Q') {
+                    bezierX = parseInt(parts[i + 1]);
+                    bezierY = parseInt(parts[i + 2]);
+                    toX = parseInt(parts[i + 3]);
+                    toY = parseInt(parts[i + 4]);
+                    i += 4;
+                    pathType = pathTypes.quadraticbezier;
+                }
+            }
+
+            switch (targetP) {
+                case targetPoints.firstPoint:
+                    fromX = targetX;
+                    fromY = targetY;
+                    break;
+                case targetPoints.secondPoint:
+                    toX = targetX;
+                    toY = targetY;
+                    break;
+                case targetPoints.bezierPoint:
+                    // Calculate the third triangle point for the bezier curve.
+                    bezierX = targetX * 2 - (fromX + toX) * 0.5;
+                    bezierY = targetY * 2 - (fromY + toY) * 0.5;
+                    pathType = pathTypes.quadraticbezier;
+                    break;
+            }
+
+            if (pathType == pathTypes.quadraticbezier) {
+                return 'M ' + fromX + ' ' + fromY + ' Q ' + bezierX + ' ' + bezierY + ', ' + toX + ' ' + toY;
+            } else {
+                return 'M ' + fromX + ' ' + fromY + ' L ' + toX + ' ' + toY;
             }
         }
     }
