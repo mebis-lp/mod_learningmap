@@ -16,6 +16,8 @@
 
 namespace mod_learningmap;
 
+use DOMElement;
+
 /**
  * Class for handling the content of the learningmap
  *
@@ -395,16 +397,35 @@ class mapworker {
             $maxx = min(800, $maxx + $padding);
             $maxy = min($height, $maxy + $padding);
 
-            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
-                'viewBox',
-                $minx . ' ' . $miny . ' ' . ($maxx - $minx) . ' ' . ($maxy - $miny)
-            );
-            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute('width', $maxx - $minx);
-            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute('height', $maxy - $miny);
-            $this->dom->getElementById('learningmap-svgmap-' . $this->placestore['mapid'])->setAttribute(
-                'class',
-                'learningmap-scaling-svg learningmap-slicemode'
-            );
+            $placesgroup = $this->dom->getElementById('placesGroup');
+            $rect1 = $this->dom->createElement('rect');
+            $rect1->setAttribute('x', 0);
+            $rect1->setAttribute('y', 0);
+            $rect1->setAttribute('height', $height);
+            $rect1->setAttribute('width', $minx);
+            $rect1->setAttribute('fill', 'white');
+            $rect2 = $this->dom->createElement('rect');
+            $rect2->setAttribute('x', 0);
+            $rect2->setAttribute('y', 0);
+            $rect2->setAttribute('height', $miny);
+            $rect2->setAttribute('width', 800);
+            $rect2->setAttribute('fill', 'white');
+            $rect3 = $this->dom->createElement('rect');
+            $rect3->setAttribute('x', $maxx);
+            $rect3->setAttribute('y', 0);
+            $rect3->setAttribute('height', $height);
+            $rect3->setAttribute('width', 800);
+            $rect3->setAttribute('fill', 'white');
+            $rect4 = $this->dom->createElement('rect');
+            $rect4->setAttribute('x', 0);
+            $rect4->setAttribute('y', $maxy);
+            $rect4->setAttribute('height', $height - $maxy);
+            $rect4->setAttribute('width', 800);
+            $rect4->setAttribute('fill', 'white');
+            $placesgroup->appendChild($rect1);
+            $placesgroup->appendChild($rect2);
+            $placesgroup->appendChild($rect3);
+            $placesgroup->appendChild($rect4);
         }
 
         $this->svgcode = $this->dom->saveXML();
