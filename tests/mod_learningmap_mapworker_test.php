@@ -75,26 +75,25 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
         $mapworker->process_map_objects();
         $expectedvalues = [
-            '72 47 266 61',
-            '72 47 266 195',
-            '72 47 409 302',
-            '72 47 409 302',
-            '72 47 409 302',
-            '72 47 409 302',
-            '72 47 577 302',
-            '0 0 800 2111',
-            '0 0 800 2111',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 338 47 L 338 108 L 72 108 Z',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 338 47 L 338 242 L 72 242 Z',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
+            'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 649 47 L 649 349 L 72 349 Z',
+            null
         ];
-        $viewbox = $mapworker->getattribute('learningmap-svgmap-63bb1c8edb6af', 'viewBox');
-        $this->assertEquals($viewbox, '37 12 100 100');
+        $overlay = $mapworker->getattribute('learningmap-overlay', 'd');
+        $this->assertEquals($overlay, 'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z');
 
-        for ($i = 0; $i < 9; $i++) {
+        for ($i = 0; $i < 8; $i++) {
             $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
-            $viewbox = $mapworker->getattribute('learningmap-svgmap-63bb1c8edb6af', 'viewBox');
-            $this->assertEquals($viewbox, $expectedvalues[$i]);
+            $overlay = $mapworker->getattribute('learningmap-overlay', 'd');
+            $this->assertEquals($overlay, $expectedvalues[$i]);
         }
     }
 }

@@ -415,12 +415,13 @@ class mapworker {
             $placesgroup = $this->dom->getElementById('placesGroup');
             $overlay = $this->dom->createElement('path');
             $overlay->setAttribute(
-                'd', 
+                'd',
                 "M 0 0 L 0 $height L 800 $height L 800 0 Z M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z"
             );
             $overlay->setAttribute('fill', 'url(#fog)');
             $overlay->setAttribute('filter', 'url(#blur)');
             $overlay->setAttribute('stroke', 'none');
+            $overlay->setAttribute('id', 'learningmap-overlay');
             $placesgroup->appendChild($overlay);
         }
 
@@ -471,9 +472,13 @@ class mapworker {
      *
      * @param string $id The id of the DOM element
      * @param string $attribute The name of the attribute
-     * @return string
+     * @return ?string null, if element doesn't exist
      */
-    public function getattribute(string $id, string $attribute): string {
-        return $this->dom->getElementById($id)->getAttribute($attribute);
+    public function getattribute(string $id, string $attribute): ?string {
+        $element = $this->dom->getElementById($id);
+        if ($element === null) {
+            return null;
+        }
+        return $element->getAttribute($attribute);
     }
 }
