@@ -29,26 +29,27 @@
  * @param int $oldversion Version number the plugin is being upgraded from.
  */
 function xmldb_learningmap_upgrade($oldversion) {
-    global $DB;
+    global $DB, $OUTPUT;
 
-    if ($oldversion < 2023010701) {
+    if ($oldversion < 2023011004) {
         $entries = $DB->get_records('learningmap', []);
         if ($entries) {
             foreach ($entries as $entry) {
                 $placestore = json_decode($entry->placestore, true);
-                $placestore['version'] = 2023010701;
+                $placestore['version'] = 2023011004;
                 // Needs 1 as default value (otherwise all place strokes would be hidden).
                 if (!isset($placestore['strokeopacity'])) {
                     $placestore['strokeopacity'] = 1;
                 }
                 $mapworker = new \mod_learningmap\mapworker($entry->intro, $placestore);
                 $mapworker->replace_stylesheet();
+                $mapworker->replace_defs();
                 $entry->intro = $mapworker->get_svgcode();
                 $entry->placestore = json_encode($placestore);
                 $DB->update_record('learningmap', $entry);
             }
         }
-        upgrade_mod_savepoint(true, 2023010701, 'learningmap');
+        upgrade_mod_savepoint(true, 2023011004, 'learningmap');
     }
     return true;
 }
