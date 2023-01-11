@@ -421,7 +421,8 @@ class mapworker {
                 case 'ellipse':
                     $radiusx = 0.5 * ($maxx - $minx);
                     $radiusy = 0.5 * ($maxy - $miny);
-                    $overlaydescription .= "M $minx $miny A $radiusx $radiusy 0 1 1 $maxx $maxy A $radiusx $radiusy 0 1 1 $minx $miny";
+                    $overlaydescription .= "M $minx $miny A $radiusx $radiusy 0 1 1 $maxx $maxy ";
+                    $overlaydescription .= "A $radiusx $radiusy 0 1 1 $minx $miny";
                 break;
                 default:
                     $overlaydescription .= "M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z";
