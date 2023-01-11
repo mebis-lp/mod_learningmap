@@ -414,9 +414,21 @@ class mapworker {
 
             $placesgroup = $this->dom->getElementById('placesGroup');
             $overlay = $this->dom->createElement('path');
+            $overlaydescription = "M 0 0 L 0 $height L 800 $height L 800 0 Z ";
+            $type = 'rect';
+            switch($type) {
+                // Kept for future use.
+                case 'ellipse':
+                    $radiusx = 0.5 * ($maxx - $minx);
+                    $radiusy = 0.5 * ($maxy - $miny);
+                    $overlaydescription .= "M $minx $miny A $radiusx $radiusy 0 1 1 $maxx $maxy A $radiusx $radiusy 0 1 1 $minx $miny";
+                break;
+                default:
+                    $overlaydescription .= "M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z";
+            }
             $overlay->setAttribute(
                 'd',
-                "M 0 0 L 0 $height L 800 $height L 800 0 Z M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z"
+                $overlaydescription
             );
             $overlay->setAttribute('fill', 'url(#fog)');
             $overlay->setAttribute('filter', 'url(#blur)');
