@@ -34,6 +34,13 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
      */
     public function setUp(): void {
         global $DB;
+        $this->user1 = $this->getDataGenerator()->create_user(
+            [
+                'email' => 'user1@example.com',
+                'username' => 'user1'
+            ]
+        );
+
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
             ['course' => $this->course, 'completion' => 2, 'completiontype' => 0]);
@@ -52,14 +59,6 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             $this->completion->set_module_viewed($this->activities[$i], $this->user1->id);
         }
         $DB->set_field('learningmap', 'placestore', $this->learningmap->placestore, ['id' => $this->learningmap->id]);
-
-        $this->user1 = $this->getDataGenerator()->create_user(
-            [
-                'email' => 'user1@example.com',
-                'username' => 'user1'
-            ]
-        );
-
     }
 
     /**
@@ -110,7 +109,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $placestore = json_decode($this->learningmap->placestore, true);
         $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
         $mapworker->process_map_objects();
-        // p0 is a starting place, so it should be visible by default.
+        // Place p0 is a starting place, so it should be visible by default.
         $this->assertEquals(['p0'], $mapworker->get_active());
         $expectedvalues = [
             ['p0', 'p1', 'p0_1'],
