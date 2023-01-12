@@ -89,10 +89,6 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             'completiontype' => LEARNINGMAP_NOCOMPLETION
         ]);
 
-        $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
-        $this->completion = new \completion_info($this->modinfo->get_course());
-        $this->cm = $this->modinfo->get_cm($this->learningmap->cmid);
-
         $this->activities = [];
         for ($i = 0; $i < 9; $i++) {
             $this->activities[] = $this->getDataGenerator()->create_module(
