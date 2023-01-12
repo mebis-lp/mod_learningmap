@@ -119,7 +119,7 @@ class mapworker {
     }
 
     /**
-     * Replaces the svg defs
+     * Replaces the svg defs (e.g.) filters or patterns that are defined for 
      *
      * @return void
      */
@@ -182,8 +182,11 @@ class mapworker {
                     if ($this->placestore['showtext']) {
                         $text = $this->dom->getElementById('text' . $place['id']);
                         if ($text) {
+                            // Delta of the text in relation to the places center coordinates.
                             $dx = $text->getAttribute('dx');
                             $dy = $text->getAttribute('dy');
+                            // Calculate the corner coordinates of the text element. They all are added
+                            // to the coordinates array as they extend the area that needs to be visible.
                             $bbox = imagettfbbox(20, 0, $CFG->dirroot . '/lib/default.ttf', $text->nodeValue);
                             $this->coordinates['text1' . $place['id']]['x'] = $cx + $dx + $bbox[0];
                             $this->coordinates['text1' . $place['id']]['y'] = $cy + $dy + $bbox[1];
@@ -300,6 +303,8 @@ class mapworker {
                     }
                 }
                 $pathnode = $this->dom->getElementById($path['id']);
+                // When path is a quadratic bezier curve, the extremal point needs to be in the coordinates array.
+                // The point is calculated here.
                 if (in_array($path['id'], $active) && $pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
                     $parts = explode(' ', $pathnode->getAttribute('d'));
                     $fromx = intval($parts[1]);
@@ -350,6 +355,7 @@ class mapworker {
             // Handle unavailable places.
             foreach ($notavailable as $place) {
                 $domplace = $this->dom->getElementById($place);
+                // Remove the coordinates for unavailable places and the connected text.
                 unset($this->coordinates[$place]);
                 for ($i = 1; $i < 5; $i++) {
                     unset($this->coordinates['text' . $i . $place]);
@@ -394,27 +400,34 @@ class mapworker {
             $miny = $c['y'];
             $maxx = $c['x'];
             $maxy = $c['y'];
-
-            foreach ($this->coordinates as $item => $coord) {
+            // Find the maximum / minimum x and y coordinates.
+            foreach ($this->coordinates as $coord) {
                 $minx = min($minx, $coord['x']);
                 $miny = min($miny, $coord['y']);
                 $maxx = max($maxx, $coord['x']);
                 $maxy = max($maxy, $coord['y']);
             }
 
+            // When the maximum / minimum coordinates are too tight, increase padding.
             if ($maxx - $minx < 100 && $maxy - $miny < 100) {
                 $padding = 50;
             } else {
                 $padding = 15;
             }
+
+            // Maximum / minimum coordinates should not be outside the background image.
             $minx = max(0, $minx - $padding);
             $miny = max(0, $miny - $padding);
             $maxx = min(800, $maxx + $padding);
             $maxy = min($height, $maxy + $padding);
 
             $placesgroup = $this->dom->getElementById('placesGroup');
+
+            // Create the overlay for slicemode.
             $overlay = $this->dom->createElement('path');
             $overlaydescription = "M 0 0 L 0 $height L 800 $height L 800 0 Z ";
+            // In future versions there will be more options for the inner part of the overlay.
+            // For now the default is a rectangular shape.
             $type = 'rect';
             switch($type) {
                 // Kept for future use.
@@ -487,7 +500,7 @@ class mapworker {
      * @param string $attribute The name of the attribute
      * @return ?string null, if element doesn't exist
      */
-    public function getattribute(string $id, string $attribute): ?string {
+    public function get_attribute(string $id, string $attribute): ?string {
         $element = $this->dom->getElementById($id);
         if ($element === null) {
             return null;

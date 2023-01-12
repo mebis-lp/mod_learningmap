@@ -32,7 +32,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
     /**
      * Prepare testing environment
      */
-    public function prepare(): void {
+    public function setUp(): void {
         global $DB;
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
@@ -68,7 +68,6 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
     public function test_slicemode() : void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare();
         $this->setUser($this->user1);
         $placestore = json_decode($this->learningmap->placestore, true);
         $placestore['slicemode'] = true;
@@ -84,7 +83,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 649 47 L 649 349 L 72 349 Z',
             null
         ];
-        $overlay = $mapworker->getattribute('learningmap-overlay', 'd');
+        $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
         $this->assertEquals($overlay, 'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z');
 
         for ($i = 0; $i < 8; $i++) {
@@ -92,7 +91,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
-            $overlay = $mapworker->getattribute('learningmap-overlay', 'd');
+            $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
             $this->assertEquals($overlay, $expectedvalues[$i]);
         }
     }

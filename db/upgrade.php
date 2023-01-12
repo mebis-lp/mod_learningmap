@@ -29,7 +29,7 @@
  * @param int $oldversion Version number the plugin is being upgraded from.
  */
 function xmldb_learningmap_upgrade($oldversion) {
-    global $DB, $OUTPUT;
+    global $DB;
 
     if ($oldversion < 2023011004) {
         $entries = $DB->get_records('learningmap', []);

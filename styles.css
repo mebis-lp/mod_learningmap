@@ -1,5 +1,6 @@
 @font-face {
     font-family: FreeSans;
+    /* This URL is necessary as it is modified to call style.php, that does only look for default.ttf in the font folders. */
     src: url("../../../../lib/default.ttf");
 }
 
