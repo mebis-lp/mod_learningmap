@@ -45,10 +45,6 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
             ['course' => $this->course, 'completion' => 2, 'completiontype' => 0]);
 
-        $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
-        $this->completion = new \completion_info($this->modinfo->get_course());
-        $this->cm = $this->modinfo->get_cm($this->learningmap->cmid);
-
         $this->activities = [];
         for ($i = 0; $i < 9; $i++) {
             $this->activities[] = $this->getDataGenerator()->create_module(
@@ -56,9 +52,15 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
                 ['name' => 'A', 'content' => 'B', 'course' => $this->course, 'completion' => 2, 'completionview' => 1]
             );
             $this->learningmap->placestore = str_replace(99990 + $i, $this->activities[$i]->cmid, $this->learningmap->placestore);
-            $this->completion->set_module_viewed($this->activities[$i], $this->user1->id);
+            
         }
         $DB->set_field('learningmap', 'placestore', $this->learningmap->placestore, ['id' => $this->learningmap->id]);
+
+        $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
+        $this->completion = new \completion_info($this->course);
+        $this->cm = $this->modinfo->get_cm($this->learningmap->cmid);
+
+        $this->completion->delete_all_completion_data();
     }
 
     /**
@@ -114,6 +116,13 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $expectedvalues = [
             ['p0', 'p1', 'p0_1'],
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8', 'p8_9',
+            'p9'],
         ];
 
         for ($i = 0; $i < count($this->learningmap->placestore->places); $i++) {
