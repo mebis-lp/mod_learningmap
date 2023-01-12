@@ -95,4 +95,33 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             $this->assertEquals($overlay, $expectedvalues[$i]);
         }
     }
+
+    /**
+     * Tests visibility dependent on activity completion
+     *
+     * @return void
+     */
+    public function test_visibility() : void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->setUser($this->user1);
+        $placestore = json_decode($this->learningmap->placestore, true);
+        $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
+        $mapworker->process_map_objects();
+        // p0 is a starting place, so it should be visible by default.
+        $this->assertEquals(['p0'], $mapworker->get_active());
+        $expectedvalues = [
+            ['p0', 'p1', 'p0_1'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4'],
+        ];
+
+        for ($i = 0; $i < count($this->placestore->places); $i++) {
+            $acm = $this->modinfo->get_cm($this->placestore->places->linkedActivity);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
+            $mapworker->process_map_objects();
+            $this->assertEquals($expectedvalues[$i], $mapworker->get_active());
+        }
+    }
+
 }

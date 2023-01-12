@@ -52,10 +52,13 @@ class mapworker {
      */
     protected $edit;
     /**
-     * @var array $this->coordinates Stores the coordinates of visible places and paths
+     * @var array $coordinates Stores the coordinates of visible places and paths
      */
     protected $coordinates;
-
+    /**
+     * @var array $active Stores the names of paths and places that should be visible
+     */
+    protected $active;
     /**
      * Creates mapworker from SVG code
      *
@@ -71,6 +74,7 @@ class mapworker {
         $this->edit = $edit;
         $placestore['editmode'] = $this->edit;
         $this->coordinates = [];
+        $this->active = [];
         if (!is_null($cm)) {
             $this->cm = $cm;
         }
@@ -149,7 +153,7 @@ class mapworker {
      */
     public function process_map_objects() : void {
         global $CFG, $USER;
-        $active = [];
+        $this->active = [];
         $completedplaces = [];
         $notavailable = [];
         $impossible = [];
@@ -245,13 +249,13 @@ class mapworker {
                     }
                     // If the place is a starting place, add it to the active places.
                     if (in_array($place['id'], $this->placestore['startingplaces'])) {
-                        $active[] = $place['id'];
+                        $this->active[] = $place['id'];
                     }
                     // If the activity linked to the place is already completed, add it to the completed
                     // and to the active places.
                     if ($this->is_completed($placecm)) {
                         $completedplaces[] = $place['id'];
-                        $active[] = $place['id'];
+                        $this->active[] = $place['id'];
                     }
                     // Places that are not accessible (e.g. because of additional availability restrictions)
                     // are only shown on the map if showall mode is active.
@@ -279,18 +283,18 @@ class mapworker {
                 if (in_array($path['sid'], $completedplaces) && !in_array($path['fid'], array_merge($notavailable, $impossible))) {
                     // Only set paths visible if hidepaths is not set in placestore.
                     if (!$this->placestore['hidepaths']) {
-                        $active[] = $path['id'];
+                        $this->active[] = $path['id'];
                     }
-                    $active[] = $path['fid'];
+                    $this->active[] = $path['fid'];
                 }
                 // If the beginning of the path is a completed place and this place is available,
                 // show path and the place on the other end.
                 if (in_array($path['fid'], $completedplaces) && !in_array($path['sid'], array_merge($notavailable, $impossible))) {
                     // Only set paths visible if hidepaths is not set in placestore.
                     if (!$this->placestore['hidepaths']) {
-                        $active[] = $path['id'];
+                        $this->active[] = $path['id'];
                     }
-                    $active[] = $path['sid'];
+                    $this->active[] = $path['sid'];
                 }
                 // Hide paths that lead to unreachable places.
                 if (!empty($this->placestore['showall'])) {
@@ -299,13 +303,13 @@ class mapworker {
                         if ($dompath) {
                             $dompath->setAttribute('style', 'visibility: hidden;');
                         }
-                        array_remove_by_value($active, $path['id']);
+                        array_remove_by_value($this->active, $path['id']);
                     }
                 }
                 $pathnode = $this->dom->getElementById($path['id']);
                 // When path is a quadratic bezier curve, the extremal point needs to be in the coordinates array.
                 // The point is calculated here.
-                if (in_array($path['id'], $active) && $pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
+                if (in_array($path['id'], $this->active) && $pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
                     $parts = explode(' ', $pathnode->getAttribute('d'));
                     $fromx = intval($parts[1]);
                     $fromy = intval($parts[2]);
@@ -320,7 +324,7 @@ class mapworker {
                 }
             }
             // Set all active paths and places to visible.
-            foreach ($active as $a) {
+            foreach ($this->active as $a) {
                 $domplace = $this->dom->getElementById($a);
                 if (!$domplace) {
                     continue;
@@ -349,7 +353,7 @@ class mapworker {
                 }
             }
             $notavailable = array_merge(
-                array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible),
+                array_diff($allplaces, $notavailable, $completedplaces, $this->active, $impossible),
                 $notavailable
             );
             // Handle unavailable places.
@@ -506,5 +510,13 @@ class mapworker {
             return null;
         }
         return $element->getAttribute($attribute);
+    }
+
+    /**
+     * Get active paths and places (for unit testing). process_map_objects() must be called first.
+     * @return array names of active paths and places
+     */
+    public function get_active(): array {
+        return $this->active;
     }
 }
