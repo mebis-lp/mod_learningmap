@@ -119,7 +119,7 @@ class mapworker {
     }
 
     /**
-     * Replaces the svg defs (e.g.) filters or patterns that are defined for 
+     * Replaces the svg defs (e.g.) filters or patterns that are defined for use in the document without being directly visible.
      *
      * @return void
      */
