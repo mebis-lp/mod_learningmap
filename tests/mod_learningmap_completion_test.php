@@ -28,7 +28,51 @@ namespace mod_learningmap;
  * @covers     \mod_learningmap\completion\custom_completion
  */
 class mod_learningmap_completion_test extends \advanced_testcase {
-
+/**
+     * The course used for testing
+     *
+     * @var \stdClass
+     */
+    protected $course;
+    /**
+     * The learning map used for testing
+     *
+     * @var \stdClass
+     */
+    protected $learningmap;
+    /**
+     * The activities linked in the learningmap
+     *
+     * @var array
+     */
+    protected $activities;
+    /**
+     * The user used for testing
+     *
+     * @var \stdClass
+     */
+    protected $user1;
+    /**
+     * The modinfo of the course
+     *
+     * @var \course_modinfo|null
+     */
+    protected $modinfo;
+    /**
+     * The completion info of the course
+     *
+     * @var \completion_info
+     */
+    protected $completion;
+    /**
+     * The cm_info object belonging to the learning map (differs from the learningmap record)
+     *
+     * @var \cm_info
+     */
+    protected $cm;
+    /**
+     * Prepare testing environment
+     */
     /**
      * Prepare testing environment
      * @param int $completiontype Type for automatic completion
