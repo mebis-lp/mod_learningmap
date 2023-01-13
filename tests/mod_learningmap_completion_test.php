@@ -32,9 +32,11 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     /**
      * Prepare testing environment
      * @param int $completiontype Type for automatic completion
+     * @param bool $groupmode Whether to use group mode (defaults to false)
      */
-    public function prepare($completiontype): void {
+    public function prepare($completiontype, $groupmode = false): void {
         global $DB;
+        $this->groupmode = $groupmode;
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
             ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype]);
@@ -55,6 +57,24 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                 'username' => 'user1'
             ]
         );
+
+        if ($this->groupmode) {
+            $this->group = $this->getDataGenerator()->create_group($this->course);
+            $this->user2 = $this->getDataGenerator()->create_user(
+                [
+                    'email' => 'user2@example.com',
+                    'username' => 'user2'
+                ]
+            );
+            $this->user3 = $this->getDataGenerator()->create_user(
+                [
+                    'email' => 'user3@example.com',
+                    'username' => 'user2'
+                ]
+            );
+            $this->getDataGenerator()->create_group_member(['userid' => $this->user1->id, 'groupid' => $this->group->id]);
+            $this->getDataGenerator()->create_group_member(['userid' => $this->user2->id, 'groupid' => $this->group->id]);
+        }
 
         $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
         $this->completion = new \completion_info($this->modinfo->get_course());
@@ -135,6 +155,103 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->prepare(3);
+        $this->assertEquals(
+            COMPLETION_INCOMPLETE,
+            $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+        );
+
+        for ($i = 0; $i < 9; $i++) {
+            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
+            if ($i < 8) {
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+            } else {
+                $this->assertEquals(
+                    COMPLETION_COMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+            }
+        }
+    }
+
+    /**
+     * Tests completion by reaching one target place
+     *
+     * @return void
+     */
+    public function test_completiontype1_group() : void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->prepare(1, true);
+        $this->assertEquals(
+            COMPLETION_INCOMPLETE,
+            $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+        );
+
+        for ($i = 0; $i < 9; $i++) {
+            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
+            if ($i < 7) {
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+            } else {
+                $this->assertEquals(
+                    COMPLETION_COMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+            }
+        }
+    }
+
+    /**
+     * Tests completion by reaching all target places in group mode
+     *
+     * @return void
+     */
+    public function test_completiontype2_group() : void {
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->prepare(2, true);
+        $this->assertEquals(
+            COMPLETION_INCOMPLETE,
+            $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+        );
+
+        for ($i = 0; $i < 9; $i++) {
+            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
+            if ($i < 8) {
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+            } else {
+                $this->assertEquals(
+                    COMPLETION_COMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+            }
+        }
+    }
+
+    /**
+     * Tests completion by reaching all places in group mode
+     *
+     * @return void
+     */
+    public function test_completiontype3_group() : void {
+        global $DB;
+        $this->resetAfterTest();
+        $this->setAdminUser();
+        $this->prepare(3, true);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate

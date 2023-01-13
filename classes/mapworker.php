@@ -446,11 +446,7 @@ class mapworker {
             }
             $overlay->setAttribute(
                 'd',
-<<<<<<< HEAD
                 $overlaydescription
-=======
-                "M 0 0 L 0 $height L 800 $height L 800 0 Z M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z"
->>>>>>> 6169e96 (Fix #2)
             );
             $overlay->setAttribute('fill', 'url(#fog)');
             $overlay->setAttribute('filter', 'url(#blur)');
