@@ -59,7 +59,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         );
 
         if ($this->groupmode) {
-            $this->group = $this->getDataGenerator()->create_group($this->course);
+            $this->group = $this->getDataGenerator()->create_group(['courseid' => $this->course->id]);
             $this->user2 = $this->getDataGenerator()->create_user(
                 [
                     'email' => 'user2@example.com',
@@ -75,13 +75,11 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             $this->getDataGenerator()->create_group_member([
                 'userid' => $this->user1->id,
                 'groupid' => $this->group->id,
-                'courseid' => $this->course->id,
             ]);
             $this->getDataGenerator()->create_group_member([
                 'userid' => $this->user2->id,
                 'groupid' => $this->group->id,
-                'courseid' => $this->course->id,
-        ]);
+            ]);
         }
 
         $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
