@@ -39,7 +39,9 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         $this->groupmode = $groupmode;
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
-            ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype]);
+            ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype,
+            'groupmode' => ($groupmode ? SEPARATEGROUPS : NOGROUPS)]
+        );
 
         $this->activities = [];
         for ($i = 0; $i < 9; $i++) {
