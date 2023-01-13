@@ -72,8 +72,16 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                     'username' => 'user2'
                 ]
             );
-            $this->getDataGenerator()->create_group_member(['userid' => $this->user1->id, 'groupid' => $this->group->id]);
-            $this->getDataGenerator()->create_group_member(['userid' => $this->user2->id, 'groupid' => $this->group->id]);
+            $this->getDataGenerator()->create_group_member([
+                'userid' => $this->user1->id,
+                'groupid' => $this->group->id,
+                'courseid' => $this->course->id,
+            ]);
+            $this->getDataGenerator()->create_group_member([
+                'userid' => $this->user2->id,
+                'groupid' => $this->group->id,
+                'courseid' => $this->course->id,
+        ]);
         }
 
         $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
