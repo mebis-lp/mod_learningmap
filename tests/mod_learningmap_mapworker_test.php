@@ -125,8 +125,8 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             'p9'],
         ];
 
-        for ($i = 0; $i < count($this->learningmap->placestore->places); $i++) {
-            $acm = $this->modinfo->get_cm($this->placestore->places->linkedActivity);
+        for ($i = 0; $i < count($placestore->places); $i++) {
+            $acm = $this->modinfo->get_cm($placestore->places->linkedActivity);
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();

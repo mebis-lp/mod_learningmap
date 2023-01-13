@@ -210,6 +210,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user2->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user3->id);
             if ($i < 7) {
                 $this->assertEquals(
                     COMPLETION_INCOMPLETE,
@@ -258,6 +260,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user2->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user3->id);
             if ($i < 8) {
                 $this->assertEquals(
                     COMPLETION_INCOMPLETE,
@@ -308,6 +312,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user1->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user2->id);
+            $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->user3->id);
             if ($i < 8) {
                 $this->assertEquals(
                     COMPLETION_INCOMPLETE,
