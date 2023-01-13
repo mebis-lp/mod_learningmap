@@ -69,7 +69,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             $this->user3 = $this->getDataGenerator()->create_user(
                 [
                     'email' => 'user3@example.com',
-                    'username' => 'user2'
+                    'username' => 'user3'
                 ]
             );
             $this->getDataGenerator()->create_group_member([
@@ -197,6 +197,14 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
         );
+        $this->assertEquals(
+            COMPLETION_INCOMPLETE,
+            $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+        );
+        $this->assertEquals(
+            COMPLETION_INCOMPLETE,
+            $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
+        );
 
         for ($i = 0; $i < 9; $i++) {
             $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
@@ -207,10 +215,26 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                     COMPLETION_INCOMPLETE,
                     $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
+                );
             } else {
                 $this->assertEquals(
                     COMPLETION_COMPLETE,
                     $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_COMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
                 );
             }
         }
@@ -239,12 +263,29 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                     COMPLETION_INCOMPLETE,
                     $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
+                );
             } else {
                 $this->assertEquals(
                     COMPLETION_COMPLETE,
                     $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
+                $this->assertEquals(
+                    COMPLETION_COMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
+                );
             }
+
         }
     }
 
@@ -272,12 +313,29 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                     COMPLETION_INCOMPLETE,
                     $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
+                );
             } else {
                 $this->assertEquals(
                     COMPLETION_COMPLETE,
                     $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
                 );
+                $this->assertEquals(
+                    COMPLETION_COMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user2->id)->completionstate
+                );
+                $this->assertEquals(
+                    COMPLETION_INCOMPLETE,
+                    $this->completion->get_data($this->cm, true, $this->user3->id)->completionstate
+                );
             }
+
         }
     }
 }
