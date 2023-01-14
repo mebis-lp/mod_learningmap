@@ -444,10 +444,7 @@ class mapworker {
                 default:
                     $overlaydescription .= "M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z";
             }
-            $overlay->setAttribute(
-                'd',
-                $overlaydescription
-            );
+            $overlay->setAttribute('d', $overlaydescription);
             $overlay->setAttribute('fill', 'url(#fog)');
             $overlay->setAttribute('filter', 'url(#blur)');
             $overlay->setAttribute('stroke', 'none');

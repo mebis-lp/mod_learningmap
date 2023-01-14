@@ -42,15 +42,25 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         );
 
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
-            ['course' => $this->course, 'completion' => 2, 'completiontype' => 0]);
+        $this->learningmap = $this->getDataGenerator()->create_module('learningmap', [
+            'course' => $this->course,
+            'completion' => COMPLETION_TRACKING_AUTOMATIC,
+            'completiontype' => LEARNINGMAP_NOCOMPLETION
+        ]);
 
         $this->activities = [];
         for ($i = 0; $i < 9; $i++) {
             $this->activities[] = $this->getDataGenerator()->create_module(
                 'page',
-                ['name' => 'A', 'content' => 'B', 'course' => $this->course, 'completion' => 2, 'completionview' => 1]
+                [
+                    'name' => 'A',
+                    'content' => 'B',
+                    'course' => $this->course,
+                    'completion' => COMPLETION_TRACKING_AUTOMATIC,
+                    'completionview' => COMPLETION_VIEW_REQUIRED
+                ]
             );
+            // The JSON contains spare course module IDs 9999x, replacing them by the real course module IDs here.
             $this->learningmap->placestore = str_replace(99990 + $i, $this->activities[$i]->cmid, $this->learningmap->placestore);
 
         }
@@ -76,6 +86,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $placestore['slicemode'] = true;
         $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
         $mapworker->process_map_objects();
+        // The values the overlay path description is expected to have.
         $expectedvalues = [
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 338 47 L 338 108 L 72 108 Z',
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 338 47 L 338 242 L 72 242 Z',
@@ -84,14 +95,15 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 649 47 L 649 349 L 72 349 Z',
+            // When all places are visible, there is no overlay anymore.
             null
         ];
         $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
         $this->assertEquals($overlay, 'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z');
 
         for ($i = 0; $i < 8; $i++) {
-            $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
-            $this->completion->set_module_viewed($acm, $this->user1->id);
+            $activity_course_module = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($activity_course_module, $this->user1->id);
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
             $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
