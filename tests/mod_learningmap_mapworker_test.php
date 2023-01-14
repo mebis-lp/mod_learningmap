@@ -28,7 +28,48 @@ namespace mod_learningmap;
  * @covers     \mod_learningmap\mapworker
  */
 class mod_learningmap_mapworker_test extends \advanced_testcase {
-
+    /**
+     * The course used for testing
+     *
+     * @var \stdClass
+     */
+    protected $course;
+    /**
+     * The learning map used for testing
+     *
+     * @var \stdClass
+     */
+    protected $learningmap;
+    /**
+     * The activities linked in the learningmap
+     *
+     * @var array
+     */
+    protected $activities;
+    /**
+     * The user used for testing
+     *
+     * @var \stdClass
+     */
+    protected $user1;
+    /**
+     * The modinfo of the course
+     *
+     * @var \course_modinfo|null
+     */
+    protected $modinfo;
+    /**
+     * The completion info of the course
+     *
+     * @var \completion_info
+     */
+    protected $completion;
+    /**
+     * The cm_info object belonging to the learning map (differs from the learningmap record)
+     *
+     * @var \cm_info
+     */
+    protected $cm;
     /**
      * Prepare testing environment
      */
@@ -99,8 +140,8 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->assertEquals($overlay, 'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z');
 
         for ($i = 0; $i < 8; $i++) {
-            $activity_course_module = $this->modinfo->get_cm($this->activities[$i]->cmid);
-            $this->completion->set_module_viewed($activity_course_module, $this->user1->id);
+            $activitycoursemodule = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->completion->set_module_viewed($activitycoursemodule, $this->user1->id);
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
             $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
