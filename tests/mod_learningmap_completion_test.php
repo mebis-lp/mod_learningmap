@@ -28,7 +28,7 @@ namespace mod_learningmap;
  * @covers     \mod_learningmap\completion\custom_completion
  */
 class mod_learningmap_completion_test extends \advanced_testcase {
-/**
+    /**
      * The course used for testing
      *
      * @var \stdClass
@@ -47,11 +47,35 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      */
     protected $activities;
     /**
-     * The user used for testing
+     * The first user used for testing
      *
      * @var \stdClass
      */
     protected $user1;
+    /**
+     * The second user used for testing
+     *
+     * @var \stdClass
+     */
+    protected $user2;
+    /**
+     * The third user used for testing
+     *
+     * @var \stdClass
+     */
+    protected $user3;
+    /**
+     * The group used for testing
+     *
+     * @var \stdClass
+     */
+    protected $group;
+    /**
+     * Whether group mode is active
+     *
+     * @var boolean
+     */
+    protected $groupmode;
     /**
      * The modinfo of the course
      *
@@ -141,7 +165,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     public function test_completiontype1() : void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare(1);
+        $this->prepare(LEARNINGMAP_COMPLETION_WITH_ONE_TARGET);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
@@ -173,7 +197,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     public function test_completiontype2() : void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare(2);
+        $this->prepare(LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
@@ -206,7 +230,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare(3);
+        $this->prepare(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
@@ -238,7 +262,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     public function test_completiontype1_group() : void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare(1, true);
+        $this->prepare(LEARNINGMAP_COMPLETION_WITH_ONE_TARGET, true);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
@@ -296,7 +320,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     public function test_completiontype2_group() : void {
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare(2, true);
+        $this->prepare(LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS, true);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate
@@ -348,7 +372,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         global $DB;
         $this->resetAfterTest();
         $this->setAdminUser();
-        $this->prepare(3, true);
+        $this->prepare(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES, true);
         $this->assertEquals(
             COMPLETION_INCOMPLETE,
             $this->completion->get_data($this->cm, true, $this->user1->id)->completionstate

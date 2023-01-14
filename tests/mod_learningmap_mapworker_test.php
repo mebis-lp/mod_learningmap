@@ -176,14 +176,18 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8'],
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8', 'p8_9',
             'p9'],
+            ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8', 'p8_9',
+            'p9'],
         ];
 
-        for ($i = 0; $i < count($placestore->places); $i++) {
-            $acm = $this->modinfo->get_cm($placestore->places->linkedActivity);
+        for ($i = 0; $i < count($placestore['places']); $i++) {
+            $acm = $this->modinfo->get_cm($placestore['places'][$i]['linkedActivity']);
             $this->completion->set_module_viewed($acm, $this->user1->id);
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
-            $this->assertEquals($expectedvalues[$i], $mapworker->get_active());
+            // Calling array_unique removes duplicate entries (e.g. for starting places).
+            $active = array_unique($mapworker->get_active());
+            $this->assertEqualsCanonicalizing($expectedvalues[$i], $active);
         }
     }
 
