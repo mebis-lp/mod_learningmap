@@ -28,6 +28,21 @@ defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/deprecatedlib.php');
 
 /**
+ * Array with all features the plugin supports for advanced settings. Might be moved
+ * to another place when in use somewhere else.     *
+ */
+define('LEARNINGMAP_FEATURES', [
+    'hidepaths',
+    'hidestroke',
+    'usecheckmark',
+    'pulse',
+    'hover',
+    'showall',
+    'showtext',
+    'slicemode',
+]);
+
+/**
  * Adds a new learningmap instance
  *
  * @param stdClass $data learningmap record
