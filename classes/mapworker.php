@@ -505,9 +505,6 @@ class mapworker {
      */
     public function get_attribute(string $id, string $attribute): ?string {
         $element = $this->dom->getElementById($id);
-        if ($element === null) {
-            return null;
-        }
-        return $element->getAttribute($attribute);
+        return $element === null ? null : $element->getAttribute($attribute);
     }
 }
