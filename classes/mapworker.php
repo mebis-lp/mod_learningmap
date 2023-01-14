@@ -28,27 +28,33 @@ use DOMElement;
  */
 class mapworker {
     /**
-     * @var $dom DOMDocument for parsing the SVG
+     * DOMDocument for parsing the SVG
+     * @var DOMDocument
      */
     protected $dom;
     /**
-     * @var $svgcode String containing the SVG code (synchronized with $dom)
+     * String containing the SVG code (synchronized with $dom)
+     * @var string
      */
     protected $svgcode;
     /**
-     * @var $placestore Array containing the placestore
+     * Array containing the placestore
+     * @var array
      */
     protected $placestore;
     /**
-     * @var $prepend String to prepend to the SVG code (for parsing by DOMDocument)
+     * String to prepend to the SVG code (for parsing by DOMDocument)
+     * @var string
      */
     protected $prepend;
     /**
-     * @var $cm Course module object belonging to the map - only needed for completion
+     * Course module object belonging to the map - only needed for completion
+     * @var cm_info
      */
     protected $cm;
     /**
-     * @var $edit Whether to prepare the code for edit mode
+     * Whether to prepare the code for edit mode
+     * @var boolean
      */
     protected $edit;
     /**
