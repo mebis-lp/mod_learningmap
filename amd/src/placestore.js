@@ -444,7 +444,7 @@ let placestore = {
         return this.places;
     },
     /**
-     * Returns the value of slicemode attribute
+     * Returns if slicemode is enabled
      * @returns {boolean}
      */
     getSliceMode: function() {
