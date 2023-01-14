@@ -41,70 +41,17 @@
              </button>
         </div>
         <div class="card-text">
+            {{#features}}
             <div class="row border-top border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-hidepaths">{{#str}} hidepaths, learningmap {{/str}}</label>
+                <div class="col-10">
+                    <label for="learningmap-advanced-setting-{{name}}">{{title}}</label>
+                    {{>core/help_icon}}
                 </div>
                 <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-hidepaths"/>
+                    <input type="checkbox" id="learningmap-advanced-setting-{{name}}"/>
                 </div>
             </div>
-            <div class="row border-top border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-hidestroke">{{#str}} hidestroke, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-hidestroke"/>
-                </div>
-            </div>
-            <div class="row border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-usecheckmark">{{#str}} usecheckmark, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-usecheckmark"/>
-                </div>
-            </div>
-            <div class="row border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-pulse">{{#str}} pulse, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-pulse"/>
-                </div>
-            </div>
-            <div class="row border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-hover">{{#str}} hover, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-hover"/>
-                </div>
-            </div>
-            <div class="row border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-showall">{{#str}} showall, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-showall"/>
-                </div>
-            </div>
-            <div class="row border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-showtext">{{#str}} showtext, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-showtext"/>
-                </div>
-            </div>
-            <div class="row border-bottom border-light">
-                <div class="col-9">
-                    <label for="learningmap-advanced-setting-slicemode">{{#str}} slicemode, learningmap {{/str}}</label>
-                </div>
-                <div class="col-sm">
-                    <input type="checkbox" id="learningmap-advanced-setting-slicemode"/>
-                </div>
-            </div>
+            {{/features}}
         </div>
     </div>
 </div>

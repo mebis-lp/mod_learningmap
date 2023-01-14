@@ -82,13 +82,23 @@ class mod_learningmap_mod_form extends moodleform_mod {
             )
         );
 
+        $features = [];
+        foreach (LEARNINGMAP_FEATURES as $feature) {
+            $features[] = [
+                'name' => $feature,
+                'title' => get_string($feature, 'learningmap'),
+                'text' => get_string($feature . '_help', 'learningmap'),
+                'alt' => get_string('help')
+            ];
+        }
         $mform->addElement(
             'html',
             $OUTPUT->render_from_template(
                 'mod_learningmap/formitem',
                 ['sections' => $activitysel,
                 'help' => $OUTPUT->help_icon('intro', 'learningmap', ''),
-                'completiondisabled' => $cm->get_course()->enablecompletion == 0
+                'completiondisabled' => $cm->get_course()->enablecompletion == 0,
+                'features' => $features,
                 ]
             )
         );
