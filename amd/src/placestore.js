@@ -451,7 +451,7 @@ let placestore = {
         return this.slicemode;
     },
     /**
-     * Sets the value of slicemode attribute
+     * Sets state of slicemode
      * @param {boolean} value
      */
     setSliceMode: function(value) {
