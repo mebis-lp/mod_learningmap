@@ -46,12 +46,15 @@
     position: absolute;
     z-index: 1;
     right: 0;
-    width: 500px;
 }
 
 #learningmap-advanced-settings label {
-    justify-content: left;
     float: left;
+}
+
+#learningmap-advanced-settings label + a {
+    position: absolute;
+    right: 0;
 }
 
 #fitem_id_introeditor_text {
