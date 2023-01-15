@@ -84,5 +84,5 @@ $string['targetplace'] = 'Target place';
 $string['usecasehelp'] = 'How to use learning maps';
 $string['usecaselink'] = 'Link to a page explaining the use of the learning map';
 $string['usecheckmark'] = 'Checkmark for visited places';
-$string['usecheckmark_help'] = 'This option additionally shows a chechmark in visited places';
+$string['usecheckmark_help'] = 'This option additionally shows a checkmark in visited places.';
 $string['visited'] = 'Visited';
