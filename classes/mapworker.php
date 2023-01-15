@@ -16,6 +16,8 @@
 
 namespace mod_learningmap;
 
+use DOMElement;
+
 /**
  * Class for handling the content of the learningmap
  *
@@ -26,29 +28,40 @@ namespace mod_learningmap;
  */
 class mapworker {
     /**
-     * @var $dom DOMDocument for parsing the SVG
+     * DOMDocument for parsing the SVG
+     * @var DOMDocument
      */
     protected $dom;
     /**
-     * @var $svgcode String containing the SVG code (synchronized with $dom)
+     * String containing the SVG code (synchronized with $dom)
+     * @var string
      */
     protected $svgcode;
     /**
-     * @var $placestore Array containing the placestore
+     * Array containing the placestore
+     * @var array
      */
     protected $placestore;
     /**
-     * @var $prepend String to prepend to the SVG code (for parsing by DOMDocument)
+     * String to prepend to the SVG code (for parsing by DOMDocument)
+     * @var string
      */
     protected $prepend;
     /**
-     * @var $cm Course module object belonging to the map - only needed for completion
+     * Course module object belonging to the map - only needed for completion
+     * @var cm_info
      */
     protected $cm;
     /**
-     * @var $edit Whether to prepare the code for edit mode
+     * Whether to prepare the code for edit mode
+     * @var boolean
      */
     protected $edit;
+    /**
+     * @var array $this->coordinates Stores the coordinates of visible places and paths
+     */
+    protected $coordinates;
+
     /**
      * Creates mapworker from SVG code
      *
@@ -63,6 +76,7 @@ class mapworker {
         $this->placestore = $placestore;
         $this->edit = $edit;
         $placestore['editmode'] = $this->edit;
+        $this->coordinates = [];
         if (!is_null($cm)) {
             $this->cm = $cm;
         }
@@ -111,6 +125,21 @@ class mapworker {
     }
 
     /**
+     * Replaces the svg defs (e.g.) filters or patterns that are defined for use in the document without being directly visible.
+     *
+     * @return void
+     */
+    public function replace_defs() : void {
+        global $OUTPUT;
+        $this->svgcode = preg_replace(
+            '/<defs[\s\S]*defs>/i',
+            $OUTPUT->render_from_template('mod_learningmap/svgdefs', []),
+            $this->svgcode
+        );
+        $this->load_dom();
+    }
+
+    /**
      * Removes tags before the SVG tag to avoid parsing problems
      *
      * @return void
@@ -149,6 +178,32 @@ class mapworker {
                     $placecm = $modinfo->get_cm($place['linkedActivity']);
                 } else {
                     $placecm = false;
+                }
+                $placenode = $this->dom->getElementById($place['id']);
+                if ($placenode) {
+                    $cx = intval($placenode->getAttribute('cx'));
+                    $cy = intval($placenode->getAttribute('cy'));
+                    $this->coordinates[$place['id']]['x'] = $cx;
+                    $this->coordinates[$place['id']]['y'] = $cy;
+                    if ($this->placestore['showtext']) {
+                        $text = $this->dom->getElementById('text' . $place['id']);
+                        if ($text) {
+                            // Delta of the text in relation to the places center coordinates.
+                            $dx = $text->getAttribute('dx');
+                            $dy = $text->getAttribute('dy');
+                            // Calculate the corner coordinates of the text element. They all are added
+                            // to the coordinates array as they extend the area that needs to be visible.
+                            $bbox = imagettfbbox(20, 0, $CFG->dirroot . '/lib/default.ttf', $text->nodeValue);
+                            $this->coordinates['text1' . $place['id']]['x'] = $cx + $dx + $bbox[0];
+                            $this->coordinates['text1' . $place['id']]['y'] = $cy + $dy + $bbox[1];
+                            $this->coordinates['text2' . $place['id']]['x'] = $cx + $dx + $bbox[2];
+                            $this->coordinates['text2' . $place['id']]['y'] = $cy + $dy + $bbox[3];
+                            $this->coordinates['text3' . $place['id']]['x'] = $cx + $dx + $bbox[4];
+                            $this->coordinates['text3' . $place['id']]['y'] = $cy + $dy + $bbox[5];
+                            $this->coordinates['text4' . $place['id']]['x'] = $cx + $dx + $bbox[6];
+                            $this->coordinates['text4' . $place['id']]['y'] = $cy + $dy + $bbox[7];
+                        }
+                    }
                 }
                 // If the activity is not found or if there is no activity, add it to the list of not available places.
                 // Remove the place completely from the map.
@@ -250,7 +305,24 @@ class mapworker {
                         if ($dompath) {
                             $dompath->setAttribute('style', 'visibility: hidden;');
                         }
+                        array_remove_by_value($active, $path['id']);
                     }
+                }
+                $pathnode = $this->dom->getElementById($path['id']);
+                // When path is a quadratic bezier curve, the extremal point needs to be in the coordinates array.
+                // The point is calculated here.
+                if (in_array($path['id'], $active) && $pathnode && strpos($pathnode->getAttribute('d'), 'Q')) {
+                    $parts = explode(' ', $pathnode->getAttribute('d'));
+                    $fromx = intval($parts[1]);
+                    $fromy = intval($parts[2]);
+                    $betweenx = intval($parts[4]);
+                    $betweeny = intval($parts[5]);
+                    $tox = intval($parts[6]);
+                    $toy = intval($parts[7]);
+                    $coordx = $betweenx * 0.5 + ($fromx + $tox) * 0.25;
+                    $coordy = $betweeny * 0.5 + ($fromy + $toy) * 0.25;
+                    $this->coordinates[$path['id']]['x'] = intval($coordx);
+                    $this->coordinates[$path['id']]['y'] = intval($coordy);
                 }
             }
             // Set all active paths and places to visible.
@@ -289,6 +361,11 @@ class mapworker {
             // Handle unavailable places.
             foreach ($notavailable as $place) {
                 $domplace = $this->dom->getElementById($place);
+                // Remove the coordinates for unavailable places and the connected text.
+                unset($this->coordinates[$place]);
+                for ($i = 1; $i < 5; $i++) {
+                    unset($this->coordinates['text' . $i . $place]);
+                }
                 if (!$domplace) {
                     continue;
                 }
@@ -301,6 +378,10 @@ class mapworker {
             // Make all places hidden if they are impossible to reach.
             foreach ($impossible as $place) {
                 $domplace = $this->dom->getElementById($place);
+                unset($this->coordinates[$place]);
+                for ($i = 1; $i < 5; $i++) {
+                    unset($this->coordinates['text' . $i . $place]);
+                }
                 if (!$domplace) {
                     continue;
                 }
@@ -311,6 +392,68 @@ class mapworker {
                 }
             }
         }
+
+        if (
+            !$this->edit &&
+            !empty($this->placestore['slicemode']) &&
+            count($this->coordinates) > 0 &&
+            count($notavailable) + count($impossible) > 0
+        ) {
+            $backgroundnode = $this->dom->getElementById('learningmap-background-image');
+            $height = $backgroundnode->getAttribute('height');
+            $c = array_pop($this->coordinates);
+            $minx = $c['x'];
+            $miny = $c['y'];
+            $maxx = $c['x'];
+            $maxy = $c['y'];
+            // Find the maximum / minimum x and y coordinates.
+            foreach ($this->coordinates as $coord) {
+                $minx = min($minx, $coord['x']);
+                $miny = min($miny, $coord['y']);
+                $maxx = max($maxx, $coord['x']);
+                $maxy = max($maxy, $coord['y']);
+            }
+
+            // When the maximum / minimum coordinates are too tight, increase padding.
+            if ($maxx - $minx < 100 && $maxy - $miny < 100) {
+                $padding = 50;
+            } else {
+                $padding = 15;
+            }
+
+            // Maximum / minimum coordinates should not be outside the background image.
+            $minx = max(0, $minx - $padding);
+            $miny = max(0, $miny - $padding);
+            $maxx = min(800, $maxx + $padding);
+            $maxy = min($height, $maxy + $padding);
+
+            $placesgroup = $this->dom->getElementById('placesGroup');
+
+            // Create the overlay for slicemode.
+            $overlay = $this->dom->createElement('path');
+            $overlaydescription = "M 0 0 L 0 $height L 800 $height L 800 0 Z ";
+            // In future versions there will be more options for the inner part of the overlay.
+            // For now the default is a rectangular shape.
+            $type = 'rect';
+            switch($type) {
+                // Kept for future use.
+                case 'ellipse':
+                    $radiusx = 0.5 * ($maxx - $minx);
+                    $radiusy = 0.5 * ($maxy - $miny);
+                    $overlaydescription .= "M $minx $miny A $radiusx $radiusy 0 1 1 $maxx $maxy ";
+                    $overlaydescription .= "A $radiusx $radiusy 0 1 1 $minx $miny";
+                break;
+                default:
+                    $overlaydescription .= "M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z";
+            }
+            $overlay->setAttribute('d', $overlaydescription);
+            $overlay->setAttribute('fill', 'url(#fog)');
+            $overlay->setAttribute('filter', 'url(#blur)');
+            $overlay->setAttribute('stroke', 'none');
+            $overlay->setAttribute('id', 'learningmap-overlay');
+            $placesgroup->appendChild($overlay);
+        }
+
         $this->svgcode = $this->dom->saveXML();
     }
 
@@ -351,5 +494,17 @@ class mapworker {
             }
         }
         return false;
+    }
+
+    /**
+     * Get attribute value (for unit testing)
+     *
+     * @param string $id The id of the DOM element
+     * @param string $attribute The name of the attribute
+     * @return ?string null, if element doesn't exist
+     */
+    public function get_attribute(string $id, string $attribute): ?string {
+        $element = $this->dom->getElementById($id);
+        return $element === null ? null : $element->getAttribute($attribute);
     }
 }

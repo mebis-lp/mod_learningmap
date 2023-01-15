@@ -1,3 +1,9 @@
+@font-face {
+    font-family: FreeSans;
+    /* This URL is necessary as it is modified to call style.php, that does only look for default.ttf in the font folders. */
+    src: url("../../../../lib/default.ttf");
+}
+
 .learningmap-menubar {
     padding: 0;
 }
@@ -39,11 +45,16 @@
 #learningmap-advanced-settings {
     position: absolute;
     z-index: 1;
-    right: 0.8rem;
+    right: 0;
 }
 
 #learningmap-advanced-settings label {
-    justify-content: left;
+    float: left;
+}
+
+#learningmap-advanced-settings label + a {
+    position: absolute;
+    right: 0;
 }
 
 #fitem_id_introeditor_text {
@@ -55,6 +66,10 @@
     min-height: 100px;
     width: 100%;
     max-width: 90vw;
+}
+
+.learningmap-scaling-svg.learningmap-slicemode {
+    width: auto;
 }
 
 .learningmap-scaling-svg {

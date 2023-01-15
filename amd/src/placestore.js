@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2023010601,
+    version: 2023011004,
     id: 0,
     places: [],
     paths: [],
@@ -20,6 +20,7 @@ let placestore = {
     hover: false,
     showall: false,
     showtext: false,
+    slicemode: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -34,7 +35,7 @@ let placestore = {
             // eslint-disable-next-line no-empty
         } catch { }
         // Update version (only relevant if learning map is saved)
-        this.version = 2023010601;
+        this.version = 2023011004;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -300,6 +301,7 @@ let placestore = {
             hover: this.hover,
             showall: this.showall,
             showtext: this.showtext,
+            slicemode: this.slicemode,
         };
     },
     /**
@@ -396,7 +398,7 @@ let placestore = {
      * Sets stroke opacity
      * @param {number} value
      */
-     setStrokeOpacity: function(value) {
+    setStrokeOpacity: function(value) {
         this.strokeopacity = value;
     },
     /**
@@ -440,6 +442,20 @@ let placestore = {
      */
      getPlaces: function() {
         return this.places;
+    },
+    /**
+     * Returns if slicemode is enabled
+     * @returns {boolean}
+     */
+    getSliceMode: function() {
+        return this.slicemode;
+    },
+    /**
+     * Sets state of slicemode
+     * @param {boolean} value
+     */
+    setSliceMode: function(value) {
+        this.slicemode = value;
     },
 };
 

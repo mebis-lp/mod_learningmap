@@ -4,94 +4,139 @@
         {
             "id": "p0",
             "linkId": "a0",
-            "linkedActivity": "99990"
+            "linkedActivity": "99990",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p1",
             "linkId": "a1",
-            "linkedActivity": "99991"
+            "linkedActivity": "99991",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p2",
             "linkId": "a2",
-            "linkedActivity": "99992"
+            "linkedActivity": "99992",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p3",
             "linkId": "a3",
-            "linkedActivity": "99993"
+            "linkedActivity": "99993",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p4",
             "linkId": "a4",
-            "linkedActivity": "99994"
+            "linkedActivity": "99994",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p5",
             "linkId": "a5",
-            "linkedActivity": "99995"
+            "linkedActivity": "99995",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p6",
             "linkId": "a6",
-            "linkedActivity": "99996"
+            "linkedActivity": "99996",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p8",
             "linkId": "a8",
-            "linkedActivity": "99997"
+            "linkedActivity": "99997",
+            "placecolor": null,
+            "visitedcolor": null
         },
         {
             "id": "p9",
             "linkId": "a9",
-            "linkedActivity": "99998"
+            "linkedActivity": "99998",
+            "placecolor": null,
+            "visitedcolor": null
         }
     ],
     "paths": [
         {
             "id": "p0_1",
             "fid": "p0",
-            "sid": "p1"
-        },
-        {
-            "id": "p1_2",
-            "fid": "p1",
-            "sid": "p2"
-        },
-        {
-            "id": "p2_3",
-            "fid": "p2",
-            "sid": "p3"
-        },
-        {
-            "id": "p3_5",
-            "fid": "p3",
-            "sid": "p5"
-        },
-        {
-            "id": "p4_5",
-            "fid": "p4",
-            "sid": "p5"
+            "sid": "p1",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
         },
         {
             "id": "p1_4",
             "fid": "p1",
-            "sid": "p4"
+            "sid": "p4",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
         },
         {
-            "id": "p4_9",
+            "id": "p4_5",
             "fid": "p4",
-            "sid": "p9"
+            "sid": "p5",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
         },
         {
             "id": "p5_6",
             "fid": "p5",
-            "sid": "p6"
+            "sid": "p6",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
+        },
+        {
+            "id": "p3_6",
+            "fid": "p3",
+            "sid": "p6",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
+        },
+        {
+            "id": "p2_3",
+            "fid": "p2",
+            "sid": "p3",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
+        },
+        {
+            "id": "p2_6",
+            "fid": "p2",
+            "sid": "p6",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
         },
         {
             "id": "p6_8",
             "fid": "p6",
-            "sid": "p8"
+            "sid": "p8",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
+        },
+        {
+            "id": "p8_9",
+            "fid": "p8",
+            "sid": "p9",
+            "strokecolor": null,
+            "strokedasharray": null,
+            "hidepath": null
         }
     ],
     "startingplaces": [
@@ -103,10 +148,19 @@
     ],
     "placecolor": "#c01c28",
     "strokecolor": "#ffffff",
+    "strokeopacity": 1,
+    "textcolor": "#ffffff",
     "visitedcolor": "#26a269",
-    "height": 600,
+    "height": 2111,
     "width": 800,
-    "hidepaths": true,
-    "mapid": "abc",
-    "editmode": true
+    "hidepaths": false,
+    "mapid": "63bb1c8edb6af",
+    "usecheckmark": false,
+    "editmode": false,
+    "version": 2023011004,
+    "pulse": false,
+    "hover": false,
+    "showall": false,
+    "showtext": false,
+    "slicemode": false
 }
