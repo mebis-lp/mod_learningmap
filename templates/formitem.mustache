@@ -55,7 +55,21 @@
       }
     ],
     "help":"This is the help text",
-    "completiondisabled":"false"
+    "completiondisabled":"false",
+    "features" : [
+            {
+                "name": "showtext",
+                "title": "Show activity names",
+                "text": "This option shows the names of the activities as a text besides the places. The text can be moved and is automatically updated when the name changes.",
+                "alt": "Help"
+            },
+            {
+                "name": "slicemode",
+                "title": "Reveal map with places",
+                "text": "This option subsequently reveals the map when new places become reachable. The hidden parts of the map are covered with fog. When all places become reachable, the whole map is visible.",
+                "alt": "Help"
+            }
+        ]
     }
 }}
 {{#completiondisabled}}<div class="alert alert-danger row">{{#str}} completiondisabled, learningmap {{/str}}</div>{{/completiondisabled}}

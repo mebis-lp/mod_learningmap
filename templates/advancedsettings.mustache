@@ -31,6 +31,20 @@
 
     Example context (json):
     {
+        "features" : [
+            {
+                "name": "showtext",
+                "title": "Show activity names",
+                "text": "This option shows the names of the activities as a text besides the places. The text can be moved and is automatically updated when the name changes.",
+                "alt": "Help"
+            },
+            {
+                "name": "slicemode",
+                "title": "Reveal map with places",
+                "text": "This option subsequently reveals the map when new places become reachable. The hidden parts of the map are covered with fog. When all places become reachable, the whole map is visible.",
+                "alt": "Help"
+            }
+        ]
     }
 }}
 <div id="learningmap-advanced-settings" class="card border border-dark" hidden>
@@ -43,7 +57,7 @@
         <div class="card-text">
             {{#features}}
             <div class="row border-top border-bottom border-light">
-                <div class="col-9">
+                <div class="col-10">
                     <label for="learningmap-advanced-setting-{{name}}">{{title}}</label>
                     {{>core/help_icon}}
                 </div>
