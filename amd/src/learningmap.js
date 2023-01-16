@@ -126,9 +126,10 @@ export const init = () => {
         let advancedSettings = document.getElementById('learningmap-advanced-settings');
         advancedSettingsIcon.addEventListener('click', function() {
             if (advancedSettings.getAttribute('hidden') === null) {
-                advancedSettings.setAttribute('hidden', '');
+                hideAdvancedSettings();
             } else {
                 advancedSettings.removeAttribute('hidden');
+                hideContextMenu();
             }
         });
         let advancedSettingsClose = document.getElementById('learningmap-advanced-settings-close');
@@ -185,7 +186,9 @@ export const init = () => {
      */
     function showContextMenu(e) {
         unselectAll();
-        if (activitySetting) {
+        hideAdvancedSettings();
+        // Check for the existence of the target (could have vanished since the event started).
+        if (activitySetting && document.getElementById(e.target.id) !== null) {
             if (e.touches) {
                 e = e.touches[0];
             }
@@ -205,6 +208,7 @@ export const init = () => {
                 updateActivities();
             } else {
                 hideContextMenu();
+                hideAdvancedSettings();
             }
         }
     }
@@ -550,6 +554,7 @@ export const init = () => {
      */
     function dblclickHandler(event) {
         hideContextMenu();
+        hideAdvancedSettings();
         unselectAll();
         if (event.target.classList.contains('learningmap-mapcontainer') ||
             event.target.classList.contains('learningmap-background-image')) {
@@ -692,6 +697,7 @@ export const init = () => {
     function clickHandler(event) {
         event.preventDefault();
         hideContextMenu();
+        hideAdvancedSettings();
         if (event.target.classList.contains('learningmap-place') && selectedElement === null) {
             if (firstPlace === null) {
                 firstPlace = event.target.id;
@@ -936,5 +942,13 @@ export const init = () => {
                 placeNode.parentNode.appendChild(textNode);
             }
         }
+    }
+
+    /**
+     * Hides the advanced settings menu.
+     */
+    function hideAdvancedSettings() {
+        let advancedSettings = document.getElementById('learningmap-advanced-settings');
+        advancedSettings.setAttribute('hidden', '');
     }
 };
