@@ -101,3 +101,8 @@
     width: 100%;
     display: block;
 }
+
+.section .modtype_learningmap .contentwithoutlink,
+.section .modtype_learningmap .activityinstance {
+    padding-right: 0;
+}
