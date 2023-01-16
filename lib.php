@@ -204,20 +204,20 @@ function learningmap_cm_info_dynamic(cm_info $cm) : void {
  * @return void
  */
 function learningmap_cm_info_view(cm_info $cm) : void {
-    global $DB, $PAGE;
+    global $DB, $OUTPUT, $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
         $map = $DB->get_record('learningmap', ['id' => $cm->instance], 'placestore');
         $placestore = json_decode($map->placestore);
         $iframeid = 'learningmap-iframe-' . $cm->id;
-        $cm->set_content(html_writer::start_tag('iframe', [
+        $context = [
             'src' => new moodle_url('/mod/learningmap/view.php', ['id' => $cm->id, 'embed' => 1]),
-            'frameborder' => 0,
-            'allowfullscreen' => true,
-            'class' => 'learningmap-iframe',
             'id' => $iframeid,
-            'style' => 'aspect-ratio: 800/' . $placestore->height,
-        ]) . html_writer::end_tag('iframe'), true);
+        ];
+        if ($placestore->height > 0) {
+            $context['style'] = 'aspect-ratio: 800/' . $placestore->height;
+        }
+        $cm->set_content($OUTPUT->render_from_template('mod_learningmap/iframe', $context), true);
         $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
             ['coursemodules' => learningmap_get_place_cm($cm), 'iframeid' => $iframeid]);
         $PAGE->requires->js_call_amd('mod_learningmap/embed-resize', 'init',
