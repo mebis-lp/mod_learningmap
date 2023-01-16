@@ -187,7 +187,7 @@ export const init = () => {
     function showContextMenu(e) {
         unselectAll();
         hideAdvancedSettings();
-        if (activitySetting) {
+        if (activitySetting && document.getElementById(e.target.id) !== null) {
             if (e.touches) {
                 e = e.touches[0];
             }
