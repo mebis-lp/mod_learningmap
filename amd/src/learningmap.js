@@ -187,6 +187,7 @@ export const init = () => {
     function showContextMenu(e) {
         unselectAll();
         hideAdvancedSettings();
+        // Check for the existence of the target (could have vanished since the event started).
         if (activitySetting && document.getElementById(e.target.id) !== null) {
             if (e.touches) {
                 e = e.touches[0];
