@@ -178,7 +178,6 @@ export const init = () => {
         mapdiv.addEventListener('contextmenu', function(e) {
             e.preventDefault();
             showContextMenu(e);
-            hideAdvancedSettings();
         }, false);
     }
     /**
@@ -187,6 +186,7 @@ export const init = () => {
      */
     function showContextMenu(e) {
         unselectAll();
+        hideAdvancedSettings();
         if (activitySetting) {
             if (e.touches) {
                 e = e.touches[0];
