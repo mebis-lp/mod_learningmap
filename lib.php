@@ -204,7 +204,7 @@ function learningmap_cm_info_dynamic(cm_info $cm) : void {
  * @return void
  */
 function learningmap_cm_info_view(cm_info $cm) : void {
-    global $PAGE;
+    global $OUTPUT, $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
         $groupdropdown = '';
@@ -226,7 +226,9 @@ function learningmap_cm_info_view(cm_info $cm) : void {
                 $groupdropdown
             );
         }
-        $cm->set_content($groupdropdown . learningmap_get_learningmap($cm), true);
+        $content = $OUTPUT->render_from_template('mod_learningmap/rendercontainer', ['cmId' => $cm->id]);
+
+        $cm->set_content($groupdropdown . $content, true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
         $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
             ['coursemodules' => learningmap_get_place_cm($cm)]);
