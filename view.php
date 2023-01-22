@@ -58,6 +58,7 @@ if (!empty($cm->groupmode)) {
     $OUTPUT->box($groupdropdown);
 }
 
-echo $OUTPUT->render_from_template('mod_learningmap/rendercontainer', ['cmId' => $id]);
+echo $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
+    ['cmId' => $id, 'isIntro' => false]);
 
 echo $OUTPUT->footer();

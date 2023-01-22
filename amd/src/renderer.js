@@ -10,7 +10,9 @@ export const init = (cmId) => {
       [
         {
           methodname: 'mod_learningmap_get_learningmap',
-          args: {'cmId': cmId},
+          args: {
+            'cmId': cmId
+          }
         }
       ]);
 

@@ -226,7 +226,8 @@ function learningmap_cm_info_view(cm_info $cm) : void {
                 $groupdropdown
             );
         }
-        $content = $OUTPUT->render_from_template('mod_learningmap/rendercontainer', ['cmId' => $cm->id]);
+        $content = $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
+            ['cmId' => $cm->id, 'isIntro' => true]);
 
         $cm->set_content($groupdropdown . $content, true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.

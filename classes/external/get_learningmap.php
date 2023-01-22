@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * mod_learningmap externallib for fetching the learningmap via ajax.
+ * External function to retrieve the learningmap HTML code via ajax.
  *
  * @package    mod_learningmap
  * @copyright  2023 ISB Bayern
@@ -23,27 +23,39 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+namespace mod_learningmap\external;
+
+use coding_exception;
+use context_module;
+use external_api;
+use external_function_parameters;
+use external_single_structure;
+use external_value;
+use invalid_parameter_exception;
+use moodle_exception;
+use required_capability_exception;
+use restricted_context_exception;
 
 require_once("$CFG->libdir/externallib.php");
 
 /**
- * External lib class for mod_learningmap.
+ * Class for external function to retrieve a given learningmap HTML code.
  *
  * @copyright  2023 ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_learningmap_external extends external_api {
+class get_learningmap extends external_api {
 
     /**
      * Returns description of method parameters for the get_learningmap webservice function.
      *
      * @return external_function_parameters
      */
-    public static function get_learningmap_parameters(): external_function_parameters {
-        return new external_function_parameters(['cmId' => new external_value(PARAM_INT,
-            'Course module ID of the learningmap')]);
+    public static function execute_parameters(): external_function_parameters {
+        return new external_function_parameters([
+            'cmId' => new external_value(PARAM_INT, 'Course module ID of the learningmap')
+        ]);
     }
 
     /**
@@ -51,7 +63,7 @@ class mod_learningmap_external extends external_api {
      *
      * @return external_single_structure
      */
-    public static function get_learningmap_returns(): external_single_structure {
+    public static function execute_returns(): external_single_structure {
         return
             new external_single_structure(
                 [
@@ -71,13 +83,15 @@ class mod_learningmap_external extends external_api {
      * @throws restricted_context_exception
      * @throws moodle_exception
      */
-    public static function get_learningmap(int $cmid): array {
-        $params = self::validate_parameters(self::get_learningmap_parameters(), ['cmId' => $cmid]);
+    public static function execute(int $cmid): array {
+        $params = self::validate_parameters(self::execute_parameters(), ['cmId' => $cmid]);
         $cmid = $params['cmId'];
         list($course, $cminfo) = get_course_and_cm_from_cmid($cmid);
         require_course_login($course);
         $context = context_module::instance($cmid);
         require_capability('mod/learningmap:view', $context);
-        return ['content' => learningmap_get_learningmap($cminfo)];
+        return [
+            'content' => learningmap_get_learningmap($cminfo)
+        ];
     }
 }

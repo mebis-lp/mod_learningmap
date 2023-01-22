@@ -26,11 +26,13 @@
     * none
 
     Context variables required for this template:
-    * none
+    * cmId The course module id of this learningmap
+    * isIntro If this is being rendered as intro in the course or in separate view page
 
     Example context (json):
     {
-        "cmId": "123"
+        "cmId": "123",
+        "isIntro": true
     }
 }}
 <div id="learningmap-render-container-{{cmId}}" class="learningmap-render-container">
