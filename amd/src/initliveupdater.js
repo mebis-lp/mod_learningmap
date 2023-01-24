@@ -14,55 +14,49 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderer module for the learningmap.
+ * Main module for the massaction block.
  *
- * @module     mod_learningmap/renderer
+ * @module     mod_learningmap/initliveupdater
  * @copyright  2023 ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+import LiveUpdater from 'mod_learningmap/liveupdater';
+import {selectors} from 'mod_learningmap/renderer';
+import {getCurrentCourseEditor} from 'core_courseformat/courseeditor';
 import Ajax from 'core/ajax';
 import Log from 'core/log';
 import Pending from 'core/pending';
-
-export const selectors = {
-    LEARNINGMAP_RENDER_CONTAINER_PREFIX: 'learningmap-render-container-'
-};
 
 /**
  * Renders the learningmap into the correct div.
  *
  * @param {number} cmId the course module id of the learningmap
+ * @return {Component} the liveupdater component
  */
-export const init = (cmId) => {
-    const rendererPendingPromise = new Pending('mod_learningmap/renderer-' + cmId);
-    renderLearningmap(cmId);
-    rendererPendingPromise.resolve();
-};
-
-/**
- * Render the learningmap with the given cmId into the corresponding div in the DOM.
- *
- * @param {number} cmId the course module id of the learningmap
- */
-export const renderLearningmap = (cmId) => {
-    const promises = Ajax.call(
-        [
-            {
-                methodname: 'mod_learningmap_get_learningmap',
-                args: {
-                    'cmId': cmId
+export const init = async(cmId) => {
+    const initliveupdaterPendingPromise = new Pending('mod_learningmap/initliveupdater');
+    try {
+        const data = await Ajax.call(
+            [
+                {
+                    methodname: 'mod_learningmap_get_dependingmodules',
+                    args: {
+                        'cmId': cmId
+                    }
                 }
-            }
-        ]);
+            ])[0];
 
-    promises[0].then(data => {
-        const targetDiv = document.getElementById(
-            selectors.LEARNINGMAP_RENDER_CONTAINER_PREFIX + cmId);
-        targetDiv.innerHTML = data.content;
-        return true;
-    }).catch((error) => {
+        initliveupdaterPendingPromise.resolve();
+        return new LiveUpdater({
+            element: document.getElementById(selectors.LEARNINGMAP_RENDER_CONTAINER_PREFIX + cmId),
+            reactive: getCurrentCourseEditor(),
+            cmId: cmId,
+            dependingModuleIds: data.dependingModuleIds
+        });
+    } catch (error) {
         Log.error(error);
+        initliveupdaterPendingPromise.reject();
         return false;
-    });
+    }
 };

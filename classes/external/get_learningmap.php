@@ -36,8 +36,6 @@ use moodle_exception;
 use required_capability_exception;
 use restricted_context_exception;
 
-require_once("$CFG->libdir/externallib.php");
-
 /**
  * Class for external function to retrieve a given learningmap HTML code.
  *

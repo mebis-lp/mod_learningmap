@@ -204,7 +204,7 @@ function learningmap_cm_info_dynamic(cm_info $cm) : void {
  * @return void
  */
 function learningmap_cm_info_view(cm_info $cm) : void {
-    global $OUTPUT, $PAGE;
+    global $CFG, $OUTPUT, $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
         $groupdropdown = '';
@@ -226,13 +226,21 @@ function learningmap_cm_info_view(cm_info $cm) : void {
                 $groupdropdown
             );
         }
+
+        $isintro = true;
+        if ($CFG->branch < 400) {
+            // Only in moodle <4.0 we call this separate manual completion watcher.
+            // From moodle 4.0 on this is handled by the mustache loader.
+            $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
+                ['coursemodules' => learningmap_get_place_cm($cm)]);
+            // Disable the moodle 4.0 reactive component by simulating that we are not in intro mode.
+            $isintro = false;
+        }
         $content = $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
-            ['cmId' => $cm->id, 'isIntro' => true]);
+            ['cmId' => $cm->id, 'isIntro' => $isintro]);
 
         $cm->set_content($groupdropdown . $content, true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
-        $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
-            ['coursemodules' => learningmap_get_place_cm($cm)]);
         // This method check is needed to provide backwards compatibility to moodle versions below 4.0.
         if (method_exists($cm, 'set_custom_cmlist_item')) {
             $cm->set_custom_cmlist_item(true);

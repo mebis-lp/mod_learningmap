@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template mod_learningmap/rendercontainer
+    @template mod_learningmap/loadingplaceholder
 
-    Template for the container the learningmap is being rendered into.
+    Template for the loading placeholder which is shown while the learningmap is being updated/retrieved from the server.
 
     Classes required for JS:
     * none
@@ -31,20 +31,8 @@
 
     Example context (json):
     {
-        "cmId": "123",
-        "isIntro": true
     }
 }}
-<div id="learningmap-render-container-{{cmId}}" class="learningmap-render-container">
-  {{> mod_learningmap/loadingplaceholder}}
+<div class="learningmap-render-loading">
+    {{> core/loading}} {{#str}} loading, mod_learningmap {{/str}}
 </div>
-{{#js}}
-  require(['mod_learningmap/renderer'], function(renderer) {
-    renderer.init({{cmId}});
-  });
-  {{#isIntro}}
-      require(['mod_learningmap/initliveupdater'], function(initliveupdater) {
-      initliveupdater.init({{cmId}});
-      });
-  {{/isIntro}}
-{{/js}}
