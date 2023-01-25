@@ -57,8 +57,7 @@ export const renderLearningmap = (cmId) => {
         ]);
 
     promises[0].then(data => {
-        const targetDiv = document.getElementById(
-            selectors.LEARNINGMAP_RENDER_CONTAINER_PREFIX + cmId);
+        const targetDiv = document.getElementById(selectors.LEARNINGMAP_RENDER_CONTAINER_PREFIX + cmId);
         targetDiv.innerHTML = data.content;
         return true;
     }).catch((error) => {

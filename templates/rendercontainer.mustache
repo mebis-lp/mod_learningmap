@@ -32,7 +32,7 @@
     Example context (json):
     {
         "cmId": "123",
-        "isIntro": true
+        "enableLiveUpdater": true
     }
 }}
 <div id="learningmap-render-container-{{cmId}}" class="learningmap-render-container">
@@ -42,9 +42,9 @@
   require(['mod_learningmap/renderer'], function(renderer) {
     renderer.init({{cmId}});
   });
-  {{#isIntro}}
+  {{#enableLiveUpdater}}
       require(['mod_learningmap/initliveupdater'], function(initliveupdater) {
-      initliveupdater.init({{cmId}});
+        initliveupdater.init({{cmId}});
       });
-  {{/isIntro}}
+  {{/enableLiveUpdater}}
 {{/js}}

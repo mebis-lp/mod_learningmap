@@ -59,6 +59,6 @@ if (!empty($cm->groupmode)) {
 }
 
 echo $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
-    ['cmId' => $id, 'isIntro' => false]);
+    ['cmId' => $id, 'enableLiveUpdater' => false]);
 
 echo $OUTPUT->footer();

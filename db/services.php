@@ -28,16 +28,18 @@ defined('MOODLE_INTERNAL') || die;
 $functions = [
     'mod_learningmap_get_learningmap' => [
         'classname'   => 'mod_learningmap\external\get_learningmap',
+        'methodname'  => 'execute',
         'description' => 'Retrieves the learningmap',
         'type'        => 'read',
         'ajax' => true,
-        'capabilities' => '',
+        'capabilities' => 'mod/learningmap:view',
     ],
     'mod_learningmap_get_dependingmodules' => [
         'classname'   => 'mod_learningmap\external\get_dependingmodules',
+        'methodname'  => 'execute',
         'description' => 'Retrieves the course modules a given learningmap depends on',
         'type'        => 'read',
         'ajax' => true,
-        'capabilities' => '',
+        'capabilities' => 'mod/learningmap:view',
     ]
 ];

@@ -227,17 +227,17 @@ function learningmap_cm_info_view(cm_info $cm) : void {
             );
         }
 
-        $isintro = true;
+        $enableliveupdatercomponent = true;
         if ($CFG->branch < 400) {
             // Only in moodle <4.0 we call this separate manual completion watcher.
             // From moodle 4.0 on this is handled by the mustache loader.
             $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
                 ['coursemodules' => learningmap_get_place_cm($cm)]);
-            // Disable the moodle 4.0 reactive component by simulating that we are not in intro mode.
-            $isintro = false;
+            // Disable the live updater (a reactive component which only works with moodle >=4.0).
+            $enableliveupdatercomponent = false;
         }
         $content = $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
-            ['cmId' => $cm->id, 'isIntro' => $isintro]);
+            ['cmId' => $cm->id, 'enableLiveUpdater' => $enableliveupdatercomponent]);
 
         $cm->set_content($groupdropdown . $content, true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
