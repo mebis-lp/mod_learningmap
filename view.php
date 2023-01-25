@@ -38,7 +38,9 @@ $map = $DB->get_record('learningmap', ['id' => $cm->instance], '*', MUST_EXIST);
 $PAGE->set_url(new moodle_url('/mod/learningmap/view.php', ['id' => $id]));
 $PAGE->set_title(get_string('pluginname', 'mod_learningmap') . ' ' . $map->name);
 $PAGE->set_heading($map->name);
-$PAGE->activityheader->set_description('');
+if ($CFG->branch >= 400) {
+    $PAGE->activityheader->set_description('');
+}
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
