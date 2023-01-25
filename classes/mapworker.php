@@ -179,32 +179,6 @@ class mapworker {
                 } else {
                     $placecm = false;
                 }
-                $placenode = $this->dom->getElementById($place['id']);
-                if ($placenode) {
-                    $cx = intval($placenode->getAttribute('cx'));
-                    $cy = intval($placenode->getAttribute('cy'));
-                    $this->coordinates[$place['id']]['x'] = $cx;
-                    $this->coordinates[$place['id']]['y'] = $cy;
-                    if ($this->placestore['showtext']) {
-                        $text = $this->dom->getElementById('text' . $place['id']);
-                        if ($text) {
-                            // Delta of the text in relation to the places center coordinates.
-                            $dx = $text->getAttribute('dx');
-                            $dy = $text->getAttribute('dy');
-                            // Calculate the corner coordinates of the text element. They all are added
-                            // to the coordinates array as they extend the area that needs to be visible.
-                            $bbox = imagettfbbox(20, 0, $CFG->dirroot . '/lib/default.ttf', $text->nodeValue);
-                            $this->coordinates['text1' . $place['id']]['x'] = $cx + $dx + $bbox[0];
-                            $this->coordinates['text1' . $place['id']]['y'] = $cy + $dy + $bbox[1];
-                            $this->coordinates['text2' . $place['id']]['x'] = $cx + $dx + $bbox[2];
-                            $this->coordinates['text2' . $place['id']]['y'] = $cy + $dy + $bbox[3];
-                            $this->coordinates['text3' . $place['id']]['x'] = $cx + $dx + $bbox[4];
-                            $this->coordinates['text3' . $place['id']]['y'] = $cy + $dy + $bbox[5];
-                            $this->coordinates['text4' . $place['id']]['x'] = $cx + $dx + $bbox[6];
-                            $this->coordinates['text4' . $place['id']]['y'] = $cy + $dy + $bbox[7];
-                        }
-                    }
-                }
                 // If the activity is not found or if there is no activity, add it to the list of not available places.
                 // Remove the place completely from the map.
                 if (!$placecm) {
@@ -221,7 +195,7 @@ class mapworker {
                         } else {
                             // Other modules (like labels) are shown on the course page. Link to the corresponding anchor.
                             $url = $CFG->wwwroot . '/course/view.php?id=' . $placecm->course .
-                                '&section=' . $placecm->sectionnum . '#module-' . $placecm->id;
+                            '&section=' . $placecm->sectionnum . '#module-' . $placecm->id;
                         }
                         if (!$this->edit) {
                             $link->setAttribute(
@@ -235,13 +209,13 @@ class mapworker {
                         $title = $this->dom->getElementById('title' . $place['id']);
                         if ($title) {
                             $title->nodeValue =
-                                $placecm->get_formatted_name() .
-                                (
-                                    // Add info to target places (for accessibility).
-                                    in_array($place['id'], $this->placestore['targetplaces']) ?
-                                    ' (' . get_string('targetplace', 'learningmap') . ')' :
-                                    ''
-                                );
+                            $placecm->get_formatted_name() .
+                            (
+                                // Add info to target places (for accessibility).
+                                in_array($place['id'], $this->placestore['targetplaces']) ?
+                                ' (' . get_string('targetplace', 'learningmap') . ')' :
+                                ''
+                            );
                         }
                         // Set the text element for the link.
                         $text = $this->dom->getElementById('text' . $place['id']);
@@ -268,6 +242,32 @@ class mapworker {
                     // are impossible to reach.
                     if ($placecm->visible == 0 && !$placecm->is_stealth()) {
                         $impossible[] = $place['id'];
+                    }
+                }
+                $placenode = $this->dom->getElementById($place['id']);
+                if ($placenode) {
+                    $cx = intval($placenode->getAttribute('cx'));
+                    $cy = intval($placenode->getAttribute('cy'));
+                    $this->coordinates[$place['id']]['x'] = $cx;
+                    $this->coordinates[$place['id']]['y'] = $cy;
+                    if ($this->placestore['showtext']) {
+                        $text = $this->dom->getElementById('text' . $place['id']);
+                        if ($text) {
+                            // Delta of the text in relation to the places center coordinates.
+                            $dx = $text->getAttribute('dx');
+                            $dy = $text->getAttribute('dy');
+                            // Calculate the corner coordinates of the text element. They all are added
+                            // to the coordinates array as they extend the area that needs to be visible.
+                            $bbox = imagettfbbox(20, 0, $CFG->dirroot . '/lib/default.ttf', $text->nodeValue);
+                            $this->coordinates['text1' . $place['id']]['x'] = $cx + $dx + $bbox[0];
+                            $this->coordinates['text1' . $place['id']]['y'] = $cy + $dy + $bbox[1];
+                            $this->coordinates['text2' . $place['id']]['x'] = $cx + $dx + $bbox[2];
+                            $this->coordinates['text2' . $place['id']]['y'] = $cy + $dy + $bbox[3];
+                            $this->coordinates['text3' . $place['id']]['x'] = $cx + $dx + $bbox[4];
+                            $this->coordinates['text3' . $place['id']]['y'] = $cy + $dy + $bbox[5];
+                            $this->coordinates['text4' . $place['id']]['x'] = $cx + $dx + $bbox[6];
+                            $this->coordinates['text4' . $place['id']]['y'] = $cy + $dy + $bbox[7];
+                        }
                     }
                 }
                 // If the place is not linked to an activity it is impossible to reach.
