@@ -58,6 +58,7 @@ if (!empty($cm->groupmode)) {
     $OUTPUT->box($groupdropdown);
 }
 
-echo $OUTPUT->box(learningmap_get_learningmap($cm));
+echo $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
+    ['cmId' => $id, 'enableLiveUpdater' => false]);
 
 echo $OUTPUT->footer();

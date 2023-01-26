@@ -13,6 +13,11 @@
     cursor: pointer;
 }
 
+.learningmap-render-loading {
+    text-align: center;
+    font-size: large;
+}
+
 .learningmap-mapcontainer {
     border-color: black;
     border-width: 1px;
