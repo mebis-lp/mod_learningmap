@@ -87,8 +87,8 @@ class get_dependingmodules extends external_api {
         $params = self::validate_parameters(self::execute_parameters(), ['cmId' => $cmid]);
         $cmid = $params['cmId'];
         list($course, $cminfo) = get_course_and_cm_from_cmid($cmid);
-        require_course_login($course);
         $context = context_module::instance($cmid);
+        self::validate_context($context);
         require_capability('mod/learningmap:view', $context);
         return [
             'dependingModuleIds' => learningmap_get_place_cm($cminfo)
