@@ -305,7 +305,7 @@ class mapworker {
                         if ($dompath) {
                             $dompath->setAttribute('style', 'visibility: hidden;');
                         }
-                        array_remove_by_value($active, $path['id']);
+                        $active = array_values(array_diff($active, [$path['id']]));
                     }
                 }
                 $pathnode = $this->dom->getElementById($path['id']);
