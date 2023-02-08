@@ -228,8 +228,8 @@ class mapworker {
                 if (empty($this->placestore['showall'])) {
                     $this->svgmap->remove_place_or_path($place);
                 } else {
-                    $this->svgmap->set_hidden($links[$place]);
-                    $this->svgmap->remove_link($links[$place]);
+                    $this->svgmap->set_hidden($links[$placeorpath]);
+                    $this->svgmap->remove_link($links[$placeorpath]);
                 }
             }
             // Remove all places that are impossible to reach.
