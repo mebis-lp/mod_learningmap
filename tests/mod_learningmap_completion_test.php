@@ -118,7 +118,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                 'username' => 'user1'
             ]
         );
-        $studentrole = $DB->get_record('role', array('shortname'=>'student'));
+        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         $this->getDataGenerator()->enrol_user($this->users[0]->id, $this->course->id, $studentrole->id);
         if ($this->groupmode) {
             $this->group = $this->getDataGenerator()->create_group(['courseid' => $this->course->id]);
@@ -178,7 +178,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES, false, 8);
     }
 
-        /**
+    /**
      * Tests completiontype 1 in group mode
      *
      * @return void
@@ -208,13 +208,13 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     /**
      * Run tests for completion.
      *
-     * @param integer $type Completion type
-     * @param boolean $groupmode Whether to run in group mode
-     * @param integer $completedfrom Number of the activity to expect completion
+     * @param int $type Completion type
+     * @param bool $groupmode Whether to run in group mode
+     * @param int $completedfrom Number of the activity to expect completion
      * @return void
      */
     public function run_completion_test(int $type, bool $groupmode, int $completedfrom) : void {
-        global $DB, $SESSION;
+        global $SESSION;
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->prepare($type, $groupmode);
