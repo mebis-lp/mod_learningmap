@@ -42,7 +42,7 @@
         "mapid": "63bee8a5f1a1e",
         "usecheckmark": false,
         "editmode": true,
-        "version": 2023011004,
+        "version": 2023020801,
         "pulse": false,
         "hover": false,
         "showall": false,
@@ -64,7 +64,7 @@
     {{/editmode}}
 }
 
-#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-place-visited {
+#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-visited {
     visibility: visible;
     opacity: 1;
     fill: {{ visitedcolor }};
@@ -132,14 +132,14 @@
 }
 {{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover,
-#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited):hover {
+#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited):hover {
     animation: none;
     stroke-width: 5px;
     stroke-opacity: 1;
 }
 {{/hover}}
 {{#pulse}}
-#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-place-visited) {
+#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited) {
     animation: pulse 1.5s infinite;
     stroke-opacity: 1;
 }

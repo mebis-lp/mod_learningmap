@@ -12,7 +12,7 @@
             visibility: hidden;
         }
 
-        #learningmap-svgmap-63bb1c8edb6af .learningmap-place.learningmap-place-visited {
+        #learningmap-svgmap-63bb1c8edb6af .learningmap-place.learningmap-visited {
             visibility: visible;
             opacity: 1;
             fill: #26a269;
