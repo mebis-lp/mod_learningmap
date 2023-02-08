@@ -16,6 +16,9 @@
 
 namespace mod_learningmap;
 
+defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../lib.php');
+
 /**
  * Unit test for mod_learningmap
  *
@@ -111,25 +114,28 @@ class mod_learningmap_completion_test extends \advanced_testcase {
 
         $this->users[0] = $this->getDataGenerator()->create_user(
             [
-                'email' => 'users[0]@example.com',
-                'username' => 'users[0]'
+                'email' => 'user1@example.com',
+                'username' => 'user1'
             ]
         );
-
+        $studentrole = $DB->get_record('role', array('shortname'=>'student'));
+        $this->getDataGenerator()->enrol_user($this->users[0]->id, $this->course->id, $studentrole->id);
         if ($this->groupmode) {
             $this->group = $this->getDataGenerator()->create_group(['courseid' => $this->course->id]);
             $this->users[1] = $this->getDataGenerator()->create_user(
                 [
-                    'email' => 'users[1]@example.com',
-                    'username' => 'users[1]'
+                    'email' => 'user2@example.com',
+                    'username' => 'user2'
                 ]
             );
             $this->users[2] = $this->getDataGenerator()->create_user(
                 [
-                    'email' => 'users[2]@example.com',
-                    'username' => 'users[2]'
+                    'email' => 'user3@example.com',
+                    'username' => 'user3'
                 ]
             );
+            $this->getDataGenerator()->enrol_user($this->users[1]->id, $this->course->id, $studentrole->id);
+            $this->getDataGenerator()->enrol_user($this->users[2]->id, $this->course->id, $studentrole->id);
             $this->getDataGenerator()->create_group_member([
                 'userid' => $this->users[0]->id,
                 'groupid' => $this->group->id,
@@ -146,32 +152,77 @@ class mod_learningmap_completion_test extends \advanced_testcase {
     }
 
     /**
-     * Tests all completiontypes in individual and group mode
+     * Tests completiontype 1 in individual mode
      *
      * @return void
      */
-    public function test_completion() : void {
-        // Individual mode
+    public function test_completiontype1_individual() : void {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ONE_TARGET, false, 7);
+    }
+
+    /**
+     * Tests completiontype 2 in individual mode
+     *
+     * @return void
+     */
+    public function test_completiontype2_individual() : void {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS, false, 8);
+    }
+
+    /**
+     * Tests completiontype 3 in individual mode
+     *
+     * @return void
+     */
+    public function test_completiontype3_individual() : void {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES, false, 8);
-        // Group mode
+    }
+
+        /**
+     * Tests completiontype 1 in group mode
+     *
+     * @return void
+     */
+    public function test_completiontype1_group() : void {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ONE_TARGET, true, 7);
+    }
+
+    /**
+     * Tests completiontype 2 in group mode
+     *
+     * @return void
+     */
+    public function test_completiontype2_group() : void {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS, true, 8);
+    }
+
+    /**
+     * Tests completiontype 3 in group mode
+     *
+     * @return void
+     */
+    public function test_completiontype3_group() : void {
         $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES, true, 8);
     }
 
     /**
-     * Tests completion by reaching all places in group mode
+     * Run tests for completion.
      *
+     * @param integer $type Completion type
+     * @param boolean $groupmode Whether to run in group mode
+     * @param integer $completedfrom Number of the activity to expect completion
      * @return void
      */
     public function run_completion_test(int $type, bool $groupmode, int $completedfrom) : void {
-        global $DB;
+        global $DB, $SESSION;
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->prepare($type, $groupmode);
         for ($j = 0; $j < ($groupmode ? 3 : 1); $j++) {
+            $this->setUser($this->users[$j]);
+            if ($groupmode) {
+                $SESSION->activegroup[$this->course->id][SEPARATEGROUPS][0] = ($j < 2 ? $this->group->id : 0);
+            }
             $this->assertEquals(
                 COMPLETION_INCOMPLETE,
                 $this->completion->get_data($this->cm, true, $this->users[$j]->id)->completionstate
@@ -180,12 +231,24 @@ class mod_learningmap_completion_test extends \advanced_testcase {
 
         for ($i = 0; $i < 9; $i++) {
             $acm = $this->modinfo->get_cm($this->activities[$i]->cmid);
+            $this->setUser($this->users[0]);
+            if ($groupmode) {
+                $SESSION->activegroup[$this->course->id][SEPARATEGROUPS][0] = $this->group->id;
+            }
             $this->completion->set_module_viewed($acm, $this->users[0]->id);
             for ($j = 0; $j < ($groupmode ? 3 : 1); $j++) {
+                $this->setUser($this->users[$j]);
+                if ($groupmode) {
+                    $SESSION->activegroup[$this->course->id][SEPARATEGROUPS][0] = ($j < 2 ? $this->group->id : 0);
+                }
                 $this->completion->update_state($this->cm, COMPLETION_UNKNOWN, $this->users[$j]->id);
             }
             if ($i < $completedfrom) {
                 for ($j = 0; $j < ($groupmode ? 3 : 1); $j++) {
+                    $this->setUser($this->users[$j]);
+                    if ($groupmode) {
+                        $SESSION->activegroup[$this->course->id][SEPARATEGROUPS][0] = ($j < 2 ? $this->group->id : 0);
+                    }
                     $this->assertEquals(
                         COMPLETION_INCOMPLETE,
                         $this->completion->get_data($this->cm, true, $this->users[$j]->id)->completionstate
@@ -193,15 +256,24 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                 }
             } else {
                 for ($j = 0; $j < ($groupmode ? 2 : 1); $j++) {
+                    $this->setUser($this->users[$j]);
+                    if ($groupmode) {
+                        $SESSION->activegroup[$this->course->id][SEPARATEGROUPS][0] = $this->group->id;
+                    }
                     $this->assertEquals(
-                        COMPLETION_INCOMPLETE,
-                        $this->completion->get_data($this->cm, true, $this->users[$j]->id)->completionstate
+                        COMPLETION_COMPLETE,
+                        $this->completion->get_data($this->cm, true, $this->users[$j]->id)->completionstate,
+                        'Completion not set for user ' . $j
                     );
                 }
-                $this->assertEquals(
-                    COMPLETION_INCOMPLETE,
-                    $this->completion->get_data($this->cm, true, $this->users[2]->id)->completionstate
-                );
+                if ($groupmode) {
+                    $this->setUser($this->users[2]);
+                    $SESSION->activegroup[$this->course->id][SEPARATEGROUPS][0] = 0;
+                    $this->assertEquals(
+                        COMPLETION_INCOMPLETE,
+                        $this->completion->get_data($this->cm, true, $this->users[2]->id)->completionstate
+                    );
+                }
             }
 
         }
