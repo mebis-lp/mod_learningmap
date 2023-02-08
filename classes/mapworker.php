@@ -84,6 +84,7 @@ class mapworker {
             $this->cm = $cm;
             $this->activitymanager = new activitymanager($cm->get_course(), $USER, $group);
         }
+        $this->active = [];
     }
 
     /**
@@ -120,7 +121,7 @@ class mapworker {
      */
     public function process_map_objects() : void {
         global $CFG, $USER;
-        $active = [];
+        $this->active = [];
         $completedplaces = [];
         $notavailable = [];
         $impossible = [];
@@ -168,13 +169,13 @@ class mapworker {
             );
             // If the place is a starting place, add it to the active places.
             if (in_array($place['id'], $this->placestore['startingplaces'])) {
-                $active[] = $place['id'];
+                $this->active[] = $place['id'];
             }
             // If the activity linked to the place is already completed, add it to the completed
             // and to the active places.
             if ($this->activitymanager->is_completed($placecm)) {
                 $completedplaces[] = $place['id'];
-                $active[] = $place['id'];
+                $this->active[] = $place['id'];
             }
             // Places that are not accessible (e.g. because of additional availability restrictions)
             // are only shown on the map if showall mode is active.
@@ -194,15 +195,15 @@ class mapworker {
                 if (in_array($path['sid'], $completedplaces) || in_array($path['fid'], $completedplaces)) {
                     // Only set paths visible if hidepaths is not set in placestore.
                     if (!$this->placestore['hidepaths']) {
-                        $active[] = $path['id'];
+                        $this->active[] = $path['id'];
                     }
-                    $active[] = $path['fid'];
-                    $active[] = $path['sid'];
+                    $this->active[] = $path['fid'];
+                    $this->active[] = $path['sid'];
                 }
             }
-            $active = array_unique($active);
+            $this->active = array_unique($this->active);
             // Set all active paths and places to visible.
-            foreach ($active as $a) {
+            foreach ($this->active as $a) {
                 $this->svgmap->set_reachable($a);
             }
             // Make all completed places visible and set color for visited places.
@@ -214,7 +215,7 @@ class mapworker {
                 }
             }
             $notavailable = array_merge(
-                array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible),
+                array_diff($allplaces, $notavailable, $completedplaces, $this->active, $impossible),
                 $notavailable
             );
             // Handle unavailable places.
@@ -257,5 +258,13 @@ class mapworker {
      */
     public function get_attribute(string $id, string $attribute): ?string {
         return $this->svgmap->get_attribute($id, $attribute);
+    }
+
+    /**
+     * Get active paths and places (for unit testing). process_map_objects() must be called first.
+     * @return array names of active paths and places
+     */
+    public function get_active(): array {
+        return $this->active;
     }
 }
