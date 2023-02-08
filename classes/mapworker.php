@@ -217,13 +217,13 @@ class mapworker {
                 array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible),
                 $notavailable
             );
-            // Handle unavailable places and paths.
-            foreach ($notavailable as $placeorpath) {
+            // Handle unavailable places.
+            foreach ($notavailable as $place) {
                 if (empty($this->placestore['showall'])) {
-                    $this->svgmap->remove_place_or_path($placeorpath);
+                    $this->svgmap->remove_place_or_path($place);
                 } else {
-                    $this->svgmap->set_hidden($links[$placeorpath]);
-                    $this->svgmap->remove_link($links[$placeorpath]);
+                    $this->svgmap->set_hidden($links[$place]);
+                    $this->svgmap->remove_link($links[$place]);
                 }
             }
             // Remove all places that are impossible to reach.
