@@ -208,10 +208,10 @@ class mapworker {
             // Make all completed places visible and set color for visited places.
             foreach ($completedplaces as $place) {
                 $this->svgmap->set_visited($place);
-                    // If the option "usecheckmark" is selected, add the checkmark to the circle.
-                    if ($this->placestore['usecheckmark']) {
-                        $this->svgmap->add_checkmark($place);
-                    }
+                // If the option "usecheckmark" is selected, add the checkmark to the circle.
+                if ($this->placestore['usecheckmark']) {
+                    $this->svgmap->add_checkmark($place);
+                }
             }
             $notavailable = array_merge(
                 array_diff($allplaces, $notavailable, $completedplaces, $active, $impossible),
@@ -219,7 +219,7 @@ class mapworker {
             );
             // Handle unavailable places and paths.
             foreach ($notavailable as $placeorpath) {
-                if(empty($this->placestore['showall'])) {
+                if (empty($this->placestore['showall'])) {
                     $this->svgmap->remove_place_or_path($placeorpath);
                 } else {
                     $this->svgmap->set_hidden($links[$place]);
