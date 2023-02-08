@@ -72,10 +72,6 @@
             d="M 405.3113708496094 235.23707580566406 L 300.14605712890625 334.02874755859375"></path>
         <path class="learningmap-path" id="p2_3"
             d="M 466.92340087890625 150.25498962402344 L 405.3113708496094 235.23707580566406"></path>
-        <path class="learningmap-path" id="p2_7"
-            d="M 466.92340087890625 150.25498962402344 L 486.04437255859375 285.1640319824219"></path>
-        <path class="learningmap-path" id="p7_8"
-            d="M 486.04437255859375 285.1640319824219 L 634.7630004882812 151.31727600097656"></path>
         <path class="learningmap-path" id="p8_9"
             d="M 634.7630004882812 151.31727600097656 L 310.7688293457031 1610.8843994140625"></path>
     </g>
@@ -114,11 +110,6 @@
             <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p6"
                 cx="300.14606350361925" cy="334.0287380036446" r="10"></circle>
             <title id="titlep6"></title><text id="textp6" x="300.14606350361925" y="334.0287380036446" dx="15"
-                dy="15"></text>
-        </a><a id="a7" xlink:href="">
-            <circle class="learningmap-place learningmap-draggable learningmap-emptyplace" id="p7"
-                cx="486.04435896424457" cy="285.1640431968517" r="10"></circle>
-            <title id="titlep7"></title><text id="textp7" x="486.04435896424457" y="285.1640431968517" dx="15"
                 dy="15"></text>
         </a><a id="a8" xlink:href="">
             <circle class="learningmap-place learningmap-draggable learningmap-emptyplace learningmap-targetplace"
