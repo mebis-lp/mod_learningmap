@@ -273,7 +273,7 @@ function learningmap_get_place_cm(cm_info $cm) : array {
  * @return string
  */
 function learningmap_get_learningmap(cm_info $cm) : string {
-    global $DB, $OUTPUT;
+    global $DB, $OUTPUT, $PAGE;
 
     $context = context_module::instance($cm->id);
 
@@ -294,10 +294,20 @@ function learningmap_get_learningmap(cm_info $cm) : string {
     $worker->process_map_objects();
     $worker->remove_tags_before_svg();
 
+    $allowedfilters = explode(',', str_replace(' ', '', get_config('mod_learningmap', 'allowedfilters')));
+
+    $filtermanager = filter_manager::instance();
+    $skipfilters = array_diff(array_keys(filter_get_active_in_context($cm->context)), $allowedfilters);
+
     return(
-        $OUTPUT->render_from_template(
-            'mod_learningmap/mapcontainer',
-            ['mapcode' => $worker->get_svgcode()]
+        $filtermanager->filter_text(
+            $OUTPUT->render_from_template(
+                'mod_learningmap/mapcontainer',
+                ['mapcode' => $worker->get_svgcode()]
+            ),
+            $cm->context,
+            ['trusted' => true, 'noclean' => true],
+            $skipfilters
         )
     );
 }
