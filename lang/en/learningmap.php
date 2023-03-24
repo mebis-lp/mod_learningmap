@@ -26,6 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['advancedsettings'] = 'Advanced settings';
+$string['allowedfilters'] = 'Filters allowed for use with mod_learningmap';
+$string['allowedfilters_desc'] = 'Comma separated list without filter_ prefix';
 $string['backgroundfile'] = 'Background image';
 $string['backgroundfile_help'] = 'This file will be used as background for the map.';
 $string['completion_with_all_places'] = 'Reaching all places is necessary for completion';
