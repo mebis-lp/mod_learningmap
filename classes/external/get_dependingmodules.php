@@ -25,6 +25,10 @@
 
 namespace mod_learningmap\external;
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->dirroot . '/lib/externallib.php');
+
 use coding_exception;
 use context_module;
 use external_api;
