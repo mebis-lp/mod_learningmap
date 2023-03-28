@@ -25,6 +25,10 @@
 
 namespace mod_learningmap\external;
 
+// Next 2 lines can be removed as soon as we inherit from \core_external\external_api instead of old \external_api.
+defined('MOODLE_INTERNAL') || die();
+require_once($CFG->dirroot . '/lib/externallib.php');
+
 use coding_exception;
 use context_module;
 use external_api;
