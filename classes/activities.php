@@ -21,37 +21,39 @@ use cm_info;
 use stdClass;
 
 /**
- * Class for handling the activities of a learning map
+ * Class for handling the activities used in a learning map.
  *
  * @package     mod_learningmap
  * @copyright   2021-2023, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class activities {
+
+class activitymanager {
     /**
-     * User object for completion
+     * User object for completion.
      * @var core_user
      */
-    protected $user;
+    protected \core_user $user;
     /**
      * Stores the group id when using group mode. 0 if no group is used.
      * @var int
      */
-    protected $group;
+    protected int $group;
     /**
-     * Course object for completion
+     * Course object for completion.
      * @var stdClass
      */
-    protected $course;
+    protected stdClass $course;
     /**
-     * Completion information for course
+     * Completion information for course.
      * @var completion_info
      */
-    protected $completion;
+    protected completion_info $completion;
 
     /**
-     * Creates activities helper
+     * Creates activitymanager helper.
+     * 
      * @param stdClass $course Course object for completion
      * @param stdClass $user User object
      * @param int $group Group id (0 by default, means no group)

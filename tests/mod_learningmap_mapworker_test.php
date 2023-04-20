@@ -45,7 +45,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
      *
      * @var array
      */
-    protected $activities;
+    protected $activitymanager;
     /**
      * The user used for testing
      *

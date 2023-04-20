@@ -71,7 +71,7 @@ class mapworker {
      * Activity worker to handle completion
      * @var activities
      */
-    protected $activities;
+    protected $activitymanager;
 
     /**
      * Creates mapworker from SVG code

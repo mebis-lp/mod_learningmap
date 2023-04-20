@@ -64,7 +64,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
     } else {
         $user = \core_user::get_user($userid);
         $group = (empty($cm->groupmode) ? 0 : groups_get_activity_group($cm, true));
-        $activities = new mod_learningmap\activities($course, $user, $group);
+        $activitymanager = new mod_learningmap\activitymanager($course, $user, $group);
 
         $placestore = json_decode($map->placestore);
 
@@ -105,7 +105,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
 
                 if (
                     !$placecm ||
-                    !$activities->is_completed($placecm)
+                    !$activitymanager->is_completed($placecm)
                 ) {
                     // No way to fulfill condition.
                     if ($map->completiontype > LEARNINGMAP_COMPLETION_WITH_ONE_TARGET) {
@@ -115,7 +115,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
                     // We need only one.
                     if (
                         $map->completiontype == LEARNINGMAP_COMPLETION_WITH_ONE_TARGET &&
-                        $activities->is_completed($placecm)
+                        $activitymanager->is_completed($placecm)
                     ) {
                         return COMPLETION_COMPLETE;
                     }

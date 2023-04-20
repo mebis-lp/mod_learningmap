@@ -17,7 +17,7 @@
 namespace mod_learningmap\completion;
 
 use stdClass;
-use mod_learningmap\activities;
+use mod_learningmap\activitymanager;
 
 /**
  * Custom completion rules for mod_learningmap
@@ -48,7 +48,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
      * Activity worker to handle completion
      * @var activities
      */
-    protected $activities;
+    protected $activitymanager;
 
     /**
      * Returns completion state of the custom completion rules
