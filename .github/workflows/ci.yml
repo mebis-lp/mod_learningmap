@@ -67,20 +67,11 @@ jobs:
           - php: '7.4'
             moodle-branch: 'MOODLE_311_STABLE'
             database: 'mariadb'
-          - php: '7.3'
-            moodle-branch: 'MOODLE_311_STABLE'
-            database: 'mariadb'
           - php: '7.4'
             moodle-branch: 'MOODLE_39_STABLE'
             database: 'mariadb'
-          - php: '7.3'
-            moodle-branch: 'MOODLE_39_STABLE'
-            database: 'mariadb'
-          - php: '7.2'
-            moodle-branch: 'MOODLE_39_STABLE'
-            database: 'mariadb'
 
-steps:
+    steps:
       - name: Check out repository code
         uses: actions/checkout@v3
         with:
