@@ -32,9 +32,9 @@ use core_user;
 class activitymanager {
     /**
      * User object for completion.
-     * @var core_user
+     * @var stdClass
      */
-    protected core_user $user;
+    protected stdClass $user;
     /**
      * Stores the group id when using group mode. 0 if no group is used.
      * @var int
