@@ -16,7 +16,6 @@
 
 namespace mod_learningmap\completion;
 
-use stdClass;
 use mod_learningmap\activitymanager;
 
 /**
@@ -46,9 +45,9 @@ class custom_completion extends \core_completion\activity_custom_completion {
     const COMPLETION_WITH_ALL_PLACES = 3;
     /**
      * Activity worker to handle completion
-     * @var activities
+     * @var activitymanager
      */
-    protected $activitymanager;
+    protected activitymanager $activitymanager;
 
     /**
      * Returns completion state of the custom completion rules
@@ -66,7 +65,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         if ($map->completiontype > self::NOCOMPLETION) {
             $user = \core_user::get_user($this->userid);
             $group = (empty($this->cm->groupmode) ? 0 : groups_get_activity_group($this->cm, true));
-            $this->activities = new activities($this->cm->get_course(), $user, $group);
+            $this->activitymanager = new activitymanager($this->cm->get_course(), $user, $group);
 
             $placestore = json_decode($map->placestore);
 
@@ -104,7 +103,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
                     if (
                         !$placecm ||
-                        !$this->activities->is_completed($placecm)
+                        !$this->activitymanager->is_completed($placecm)
                     ) {
                         // No way to fulfill condition.
                         if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
@@ -114,7 +113,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         // We need only one.
                         if (
                             $map->completiontype == self::COMPLETION_WITH_ONE_TARGET &&
-                            $this->activities->is_completed($placecm)
+                            $this->activitymanager->is_completed($placecm)
                         ) {
                             return COMPLETION_COMPLETE;
                         }
