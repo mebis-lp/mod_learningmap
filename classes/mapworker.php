@@ -69,7 +69,7 @@ class mapworker {
     protected $group;
     /**
      * Activity worker to handle completion
-     * @var activities
+     * @var activitymanager
      */
     protected $activitymanager;
 
@@ -92,7 +92,7 @@ class mapworker {
         $this->group = $group;
         if (!is_null($cm)) {
             $this->cm = $cm;
-            $this->activities = new activities($cm->get_course(), $USER, $group);
+            $this->activitymanager = new activitymanager($cm->get_course(), $USER, $group);
         }
         // This fixes a problem for loading SVG DTD on Windows locally.
         if (strcasecmp(substr(PHP_OS, 0, 3), 'WIN') == 0) {
@@ -243,7 +243,7 @@ class mapworker {
                     }
                     // If the activity linked to the place is already completed, add it to the completed
                     // and to the active places.
-                    if ($this->activities->is_completed($placecm)) {
+                    if ($this->activitymanager->is_completed($placecm)) {
                         $completedplaces[] = $place['id'];
                         $active[] = $place['id'];
                     }
