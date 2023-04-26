@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import {BaseComponent} from 'core/reactive';
+import {refreshModule} from 'core_course/actions';
 import {renderLearningmap} from 'mod_learningmap/renderer';
 
 /**
@@ -30,6 +31,7 @@ import {renderLearningmap} from 'mod_learningmap/renderer';
 export default class extends BaseComponent {
     create(descriptor) {
         this.element = descriptor.element;
+        this.reactive = descriptor.reactive;
         this.cmId = descriptor.cmId;
         this.dependingModuleIds = descriptor.dependingModuleIds;
     }
@@ -47,6 +49,9 @@ export default class extends BaseComponent {
      * Handler for triggering the rerendering of the learningmap.
      */
     _rerenderLearningmap() {
+        // We need this to update the automatic completion status. Unfortunately, this old function does not update the
+        // JS, so we also need to render the learningmap afterwards.
+        refreshModule(this.element, this.cmId);
         renderLearningmap(this.cmId);
     }
 }
