@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
@@ -67,22 +67,13 @@ jobs:
           - php: '7.4'
             moodle-branch: 'MOODLE_311_STABLE'
             database: 'mariadb'
-          - php: '7.3'
-            moodle-branch: 'MOODLE_311_STABLE'
-            database: 'mariadb'
           - php: '7.4'
-            moodle-branch: 'MOODLE_39_STABLE'
-            database: 'mariadb'
-          - php: '7.3'
-            moodle-branch: 'MOODLE_39_STABLE'
-            database: 'mariadb'
-          - php: '7.2'
             moodle-branch: 'MOODLE_39_STABLE'
             database: 'mariadb'
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: plugin
 
@@ -92,6 +83,8 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: ${{ matrix.extensions }}
           ini-values: max_input_vars=5000
+          # If you are not using code coverage, keep "none". Otherwise, use "pcov" (Moodle 3.10 and up) or "xdebug".
+          # If you try to use code coverage with "none", it will fallback to phpdbg (which has known problems).
           coverage: none
 
       - name: Initialise moodle-plugin-ci

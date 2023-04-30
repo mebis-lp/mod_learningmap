@@ -290,7 +290,9 @@ function learningmap_get_learningmap(cm_info $cm) : string {
 
     $placestore = json_decode($map->placestore, true);
 
-    $worker = new \mod_learningmap\mapworker($svg, $placestore, $cm);
+    $group = (empty($cm->groupmode) ? 0 : groups_get_activity_group($cm, true));
+
+    $worker = new \mod_learningmap\mapworker($svg, $placestore, $cm, false, $group);
     $worker->process_map_objects();
     $worker->remove_tags_before_svg();
 

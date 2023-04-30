@@ -16,7 +16,7 @@
 
 namespace mod_learningmap\completion;
 
-use stdClass;
+use mod_learningmap\activitymanager;
 
 /**
  * Custom completion rules for mod_learningmap
@@ -43,6 +43,11 @@ class custom_completion extends \core_completion\activity_custom_completion {
      * Activity is completed when all places are reached.
      */
     const COMPLETION_WITH_ALL_PLACES = 3;
+    /**
+     * Activity worker to handle completion
+     * @var activitymanager
+     */
+    protected activitymanager $activitymanager;
 
     /**
      * Returns completion state of the custom completion rules
@@ -58,6 +63,10 @@ class custom_completion extends \core_completion\activity_custom_completion {
         $map = $DB->get_record("learningmap", ["id" => $this->cm->instance], 'completiontype, placestore', MUST_EXIST);
 
         if ($map->completiontype > self::NOCOMPLETION) {
+            $user = \core_user::get_user($this->userid);
+            $group = (empty($this->cm->groupmode) ? 0 : groups_get_activity_group($this->cm, true));
+            $this->activitymanager = new activitymanager($this->cm->get_course(), $user, $group);
+
             $placestore = json_decode($map->placestore);
 
             // Return COMPLETION_INCOMPLETE if there are no target places and condition requires to have one.
@@ -94,7 +103,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
                     if (
                         !$placecm ||
-                        !$this->is_completed($placecm)
+                        !$this->activitymanager->is_completed($placecm)
                     ) {
                         // No way to fulfill condition.
                         if ($map->completiontype > self::COMPLETION_WITH_ONE_TARGET) {
@@ -104,7 +113,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
                         // We need only one.
                         if (
                             $map->completiontype == self::COMPLETION_WITH_ONE_TARGET &&
-                            $this->is_completed($placecm)
+                            $this->activitymanager->is_completed($placecm)
                         ) {
                             return COMPLETION_COMPLETE;
                         }
@@ -123,38 +132,6 @@ class custom_completion extends \core_completion\activity_custom_completion {
             }
         }
         return COMPLETION_INCOMPLETE;
-    }
-
-    /**
-     * Checks whether a given course module is completed (either by the user or at least one
-     * of the users of the group, if groupmode is set for the activity).
-     *
-     * @param \cm_info $cm course module to check
-     * @return bool
-     */
-    public function is_completed(\cm_info $cm): bool {
-        if (!isset($this->cm)) {
-            return false;
-        }
-        $completion = new \completion_info($cm->get_course());
-        if (!empty($this->cm->groupmode)) {
-            $group = groups_get_activity_group($this->cm, false);
-        }
-        if (!empty($group)) {
-            $members = groups_get_members($group);
-        }
-        if (empty($members)) {
-            $user = new stdClass;
-            $user->id = $this->userid;
-            $members = [$user];
-        }
-        foreach ($members as $member) {
-            if ($completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
-                $completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

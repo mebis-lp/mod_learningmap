@@ -62,6 +62,10 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
     if ($map->completiontype == LEARNINGMAP_NOCOMPLETION) {
         return $type;
     } else {
+        $user = \core_user::get_user($userid);
+        $group = (empty($cm->groupmode) ? 0 : groups_get_activity_group($cm, true));
+        $activitymanager = new mod_learningmap\activitymanager($course, $user, $group);
+
         $placestore = json_decode($map->placestore);
 
         // Return COMPLETION_INCOMPLETE if there are no target places and condition requires to have one.
@@ -101,7 +105,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
 
                 if (
                     !$placecm ||
-                    !learningmap_is_completed($course, $placecm, $cm, $userid)
+                    !$activitymanager->is_completed($placecm)
                 ) {
                     // No way to fulfill condition.
                     if ($map->completiontype > LEARNINGMAP_COMPLETION_WITH_ONE_TARGET) {
@@ -111,7 +115,7 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
                     // We need only one.
                     if (
                         $map->completiontype == LEARNINGMAP_COMPLETION_WITH_ONE_TARGET &&
-                        learningmap_is_completed($course, $placecm, $cm, $userid)
+                        $activitymanager->is_completed($placecm)
                     ) {
                         return COMPLETION_COMPLETE;
                     }
@@ -129,39 +133,4 @@ function learningmap_get_completion_state($course, $cm, $userid, $type) {
             return COMPLETION_COMPLETE;
         }
     }
-}
-
-/**
- * Checks whether a given course module is completed (either by the user or at least one
- * of the users of the group, if groupmode is set for the activity).
- *
- * @param object $course course containing the map
- * @param object $cm course module to check
- * @param object $learningmapcm course module for the learning map
- * @param int $userid id of the user to check completion for
- * @return bool
- */
-function learningmap_is_completed(object $course, object $cm, object $learningmapcm, int $userid): bool {
-    if (!isset($learningmapcm)) {
-        return false;
-    }
-    $completion = new \completion_info($course);
-    if (!empty($learningmapcm->groupmode)) {
-        $group = groups_get_activity_group($learningmapcm, false);
-    }
-    if (!empty($group)) {
-        $members = groups_get_members($group);
-    }
-    if (empty($members)) {
-        $user = new stdClass;
-        $user->id = $userid;
-        $members = [$user];
-    }
-    foreach ($members as $member) {
-        if ($completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
-            $completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
-            return true;
-        }
-    }
-    return false;
 }
