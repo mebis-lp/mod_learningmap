@@ -84,6 +84,12 @@ class mapworker {
      */
     public function __construct(string $svgcode, array $placestore, \cm_info $cm = null, bool $edit = false, int $group = 0) {
         global $CFG, $USER;
+        $svgcode = preg_replace('/<text(.*)>(?!(<\!\[CDATA\[))(.*)<\/text>/',
+            '<text$1><![CDATA[$3]]></text>',
+            $svgcode);
+        $svgcode = preg_replace('/<title(.*)>(?!(<\!\[CDATA\[))(.*)<\/title>/',
+            '<title$1><![CDATA[$3]]></title>',
+            $svgcode);
         $this->svgcode = $svgcode;
         $this->placestore = $placestore;
         $this->edit = $edit;
