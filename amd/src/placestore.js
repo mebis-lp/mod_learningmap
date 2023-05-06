@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2023060201,
+    version: 2023060303,
     id: 0,
     places: [],
     paths: [],
@@ -35,7 +35,7 @@ let placestore = {
             // eslint-disable-next-line no-empty
         } catch { }
         // Update version (only relevant if learning map is saved)
-        this.version = 2023060201;
+        this.version = 2023060303;
     },
     /**
      * Returns placestore as a JSON string ()

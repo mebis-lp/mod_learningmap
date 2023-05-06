@@ -32,12 +32,12 @@ function xmldb_learningmap_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2023060201) {
+    if ($oldversion < 2023060303) {
         $entries = $DB->get_records('learningmap', []);
         if ($entries) {
             foreach ($entries as $entry) {
                 $placestore = json_decode($entry->placestore, true);
-                $placestore['version'] = 2023060201;
+                $placestore['version'] = 2023060303;
                 // Needs 1 as default value (otherwise all place strokes would be hidden).
                 if (!isset($placestore['strokeopacity'])) {
                     $placestore['strokeopacity'] = 1;
@@ -64,7 +64,7 @@ function xmldb_learningmap_upgrade($oldversion) {
             $dbman->add_index($table, $index);
         }
 
-        upgrade_mod_savepoint(true, 2023060201, 'learningmap');
+        upgrade_mod_savepoint(true, 2023060303, 'learningmap');
     }
 
     return true;
