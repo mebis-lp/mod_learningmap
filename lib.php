@@ -337,22 +337,22 @@ function learningmap_before_http_headers() {
         if (count($instances) > 0) {
             $backlinks = [];
             foreach ($instances as $i) {
-                $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore');
-                if ($record->backlinks == 1) {
+                $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore, backlink');
+                if ($record->backlink == 1) {
                     $placestore = json_decode($record->placestore);
-                    foreach ($placestore->places as $place) {        
+                    foreach ($placestore->places as $place) {
                         $url = !empty($i->showdescription) ?
                             new moodle_url('/course/view.php', [
                                 'id' => $PAGE->course->id,
                                 'section' => $i->sectionnum],
                                 'module-' . $i->id) :
                             new moodle_url('/mod/learningmap/view.php', ['id' => $i->id]);
-                        $backlinks[$place->linkedActivity][] = ['url' => $url, 'name' => $record->name, 'cmid' => $i->id]; 
+                        $backlinks[$place->linkedActivity][] = ['url' => $url, 'name' => $record->name, 'cmid' => $i->id];
                     }
                 }
             }
             foreach ($backlinks as $cmid => $backlink) {
-                $cache->set($cmid, $backlink);    
+                $cache->set($cmid, $backlink);
             }
         } else {
             $cache->set($cachekey, []);
