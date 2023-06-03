@@ -265,6 +265,19 @@ class svgmap {
     }
 
     /**
+     * Adds the learningmap-waygone class to a path.
+     *
+     * @param string $id Id of a path
+     * @return void
+     */
+    public function set_waygone(string $id) {
+        $path = $this->dom->getElementById($id);
+        if ($path) {
+            $path->setAttribute('class', $path->getAttribute('class') . ' learningmap-waygone');
+        }
+    }
+
+    /**
      * Adds a checkmark to a place.
      *
      * @param string $placeid Id of a place

@@ -19,7 +19,6 @@ namespace mod_learningmap;
 use completion_info;
 use cm_info;
 use stdClass;
-use core_user;
 
 /**
  * Class for handling the activities used in a learning map.
@@ -95,10 +94,19 @@ class activitymanager {
     /**
      * Returns the order of completion for the given array of course modules. Respects group mode.
      *
-     * @param array $cms Course modules to check, array of objects with at least id attribute set
+     * @param array $cms Course modules to check, array of objects with at least id attribute set or array of course module ids.
      * @return array Course module ids in order of completion
      */
     public function get_completion_order(array $cms): array {
+        if (count($cms) > 0 && intval(current($cms)) > 0) {
+            $intcms = $cms;
+            $cms = array_map(function($value) {
+                $obj = new stdClass;
+                $obj->id = $value;
+                $obj->course = $this->course;
+                return $obj;
+            }, $intcms);
+        }
         $completion_time = [];
         foreach ($cms as $cm) {
             foreach ($this->members as $member) {

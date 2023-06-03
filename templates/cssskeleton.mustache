@@ -130,6 +130,11 @@
     visibility: visible;
     opacity: 1;
 }
+
+#learningmap-svgmap-{{mapid}} .learningmap-waygone {
+    stroke: {{visitedcolor}};
+}
+
 {{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover,
 #learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited):hover {
