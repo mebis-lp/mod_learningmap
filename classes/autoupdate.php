@@ -95,5 +95,23 @@ class autoupdate {
                 }
             }
         }
+        self::reset_backlink_cache($event);
+    }
+
+    /**
+     * Resets backlink cache of the whole course if a learningmap was created / updated / deleted.
+     * @param \core\event\base $event
+     * @return void
+     */
+    public static function reset_backlink_cache(\core\event\base $event) : void {
+        if (isset($data['courseid']) && $data['courseid'] > 0) {
+            $course = $data['courseid'];
+            $cache = \cache::make('mod_learningmap', 'backlinks');
+            $modinfo = get_fast_modinfo($course);
+            $cms = $modinfo->get_cms();
+            foreach ($cms as $cm) {
+                $cache->delete($cm->id);
+            }
+        }
     }
 }
