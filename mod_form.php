@@ -59,7 +59,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 if ($module->deletioninprogress == 0) {
                     $s['coursemodules'][] = [
                         'id' => $cmid,
-                        'name' => $module->name,
+                        'name' => s($module->name),
                         'completionenabled' => $module->completion > 0,
                         'hidden' => $module->visible == 0
                     ];
