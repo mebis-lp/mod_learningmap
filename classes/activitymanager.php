@@ -50,6 +50,11 @@ class activitymanager {
      * @var completion_info
      */
     protected completion_info $completion;
+    /**
+     * Members of the group.
+     * @var array
+     */
+    protected array $members;
 
     /**
      * Creates activitymanager helper.
@@ -63,6 +68,12 @@ class activitymanager {
         $this->group = $group;
         $this->course = $course;
         $this->completion = new completion_info($course);
+        if (!empty($this->group)) {
+            $this->members = groups_get_members($this->group);
+        }
+        if (empty($this->members)) {
+            $this->members = [$this->user];
+        }
     }
 
     /**
@@ -72,18 +83,35 @@ class activitymanager {
      * @param \cm_info $cm course module to check
      */
     public function is_completed(cm_info $cm): bool {
-        if (!empty($this->group)) {
-            $members = groups_get_members($this->group);
-        }
-        if (empty($members)) {
-            $members = [$this->user];
-        }
-        foreach ($members as $member) {
+        foreach ($this->members as $member) {
             if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
                 $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the order of completion for the given array of course modules. Respects group mode.
+     *
+     * @param array $cms Course modules to check, array of objects with at least id attribute set
+     * @return array Course module ids in order of completion
+     */
+    public function get_completion_order(array $cms): array {
+        $completion_time = [];
+        foreach ($cms as $cm) {
+            foreach ($this->members as $member) {
+                if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
+                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
+                        $completed = $this->completion->get_data($cm, true, $member->id)->timemodified;
+                        if (!isset($completion_time[$cm->id]) || $completed < $completion_time[$cm->id]) {
+                            $completion_time[$cm->id] = $completed;
+                        }
+                }
+            }
+        }
+        asort($completion_time);
+        return array_keys($completion_time);
     }
 }
