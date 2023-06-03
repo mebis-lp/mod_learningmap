@@ -36,10 +36,10 @@ $observers = [
     ],
     [
         'eventname' => '\core\event\course_module_created',
-        'callback' => '\mod_learningmap\autoupdate::reset_cache'
+        'callback' => '\mod_learningmap\autoupdate::reset_backlink_cache'
     ],
     [
         'eventname' => '\core\event\course_module_updated',
-        'callback' => '\mod_learningmap\autoupdate::reset_cache'
+        'callback' => '\mod_learningmap\autoupdate::reset_backlink_cache'
     ],
 ];
