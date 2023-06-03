@@ -57,6 +57,11 @@ class mapworker {
      * @var activitymanager
      */
     protected $activitymanager;
+    /**
+     * Active places
+     * @var array
+     */
+    protected $active;
 
     /**
      * Creates mapworker from SVG code
