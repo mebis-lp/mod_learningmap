@@ -348,7 +348,7 @@ class mapworker {
             // Set all active paths and places to visible.
             foreach ($active as $a) {
                 $domplace = $this->dom->getElementById($a);
-                if (!$domplace) {
+                if (!$domplace || in_array($a, $notavailable)) {
                     continue;
                 }
                 $domplace->setAttribute('class', $domplace->getAttribute('class') . ' learningmap-reachable');
