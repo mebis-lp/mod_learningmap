@@ -31,11 +31,7 @@
 function xmldb_learningmap_upgrade($oldversion) {
     global $DB;
 
-<<<<<<< HEAD
-    if ($oldversion < 2023050601) {
-=======
-    if ($oldversion < 2023020801) {
->>>>>>> 1a452de (MBS-7338-Refactor-mapworker)
+    if ($oldversion < 2023060306) {
         $entries = $DB->get_records('learningmap', []);
         if ($entries) {
             foreach ($entries as $entry) {
@@ -53,11 +49,7 @@ function xmldb_learningmap_upgrade($oldversion) {
                 $DB->update_record('learningmap', $entry);
             }
         }
-<<<<<<< HEAD
-        upgrade_mod_savepoint(true, 2023050601, 'learningmap');
-=======
-        upgrade_mod_savepoint(true, 2023020801, 'learningmap');
->>>>>>> 1a452de (MBS-7338-Refactor-mapworker)
+        upgrade_mod_savepoint(true, 2023060306, 'learningmap');
     }
     return true;
 }
