@@ -21,6 +21,7 @@ let placestore = {
     showall: false,
     showtext: false,
     slicemode: false,
+    showwaygone: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -302,6 +303,7 @@ let placestore = {
             showall: this.showall,
             showtext: this.showtext,
             slicemode: this.slicemode,
+            showwaygone: this.showwaygone,
         };
     },
     /**
@@ -456,6 +458,20 @@ let placestore = {
      */
     setSliceMode: function(value) {
         this.slicemode = value;
+    },
+    /**
+     * Returns if showwaygone is enabled
+     * @returns {boolean}
+     */
+    getShowWayGone: function() {
+        return this.showwaygone;
+    },
+    /**
+     * Sets state of showwaygone
+     * @param {boolean} value
+     */
+    setShowWayGone: function(value) {
+        this.showwaygone = value;
     },
 };
 
