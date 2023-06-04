@@ -107,19 +107,19 @@ class activitymanager {
                 return $obj;
             }, $intcms);
         }
-        $completion_time = [];
+        $completiontime = [];
         foreach ($cms as $cm) {
             foreach ($this->members as $member) {
                 if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
                     $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
-                        $completed = $this->completion->get_data($cm, true, $member->id)->timemodified;
-                        if (!isset($completion_time[$cm->id]) || $completed < $completion_time[$cm->id]) {
-                            $completion_time[$cm->id] = $completed;
-                        }
+                    $completed = $this->completion->get_data($cm, true, $member->id)->timemodified;
+                    if (!isset($completiontime[$cm->id]) || $completed < $completiontime[$cm->id]) {
+                        $completiontime[$cm->id] = $completed;
+                    }
                 }
             }
         }
-        asort($completion_time);
-        return array_keys($completion_time);
+        asort($completiontime);
+        return array_keys($completiontime);
     }
 }
