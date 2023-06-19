@@ -209,6 +209,9 @@ class mapworker {
             $this->active = array_unique($this->active);
             // Set all active paths and places to visible.
             foreach ($this->active as $a) {
+                if (in_array($a, $notavailable)) {
+                    continue;
+                }
                 $this->svgmap->set_reachable($a);
             }
             // Make all completed places visible and set color for visited places.
