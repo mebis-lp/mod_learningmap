@@ -50,6 +50,19 @@ function xmldb_learningmap_upgrade($oldversion) {
                 $DB->update_record('learningmap', $entry);
             }
         }
+        $table = new xmldb_table('learningmap');
+        $field = new xmldb_field('backlink', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'completiontype');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $index = new xmldb_index('backlink', XMLDB_INDEX_NOTUNIQUE, ['backlink']);
+
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
         upgrade_mod_savepoint(true, 2023060306, 'learningmap');
     }
 
