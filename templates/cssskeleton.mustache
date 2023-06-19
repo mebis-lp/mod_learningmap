@@ -43,10 +43,14 @@
         "usecheckmark": false,
         "editmode": true,
 <<<<<<< HEAD
+<<<<<<< HEAD
         "version": 2023020801,
 =======
         "version": 2023060303,
 >>>>>>> MBS-7744-Backlink
+=======
+        "version": 2023020801,
+>>>>>>> origin/MBS-7748-Highlight-path
         "pulse": false,
         "hover": false,
         "showall": false,
@@ -134,6 +138,11 @@
     visibility: visible;
     opacity: 1;
 }
+
+#learningmap-svgmap-{{mapid}} .learningmap-waygone {
+    stroke: {{visitedcolor}};
+}
+
 {{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover,
 #learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited):hover {

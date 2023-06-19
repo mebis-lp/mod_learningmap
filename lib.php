@@ -40,6 +40,7 @@ define('LEARNINGMAP_FEATURES', [
     'showall',
     'showtext',
     'slicemode',
+    'showwaygone',
 ]);
 
 /**
