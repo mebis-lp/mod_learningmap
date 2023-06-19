@@ -19,7 +19,6 @@ namespace mod_learningmap;
 use completion_info;
 use cm_info;
 use stdClass;
-use core_user;
 
 /**
  * Class for handling the activities used in a learning map.
