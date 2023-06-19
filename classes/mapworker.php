@@ -228,7 +228,7 @@ class mapworker {
             }
             // Remove all places that are impossible to reach.
             foreach ($impossible as $place) {
-                $this->svgmap->remove_place_or_path($place['id']);
+                $this->svgmap->remove_place_or_path($place);
             }
             // Add overlay if slicemode is active and there is at least one invisible place.
             if (!empty($this->placestore['slicemode']) && count($notavailable) + count($impossible) > 0) {
