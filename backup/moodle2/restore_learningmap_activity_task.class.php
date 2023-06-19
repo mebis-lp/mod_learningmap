@@ -104,7 +104,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $placestore->mapid = $newmapid;
 
         if (!isset($placestore->version) || $placestore->version < 2023020801) {
-            $placestore->version = 2023020801;
+            $placestore->version = 2023060306;
             // Needs 1 as default value (otherwise all place strokes would be hidden).
             if (!isset($placestore->strokeopacity)) {
                 $placestore->strokeopacity = 1;

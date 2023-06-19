@@ -59,7 +59,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 if ($module->deletioninprogress == 0) {
                     $s['coursemodules'][] = [
                         'id' => $cmid,
-                        'name' => $module->name,
+                        'name' => s($module->name),
                         'completionenabled' => $module->completion > 0,
                         'hidden' => $module->visible == 0
                     ];
@@ -106,6 +106,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->addElement('checkbox', 'showdescription', get_string('showdescription', 'learningmap'));
         $mform->setType('showdescription', PARAM_INT);
         $mform->addHelpButton('showdescription', 'showdescription', 'learningmap');
+
+        $mform->addElement('checkbox', 'backlink', get_string('showbacklink', 'learningmap'));
+        $mform->setType('backlink', PARAM_INT);
+        $mform->addHelpButton('backlink', 'showbacklink', 'learningmap');
 
         $mform->addElement(
             'filemanager',
