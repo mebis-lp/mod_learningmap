@@ -31,7 +31,7 @@
 function xmldb_learningmap_upgrade($oldversion) {
     global $DB;
 
-    if ($oldversion < 2023060305) {
+    if ($oldversion < 2023060306) {
         $entries = $DB->get_records('learningmap', []);
         if ($entries) {
             foreach ($entries as $entry) {
@@ -49,7 +49,7 @@ function xmldb_learningmap_upgrade($oldversion) {
                 $DB->update_record('learningmap', $entry);
             }
         }
-        upgrade_mod_savepoint(true, 2023060305, 'learningmap');
+        upgrade_mod_savepoint(true, 2023060306, 'learningmap');
     }
     return true;
 }
