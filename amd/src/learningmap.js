@@ -83,6 +83,11 @@ export const init = () => {
                 if (text) {
                     text.textContent = activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent;
                 }
+                let title = document.getElementById('title' + elementForActivitySelector);
+                if (title) {
+                    title.textContent =
+                        activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent;
+                }
                 document.getElementById(elementForActivitySelector).classList.remove('learningmap-emptyplace');
             } else {
                 document.getElementById(elementForActivitySelector).classList.add('learningmap-emptyplace');
