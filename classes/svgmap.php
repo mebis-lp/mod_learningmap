@@ -220,7 +220,7 @@ class svgmap {
         }
         // Set the text element for the link.
         $textnode = $this->dom->getElementById('text' . $placeid);
-        if ($text) {
+        if ($textnode) {
             $textnode->nodeValue = $text;
         }
     }
