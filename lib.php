@@ -340,12 +340,11 @@ function learningmap_before_http_headers() {
                 $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore, backlink');
                 if ($record->backlink == 1) {
                     $placestore = json_decode($record->placestore);
+                    $coursepageurl = course_get_format($PAGE->course->id)->get_view_url($i->sectionnum);
+                    $coursepageurl->set_anchor('module-' . $i->id);
                     foreach ($placestore->places as $place) {
                         $url = !empty($i->showdescription) ?
-                            new moodle_url('/course/view.php', [
-                                'id' => $PAGE->course->id,
-                                'section' => $i->sectionnum],
-                                'module-' . $i->id) :
+                            $coursepageurl->out() :
                             new moodle_url('/mod/learningmap/view.php', ['id' => $i->id]);
                         $backlinks[$place->linkedActivity][] = ['url' => $url, 'name' => $record->name, 'cmid' => $i->id];
                     }
