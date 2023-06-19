@@ -137,7 +137,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             null
         ];
         $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
-        $this->assertEquals($overlay, 'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z');
+        $this->assertEquals('M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z', $overlay);
 
         for ($i = 0; $i < 8; $i++) {
             $activitycoursemodule = $this->modinfo->get_cm($this->activities[$i]->cmid);
@@ -145,7 +145,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
             $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
-            $this->assertEquals($overlay, $expectedvalues[$i]);
+            $this->assertEquals($expectedvalues[$i], $overlay);
         }
     }
 }
