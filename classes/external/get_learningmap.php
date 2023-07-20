@@ -92,6 +92,8 @@ class get_learningmap extends external_api {
         $context = context_module::instance($cmid);
         self::validate_context($context);
         require_capability('mod/learningmap:view', $context);
+        $completion = new \completion_info($course);
+        $completion->set_module_viewed($cminfo);
         return [
             'content' => learningmap_get_learningmap($cminfo)
         ];

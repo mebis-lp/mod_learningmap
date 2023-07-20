@@ -191,9 +191,6 @@ function learningmap_cm_info_dynamic(cm_info $cm) : void {
     // Decides whether to display the link.
     if ($cm->showdescription == 1) {
         $cm->set_no_view_link(true);
-
-        $completion = new completion_info($cm->get_course());
-        $completion->set_module_viewed($cm);
     }
 }
 
