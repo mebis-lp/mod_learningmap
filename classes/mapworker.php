@@ -249,15 +249,12 @@ class mapworker {
                 $allcmids = array_unique($allcmids);
                 $order = $this->activitymanager->get_completion_order($allcmids);
                 for ($i = 0; $i < count($order) - 1; $i++) {
-                    foreach ($this->placestore['paths'] as $path) {
-                        $found = false;
-                        for ($j = $i; $j >= 0 && !$found; $j--) {
-                            foreach ($cmidtoplaces[$order[$j]] as $place1) {
-                                foreach ($cmidtoplaces[$order[$i + 1]] as $place2) {
-                                    if ($path = $this->is_path_between($place1, $place2)) {
-                                        $found = true;
-                                        $this->svgmap->set_waygone($path);
-                                    }
+                    for ($j = $i; $j >= 0; $j--) {
+                        foreach ($cmidtoplaces[$order[$j]] as $place1) {
+                            foreach ($cmidtoplaces[$order[$i + 1]] as $place2) {
+                                if ($path = $this->is_path_between($place1, $place2)) {
+                                    $this->svgmap->set_waygone($path);
+                                    break 3;
                                 }
                             }
                         }
