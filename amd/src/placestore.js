@@ -1,5 +1,5 @@
 let placestore = {
-    version: 2023020801,
+    version: 2023080101,
     id: 0,
     places: [],
     paths: [],
@@ -21,6 +21,7 @@ let placestore = {
     showall: false,
     showtext: false,
     slicemode: false,
+    showwaygone: false,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -35,7 +36,7 @@ let placestore = {
             // eslint-disable-next-line no-empty
         } catch { }
         // Update version (only relevant if learning map is saved)
-        this.version = 2023020801;
+        this.version = 2023080101;
     },
     /**
      * Returns placestore as a JSON string ()
@@ -302,6 +303,7 @@ let placestore = {
             showall: this.showall,
             showtext: this.showtext,
             slicemode: this.slicemode,
+            showwaygone: this.showwaygone,
         };
     },
     /**
@@ -456,6 +458,20 @@ let placestore = {
      */
     setSliceMode: function(value) {
         this.slicemode = value;
+    },
+    /**
+     * Returns if showwaygone is enabled
+     * @returns {boolean}
+     */
+    getShowWayGone: function() {
+        return this.showwaygone;
+    },
+    /**
+     * Sets state of showwaygone
+     * @param {boolean} value
+     */
+    setShowWayGone: function(value) {
+        this.showwaygone = value;
     },
 };
 

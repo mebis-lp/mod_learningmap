@@ -49,6 +49,11 @@ class activitymanager {
      * @var completion_info
      */
     protected completion_info $completion;
+    /**
+     * Members of the group.
+     * @var array
+     */
+    protected array $members;
 
     /**
      * Creates activitymanager helper.
@@ -62,6 +67,12 @@ class activitymanager {
         $this->group = $group;
         $this->course = $course;
         $this->completion = new completion_info($course);
+        if (!empty($this->group)) {
+            $this->members = groups_get_members($this->group);
+        }
+        if (empty($this->members)) {
+            $this->members = [$this->user];
+        }
     }
 
     /**
@@ -71,18 +82,44 @@ class activitymanager {
      * @param \cm_info $cm course module to check
      */
     public function is_completed(cm_info $cm): bool {
-        if (!empty($this->group)) {
-            $members = groups_get_members($this->group);
-        }
-        if (empty($members)) {
-            $members = [$this->user];
-        }
-        foreach ($members as $member) {
+        foreach ($this->members as $member) {
             if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
                 $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * Returns the order of completion for the given array of course modules. Respects group mode.
+     *
+     * @param array $cms Course modules to check, array of objects with at least id attribute set or array of course module ids.
+     * @return array Course module ids in order of completion
+     */
+    public function get_completion_order(array $cms): array {
+        if (count($cms) > 0 && intval(current($cms)) > 0) {
+            $intcms = $cms;
+            $cms = array_map(function($value) {
+                $obj = new stdClass;
+                $obj->id = $value;
+                $obj->course = $this->course;
+                return $obj;
+            }, $intcms);
+        }
+        $completiontime = [];
+        foreach ($cms as $cm) {
+            foreach ($this->members as $member) {
+                if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
+                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
+                    $completed = $this->completion->get_data($cm, true, $member->id)->timemodified;
+                    if (!isset($completiontime[$cm->id]) || $completed < $completiontime[$cm->id]) {
+                        $completiontime[$cm->id] = $completed;
+                    }
+                }
+            }
+        }
+        asort($completiontime);
+        return array_keys($completiontime);
     }
 }

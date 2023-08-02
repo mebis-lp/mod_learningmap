@@ -152,6 +152,7 @@ export const init = () => {
         advancedSettingsLogic('hidestroke', placestore.getHideStroke, placestore.setHideStroke);
         advancedSettingsLogic('showtext', placestore.getShowText, placestore.setShowText, fixPlaceLabels);
         advancedSettingsLogic('slicemode', placestore.getSliceMode, placestore.setSliceMode);
+        advancedSettingsLogic('showwaygone', placestore.getShowWayGone, placestore.setShowWayGone);
     }
 
     // Attach listener to the color choosers

@@ -42,7 +42,7 @@
         "mapid": "63bee8a5f1a1e",
         "usecheckmark": false,
         "editmode": true,
-        "version": 2023020801,
+        "version": 2023080101,
         "pulse": false,
         "hover": false,
         "showall": false,
@@ -130,6 +130,11 @@
     visibility: visible;
     opacity: 1;
 }
+
+#learningmap-svgmap-{{mapid}} .learningmap-waygone {
+    stroke: {{visitedcolor}};
+}
+
 {{#hover}}
 #learningmap-svgmap-{{mapid}} .learningmap-place:hover,
 #learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited):hover {
