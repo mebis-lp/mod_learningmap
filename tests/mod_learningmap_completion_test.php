@@ -99,7 +99,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
             ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype,
-            'groupmode' => ($groupmode ? SEPARATEGROUPS : NOGROUPS)]
+            'groupmode' => ($groupmode ? SEPARATEGROUPS : NOGROUPS), ]
         );
 
         $this->activities = [];
@@ -115,7 +115,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         $this->users[0] = $this->getDataGenerator()->create_user(
             [
                 'email' => 'user1@example.com',
-                'username' => 'user1'
+                'username' => 'user1',
             ]
         );
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
@@ -125,13 +125,13 @@ class mod_learningmap_completion_test extends \advanced_testcase {
             $this->users[1] = $this->getDataGenerator()->create_user(
                 [
                     'email' => 'user2@example.com',
-                    'username' => 'user2'
+                    'username' => 'user2',
                 ]
             );
             $this->users[2] = $this->getDataGenerator()->create_user(
                 [
                     'email' => 'user3@example.com',
-                    'username' => 'user3'
+                    'username' => 'user3',
                 ]
             );
             $this->getDataGenerator()->enrol_user($this->users[1]->id, $this->course->id, $studentrole->id);

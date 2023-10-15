@@ -41,5 +41,5 @@ $functions = [
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'mod/learningmap:view',
-    ]
+    ],
 ];

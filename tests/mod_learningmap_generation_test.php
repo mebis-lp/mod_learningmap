@@ -39,7 +39,7 @@ class mod_learningmap_generation_test extends \advanced_testcase {
         $this->setAdminUser();
 
         $course = $this->getDataGenerator()->create_course();
-        $this->assertFalse($DB->record_exists('learningmap', array('course' => $course->id)));
+        $this->assertFalse($DB->record_exists('learningmap', ['course' => $course->id]));
         $learningmap = $this->getDataGenerator()->create_module('learningmap', ['course' => $course]);
 
         $records = $DB->get_records('learningmap', ['course' => $course->id], 'id');

@@ -61,7 +61,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
                         'id' => $cmid,
                         'name' => $module->name,
                         'completionenabled' => $module->completion > 0,
-                        'hidden' => $module->visible == 0
+                        'hidden' => $module->visible == 0,
                     ];
                 }
             }
@@ -88,7 +88,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 'name' => $feature,
                 'title' => get_string($feature, 'learningmap'),
                 'text' => get_string($feature . '_help', 'learningmap'),
-                'alt' => get_string('help')
+                'alt' => get_string('help'),
             ];
         }
         $mform->addElement(
@@ -115,7 +115,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             [
                 'accepted_types' => 'web_image',
                 'maxfiles' => 1,
-                'subdirs' => 0
+                'subdirs' => 0,
             ]
         );
         $mform->addRule('introeditor[itemid]', null, 'required', null, 'client');
@@ -175,7 +175,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             LEARNINGMAP_NOCOMPLETION => get_string('nocompletion', 'learningmap'),
             LEARNINGMAP_COMPLETION_WITH_ONE_TARGET => get_string('completion_with_one_target', 'learningmap'),
             LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS => get_string('completion_with_all_targets', 'learningmap'),
-            LEARNINGMAP_COMPLETION_WITH_ALL_PLACES => get_string('completion_with_all_places', 'mod_learningmap')
+            LEARNINGMAP_COMPLETION_WITH_ALL_PLACES => get_string('completion_with_all_places', 'mod_learningmap'),
         ];
 
         $mform->addElement(

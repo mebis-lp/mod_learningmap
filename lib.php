@@ -171,7 +171,7 @@ function learningmap_get_coursemodule_info($cm) : cached_cm_info {
         'nocompletion',
         'completion_with_one_target',
         'completion_with_all_targets',
-        'completion_with_all_places'
+        'completion_with_all_places',
     ];
 
     if ($cm->completion == COMPLETION_TRACKING_AUTOMATIC && $map->completiontype > 0) {

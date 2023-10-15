@@ -54,7 +54,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      */
     public static function define_decode_contents() : array {
         $contents = [];
-        $contents[] = new restore_decode_content('learningmap', array('intro'), 'learningmap');
+        $contents[] = new restore_decode_content('learningmap', ['intro'], 'learningmap');
         return $contents;
     }
 
@@ -78,7 +78,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $courseid = $this->get_courseid();
         $modinfo = get_fast_modinfo($courseid);
 
-        $item = $DB->get_record('learningmap', array('id' => $this->get_activityid()), '*', MUST_EXIST);
+        $item = $DB->get_record('learningmap', ['id' => $this->get_activityid()], '*', MUST_EXIST);
 
         $placestore = json_decode($item->placestore);
 

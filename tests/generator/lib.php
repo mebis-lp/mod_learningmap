@@ -40,7 +40,7 @@ class mod_learningmap_generator extends testing_module_generator {
             'intro' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.svg'),
             'introformat' => 1,
             'placestore' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.json'),
-            'completiontype' => 2
+            'completiontype' => 2,
         ];
 
         return parent::create_instance($record, (array)$options);

@@ -56,7 +56,7 @@ class get_learningmap extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'cmId' => new external_value(PARAM_INT, 'Course module ID of the learningmap')
+            'cmId' => new external_value(PARAM_INT, 'Course module ID of the learningmap'),
         ]);
     }
 
@@ -69,7 +69,7 @@ class get_learningmap extends external_api {
         return
             new external_single_structure(
                 [
-                    'content' => new external_value(PARAM_RAW, 'Rendered learningmap')
+                    'content' => new external_value(PARAM_RAW, 'Rendered learningmap'),
                 ]
             );
     }
@@ -95,7 +95,7 @@ class get_learningmap extends external_api {
         $completion = new \completion_info($course);
         $completion->set_module_viewed($cminfo);
         return [
-            'content' => learningmap_get_learningmap($cminfo)
+            'content' => learningmap_get_learningmap($cminfo),
         ];
     }
 }

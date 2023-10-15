@@ -143,7 +143,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         return [
             'completion_with_one_target',
             'completion_with_all_targets',
-            'completion_with_all_places'
+            'completion_with_all_places',
         ];
     }
 
@@ -156,7 +156,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         return [
             'completion_with_one_target' => get_string('completiondetail:one_target', 'learningmap'),
             'completion_with_all_targets' => get_string('completiondetail:all_targets', 'learningmap'),
-            'completion_with_all_places' => get_string('completiondetail:all_places', 'learningmap')
+            'completion_with_all_places' => get_string('completiondetail:all_places', 'learningmap'),
         ];
     }
 
@@ -170,7 +170,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
             'completionview',
             'completion_with_one_target',
             'completion_with_all_targets',
-            'completion_with_all_places'
+            'completion_with_all_places',
         ];
     }
 }

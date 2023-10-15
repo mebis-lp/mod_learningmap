@@ -79,7 +79,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap', [
             'course' => $this->course,
             'completion' => COMPLETION_TRACKING_AUTOMATIC,
-            'completiontype' => LEARNINGMAP_NOCOMPLETION
+            'completiontype' => LEARNINGMAP_NOCOMPLETION,
         ]);
 
         $this->activities = [];
@@ -91,7 +91,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
                     'content' => 'B',
                     'course' => $this->course,
                     'completion' => COMPLETION_TRACKING_AUTOMATIC,
-                    'completionview' => COMPLETION_VIEW_REQUIRED
+                    'completionview' => COMPLETION_VIEW_REQUIRED,
                 ]
             );
             // The JSON contains spare course module IDs 9999x, replacing them by the real course module IDs here.
@@ -102,7 +102,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->user1 = $this->getDataGenerator()->create_user(
             [
                 'email' => 'user1@example.com',
-                'username' => 'user1'
+                'username' => 'user1',
             ]
         );
 
@@ -134,7 +134,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 481 47 L 481 349 L 72 349 Z',
             'M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 72 47 L 649 47 L 649 349 L 72 349 Z',
             // When all places are visible, there is no overlay anymore.
-            null
+            null,
         ];
         $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
         $this->assertEquals('M 0 0 L 0 2111 L 800 2111 L 800 0 Z M 37 12 L 137 12 L 137 112 L 37 112 Z', $overlay);
@@ -172,9 +172,9 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6'],
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8'],
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8', 'p8_9',
-            'p9'],
+            'p9', ],
             ['p0', 'p1', 'p0_1', 'p4', 'p1_4', 'p2', 'p2_3', 'p3', 'p2_6', 'p6', 'p3_6', 'p4_5', 'p5', 'p5_6', 'p6_8', 'p8', 'p8_9',
-            'p9'],
+            'p9', ],
         ];
 
         for ($i = 0; $i < count($placestore['places']); $i++) {

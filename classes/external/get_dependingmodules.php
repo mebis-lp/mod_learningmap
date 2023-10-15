@@ -57,7 +57,7 @@ class get_dependingmodules extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'cmId' => new external_value(PARAM_INT, 'Course module ID of the learningmap')]);
+            'cmId' => new external_value(PARAM_INT, 'Course module ID of the learningmap'), ]);
     }
 
     /**
@@ -71,7 +71,7 @@ class get_dependingmodules extends external_api {
                 [
                     'dependingModuleIds' => new external_multiple_structure(
                         new external_value(PARAM_INT, 'depending course module ids')
-                    )
+                    ),
                 ]
             );
     }
@@ -95,7 +95,7 @@ class get_dependingmodules extends external_api {
         self::validate_context($context);
         require_capability('mod/learningmap:view', $context);
         return [
-            'dependingModuleIds' => learningmap_get_place_cm($cminfo)
+            'dependingModuleIds' => learningmap_get_place_cm($cminfo),
         ];
     }
 }
