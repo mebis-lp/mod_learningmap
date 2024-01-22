@@ -173,4 +173,13 @@ class custom_completion extends \core_completion\activity_custom_completion {
             'completion_with_all_places',
         ];
     }
+
+    /**
+     * Show the manual completion or not regardless of the course's showcompletionconditions setting.
+     *
+     * @return bool
+     */
+    public function manual_completion_always_shown(): bool {
+        return true;
+    }
 }
