@@ -103,8 +103,8 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $item->intro = str_replace('learningmap-svgmap-' . $oldmapid, 'learningmap-svgmap-' . $newmapid, $item->intro);
         $placestore->mapid = $newmapid;
 
-        if (!isset($placestore->version) || $placestore->version < 2023080101) {
-            $placestore->version = 2023080101;
+        if (!isset($placestore->version) || $placestore->version < 2023080201) {
+            $placestore->version = 2023080201;
             // Needs 1 as default value (otherwise all place strokes would be hidden).
             if (!isset($placestore->strokeopacity)) {
                 $placestore->strokeopacity = 1;

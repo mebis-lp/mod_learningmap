@@ -30,13 +30,14 @@
  */
 function xmldb_learningmap_upgrade($oldversion) {
     global $DB;
+    $dbman = $DB->get_manager();
 
-    if ($oldversion < 2023080101) {
+    if ($oldversion < 2023080201) {
         $entries = $DB->get_records('learningmap', []);
         if ($entries) {
             foreach ($entries as $entry) {
                 $placestore = json_decode($entry->placestore, true);
-                $placestore['version'] = 2023080101;
+                $placestore['version'] = 2023080201;
                 // Needs 1 as default value (otherwise all place strokes would be hidden).
                 if (!isset($placestore['strokeopacity'])) {
                     $placestore['strokeopacity'] = 1;
@@ -49,7 +50,22 @@ function xmldb_learningmap_upgrade($oldversion) {
                 $DB->update_record('learningmap', $entry);
             }
         }
-        upgrade_mod_savepoint(true, 2023080101, 'learningmap');
+
+        $table = new xmldb_table('learningmap');
+        $field = new xmldb_field('backlink', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'completiontype');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $index = new xmldb_index('backlink', XMLDB_INDEX_NOTUNIQUE, ['backlink']);
+
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        upgrade_mod_savepoint(true, 2023080201, 'learningmap');
     }
+
     return true;
 }
