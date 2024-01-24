@@ -105,3 +105,34 @@
 .learningmap-render-container {
     width: 100%;
 }
+
+@font-face {
+    font-family: 'Learningmap';
+    src: url([[font:mod_learningmap|learningmap.eot]]);
+    src:
+        url([[font:mod_learningmap|learningmap.eot]]?#iefix) format('embedded-opentype'),
+        url([[font:mod_learningmap|learningmap.woff]]) format('woff'),
+        url([[font:mod_learningmap|learningmap.ttf]]) format('truetype'),
+        url([[font:mod_learningmap|learningmap.svg]]#Learningmap) format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class*='learningmap-icon']:before {
+    display: inline-block;
+    font-family: 'Learningmap';
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.learningmap-icon:before {
+    content: 'A';
+    padding-right: 0.5rem;
+}
+
+.learningmap-backlink {
+    padding-top: 1rem;
+}

@@ -322,3 +322,65 @@ function learningmap_get_learningmap(cm_info $cm) : string {
 function learningmap_reset_userdata($data) {
     return [];
 }
+
+/**
+ * Generate "back to map" buttons in activities linked to from the learning map.
+ *
+ * @return void
+ */
+function learningmap_before_http_headers() {
+    global $PAGE, $DB, $OUTPUT;
+
+    if ($PAGE->context->contextlevel != CONTEXT_MODULE) {
+        return '';
+    }
+
+    $cache = cache::make('mod_learningmap', 'backlinks');
+    $cachekey = $PAGE->cm->id;
+    $key = $cache->get($cachekey);
+    $modinfo = get_fast_modinfo($PAGE->course);
+
+    if (!$key) {
+        $instances = $modinfo->get_instances_of('learningmap');
+        if (count($instances) > 0) {
+            $backlinks = [];
+            foreach ($instances as $i) {
+                $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore, backlink');
+                if ($record->backlink == 1) {
+                    $placestore = json_decode($record->placestore);
+                    $coursepageurl = course_get_format($PAGE->course->id)->get_view_url($i->sectionnum);
+                    $coursepageurl->set_anchor('module-' . $i->id);
+                    foreach ($placestore->places as $place) {
+                        $url = !empty($i->showdescription) ?
+                            $coursepageurl->out() :
+                            new moodle_url('/mod/learningmap/view.php', ['id' => $i->id]);
+                        $backlinks[$place->linkedActivity][$i->id] = ['url' => $url, 'name' => $record->name, 'cmid' => $i->id];
+                    }
+                }
+            }
+            foreach ($backlinks as $cmid => $backlink) {
+                $cache->set($cmid, $backlink);
+            }
+        } else {
+            $cache->set($cachekey, []);
+        }
+    } else {
+        $backlinks[$cachekey] = $key;
+    }
+    $backlinktext = '';
+
+    if (!empty($backlinks[$PAGE->cm->id])) {
+        foreach ($backlinks[$PAGE->cm->id] as $backlink) {
+            $cminfo = $modinfo->get_cm($backlink['cmid']);
+            if ($cminfo->available != 0 && $cminfo->uservisible) {
+                $backlinktext .= $OUTPUT->render_from_template('learningmap/backtomap', $backlink);
+            }
+        }
+    }
+    if ($backlinktext) {
+        $description = format_module_intro($PAGE->activityname, $PAGE->activityrecord, $PAGE->cm->id);
+        $PAGE->activityheader->set_description($description . $backlinktext);
+    }
+
+    return '';
+}

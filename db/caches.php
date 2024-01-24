@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Events for mod_learningmap
+ * Cache definitions for mod_learningmap
  *
  * @package     mod_learningmap
  * @copyright   2021-2023, ISB Bayern
@@ -25,21 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = [
-    [
-        'eventname' => '\core\event\course_module_completion_updated',
-        'callback' => '\mod_learningmap\autoupdate::update_from_event',
-    ],
-    [
-        'eventname' => '\core\event\course_module_deleted',
-        'callback' => '\mod_learningmap\autoupdate::update_from_delete_event',
-    ],
-    [
-        'eventname' => '\core\event\course_module_created',
-        'callback' => '\mod_learningmap\autoupdate::reset_backlink_cache',
-    ],
-    [
-        'eventname' => '\core\event\course_module_updated',
-        'callback' => '\mod_learningmap\autoupdate::reset_backlink_cache',
+$definitions = [
+    'backlinks' => [
+        'mode' => cache_store::MODE_APPLICATION,
     ],
 ];
