@@ -23,10 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__ . '/deprecatedlib.php');
-
 /**
  * Array with all features the plugin supports for advanced settings. Might be moved
  * to another place when in use somewhere else.
@@ -49,7 +45,7 @@ define('LEARNINGMAP_FEATURES', [
  * @param stdClass $data learningmap record
  * @return int
  */
-function learningmap_add_instance($data) : int {
+function learningmap_add_instance($data): int {
     global $DB;
     return $DB->insert_record("learningmap", $data);
 }
@@ -60,7 +56,7 @@ function learningmap_add_instance($data) : int {
  * @param stdClass $data learningmap record
  * @return int
  */
-function learningmap_update_instance($data) : int {
+function learningmap_update_instance($data): int {
     global $DB;
     $data->id = $data->instance;
     return $DB->update_record("learningmap", $data);
@@ -72,7 +68,7 @@ function learningmap_update_instance($data) : int {
  * @param integer $id learningmap record
  * @return int
  */
-function learningmap_delete_instance($id) : int {
+function learningmap_delete_instance($id): int {
     global $DB;
 
     return $DB->delete_records("learningmap", ["id" => $id]);
@@ -97,7 +93,7 @@ function learningmap_supports($feature) {
         define('FEATURE_MOD_PURPOSE', 'mod_purpose');
         define('MOD_PURPOSE_CONTENT', 'content');
     }
-    switch($feature) {
+    switch ($feature) {
         case FEATURE_IDNUMBER:
             return true;
         case FEATURE_GROUPS:
@@ -139,10 +135,10 @@ function learningmap_supports($feature) {
  * @param array $options additional options affecting the file serving
  * @return bool false if file not found, does not return if found - justsend the file
  */
-function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options=[]) : ?bool {
+function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload, array $options = []): ?bool {
     require_course_login($course, true, $cm);
 
-    $fullpath = "/$context->id/mod_learningmap/$filearea/".implode('/', $args);
+    $fullpath = "/$context->id/mod_learningmap/$filearea/" . implode('/', $args);
 
     $fs = get_file_storage();
     if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
@@ -158,7 +154,7 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
  * @param cm_info $cm
  * @return cached_cm_info|null
  */
-function learningmap_get_coursemodule_info($cm) : cached_cm_info {
+function learningmap_get_coursemodule_info($cm): cached_cm_info {
     global $DB;
 
     if (!$map = $DB->get_record('learningmap', ['id' => $cm->instance], 'completiontype')) {
@@ -187,7 +183,7 @@ function learningmap_get_coursemodule_info($cm) : cached_cm_info {
  * @param cm_info $cm
  * @return void
  */
-function learningmap_cm_info_dynamic(cm_info $cm) : void {
+function learningmap_cm_info_dynamic(cm_info $cm): void {
     // Decides whether to display the link.
     if ($cm->showdescription == 1) {
         $cm->set_no_view_link(true);
@@ -201,7 +197,7 @@ function learningmap_cm_info_dynamic(cm_info $cm) : void {
  * @param cm_info $cm
  * @return void
  */
-function learningmap_cm_info_view(cm_info $cm) : void {
+function learningmap_cm_info_view(cm_info $cm): void {
     global $CFG, $OUTPUT, $PAGE;
     // Only show map on course page if showdescription is set.
     if ($cm->showdescription == 1) {
@@ -229,13 +225,18 @@ function learningmap_cm_info_view(cm_info $cm) : void {
         if ($CFG->branch < 400) {
             // Only in moodle <4.0 we call this separate manual completion watcher.
             // From moodle 4.0 on this is handled by the mustache loader.
-            $PAGE->requires->js_call_amd('mod_learningmap/manual-completion-watch', 'init',
-                ['coursemodules' => learningmap_get_place_cm($cm)]);
+            $PAGE->requires->js_call_amd(
+                'mod_learningmap/manual-completion-watch',
+                'init',
+                ['coursemodules' => learningmap_get_place_cm($cm)]
+            );
             // Disable the live updater (a reactive component which only works with moodle >=4.0).
             $enableliveupdatercomponent = false;
         }
-        $content = $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
-            ['cmId' => $cm->id, 'enableLiveUpdater' => $enableliveupdatercomponent]);
+        $content = $OUTPUT->render_from_template(
+            'mod_learningmap/rendercontainer',
+            ['cmId' => $cm->id, 'enableLiveUpdater' => $enableliveupdatercomponent]
+        );
 
         $cm->set_content($groupdropdown . $content, true);
         $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
@@ -251,7 +252,7 @@ function learningmap_cm_info_view(cm_info $cm) : void {
  * @param cm_info $cm course module object for the learning map
  * @return array
  */
-function learningmap_get_place_cm(cm_info $cm) : array {
+function learningmap_get_place_cm(cm_info $cm): array {
     global $DB;
     $map = $DB->get_record("learningmap", ["id" => $cm->instance], 'placestore');
     $modules = [];
@@ -270,7 +271,7 @@ function learningmap_get_place_cm(cm_info $cm) : array {
  * @param cm_info $cm
  * @return string
  */
-function learningmap_get_learningmap(cm_info $cm) : string {
+function learningmap_get_learningmap(cm_info $cm): string {
     global $DB, $OUTPUT, $PAGE;
 
     $context = context_module::instance($cm->id);

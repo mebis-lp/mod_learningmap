@@ -16,6 +16,8 @@
 
 namespace mod_learningmap;
 
+use DOMDocument;
+
 /**
  * Class for handling the content of the learningmap
  *
@@ -29,22 +31,22 @@ class svgmap {
      * DOMDocument for parsing the SVG
      * @var DOMDocument
      */
-    protected $dom;
+    protected DOMDocument $dom;
     /**
      * String containing the SVG code (synchronized with $dom)
      * @var string
      */
-    protected $svgcode;
+    protected string $svgcode;
     /**
      * Array containing the placestore
      * @var array
      */
-    protected $placestore;
+    protected array $placestore;
     /**
      * String to prepend to the SVG code (for parsing by DOMDocument)
      * @var string
      */
-    protected $prepend;
+    protected string $prepend;
     /**
      * Creates map from SVG code
      *
@@ -76,7 +78,7 @@ class svgmap {
      *
      * @return void
      */
-    public function load_dom() : void {
+    public function load_dom(): void {
         $this->remove_tags_before_svg();
         $this->dom->loadXML($this->prepend . $this->svgcode);
     }
@@ -87,7 +89,7 @@ class svgmap {
      * @param array $placestoreoverride array of overrides for placestore
      * @return void
      */
-    public function replace_stylesheet(array $placestoreoverride = []) : void {
+    public function replace_stylesheet(array $placestoreoverride = []): void {
         global $OUTPUT;
         $placestorelocal = array_merge($this->placestore, $placestoreoverride);
         $this->svgcode = preg_replace(
@@ -103,7 +105,7 @@ class svgmap {
      *
      * @return void
      */
-    public function replace_defs() : void {
+    public function replace_defs(): void {
         global $OUTPUT;
         $this->svgcode = preg_replace(
             '/<defs[\s\S]*defs>/i',
@@ -118,7 +120,7 @@ class svgmap {
      *
      * @return void
      */
-    public function remove_tags_before_svg() : void {
+    public function remove_tags_before_svg(): void {
         $remove = ['<?xml version="1.0"?>', $this->prepend];
         $this->svgcode = str_replace($remove, '', $this->svgcode);
     }
@@ -196,7 +198,7 @@ class svgmap {
      * @param string $linkid Id of the link
      * @return void
      */
-    public function remove_link(string $linkid) {
+    public function remove_link(string $linkid): void {
         $link = $this->dom->getElementById($linkid);
         if ($link) {
             $link->removeAttribute('xlink:href');
@@ -231,7 +233,7 @@ class svgmap {
      * @param string $id Id of a place or path
      * @return void
      */
-    public function set_hidden(string $id) {
+    public function set_hidden(string $id): void {
         $placeorpath = $this->dom->getElementById($id);
         if ($placeorpath) {
             $placeorpath->setAttribute('class', $placeorpath->getAttribute('class') . ' learningmap-hidden');
@@ -244,7 +246,7 @@ class svgmap {
      * @param string $id Id of a place or path
      * @return void
      */
-    public function set_reachable(string $id) {
+    public function set_reachable(string $id): void {
         $placeorpath = $this->dom->getElementById($id);
         if ($placeorpath) {
             $placeorpath->setAttribute('class', $placeorpath->getAttribute('class') . ' learningmap-reachable');
@@ -257,7 +259,7 @@ class svgmap {
      * @param string $id Id of a place or path
      * @return void
      */
-    public function set_visited(string $id) {
+    public function set_visited(string $id): void {
         $placeorpath = $this->dom->getElementById($id);
         if ($placeorpath) {
             $placeorpath->setAttribute('class', $placeorpath->getAttribute('class') . ' learningmap-visited');
@@ -270,7 +272,7 @@ class svgmap {
      * @param string $id Id of a path
      * @return void
      */
-    public function set_waygone(string $id) {
+    public function set_waygone(string $id): void {
         $path = $this->dom->getElementById($id);
         if ($path) {
             $path->setAttribute('class', $path->getAttribute('class') . ' learningmap-waygone');
@@ -283,14 +285,14 @@ class svgmap {
      * @param string $placeid Id of a place
      * @return void
      */
-    public function add_checkmark(string $placeid) {
+    public function add_checkmark(string $placeid): void {
         $place = $this->dom->getElementById($placeid);
         if ($place) {
             $x = $place->getAttribute('cx');
             $y = $place->getAttribute('cy');
             $use = $this->dom->createElement('use');
             $use->setAttribute('xlink:href', '#checkmark');
-            $use->setAttribute('transform', 'translate(' . $x . ' '. $y . ')');
+            $use->setAttribute('transform', 'translate(' . $x . ' ' . $y . ')');
             $use->setAttribute('class', 'learningmap-checkmark');
             $place->parentNode->appendChild($use);
         }
@@ -395,14 +397,14 @@ class svgmap {
             // In future versions there will be more options for the inner part of the overlay.
             // For now the default is a rectangular shape.
             $type = 'rect';
-            switch($type) {
+            switch ($type) {
                 // Kept for future use.
                 case 'ellipse':
                     $radiusx = 0.5 * ($maxx - $minx);
                     $radiusy = 0.5 * ($maxy - $miny);
                     $overlaydescription .= "M $minx $miny A $radiusx $radiusy 0 1 1 $maxx $maxy ";
                     $overlaydescription .= "A $radiusx $radiusy 0 1 1 $minx $miny";
-                break;
+                    break;
                 default:
                     $overlaydescription .= "M $minx $miny L $maxx $miny L $maxx $maxy L $minx $maxy Z";
             }

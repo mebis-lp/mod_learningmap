@@ -32,7 +32,7 @@ class autoupdate {
      * @param \core\event\base $event
      * @return void
      */
-    public static function update_from_event(\core\event\base $event) : void {
+    public static function update_from_event(\core\event\base $event): void {
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
             $modinfo = get_fast_modinfo($data['courseid']);
@@ -51,7 +51,7 @@ class autoupdate {
                             $members = groups_get_members($group);
                         }
                         if (empty($members)) {
-                            $user = new \stdClass;
+                            $user = new \stdClass();
                             $user->id = $data['userid'];
                             $members = [$user];
                         }
@@ -71,7 +71,7 @@ class autoupdate {
      * @param \core\event\base $event
      * @return void
      */
-    public static function update_from_delete_event(\core\event\base $event) : void {
+    public static function update_from_delete_event(\core\event\base $event): void {
         global $DB;
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
@@ -103,7 +103,7 @@ class autoupdate {
      * @param \core\event\base $event
      * @return void
      */
-    public static function reset_backlink_cache(\core\event\base $event) : void {
+    public static function reset_backlink_cache(\core\event\base $event): void {
         if (isset($data['courseid']) && $data['courseid'] > 0) {
             $course = $data['courseid'];
             $cache = \cache::make('mod_learningmap', 'backlinks');

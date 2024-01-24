@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_learningmap;
+use mod_learningmap\completion\custom_completion;
 
 /**
  * Unit test for mod_learningmap
@@ -79,7 +80,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->learningmap = $this->getDataGenerator()->create_module('learningmap', [
             'course' => $this->course,
             'completion' => COMPLETION_TRACKING_AUTOMATIC,
-            'completiontype' => LEARNINGMAP_NOCOMPLETION,
+            'completiontype' => custom_completion::NOCOMPLETION,
         ]);
 
         $this->activities = [];
@@ -116,7 +117,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_slicemode() : void {
+    public function test_slicemode(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->setUser($this->user1);
@@ -154,7 +155,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_visibility() : void {
+    public function test_visibility(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
         $this->setUser($this->user1);
@@ -187,5 +188,4 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
             $this->assertEqualsCanonicalizing($expectedvalues[$i], $active);
         }
     }
-
 }

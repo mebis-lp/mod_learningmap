@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/backup_learningmap_stepslib.php');
+require_once($CFG->dirroot . '/mod/learningmap/backup/moodle2/backup_learningmap_stepslib.php');
 
 /**
  * Backup class for mod_learningmap
@@ -27,17 +27,16 @@ require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/backup_learningmap_s
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_learningmap_activity_task extends backup_activity_task {
-
     /**
      * No specific settings for this activity
      */
-    protected function define_my_settings() : void {
+    protected function define_my_settings(): void {
     }
 
     /**
      * Defines a backup step to store the instance data in the learningmap.xml file
      */
-    protected function define_my_steps() : void {
+    protected function define_my_steps(): void {
         $this->add_step(new backup_learningmap_activity_structure_step('learningmap_structure', 'learningmap.xml'));
     }
 
@@ -47,12 +46,12 @@ class backup_learningmap_activity_task extends backup_activity_task {
      * @param string $content
      * @return string
      */
-    public static function encode_content_links($content) : string {
+    public static function encode_content_links($content): string {
         global $CFG;
 
-        $base = preg_quote($CFG->wwwroot.'/mod/learningmap', '#');
+        $base = preg_quote($CFG->wwwroot . '/mod/learningmap', '#');
 
-        $pattern = "#(".$base."\/view.php\?id\=)([0-9]+)#";
+        $pattern = "#(" . $base . "\/view.php\?id\=)([0-9]+)#";
         $content = preg_replace($pattern, '$@LEARNINGMAPVIEWBYID*$2@$', $content);
         return $content;
     }

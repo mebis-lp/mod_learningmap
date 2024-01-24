@@ -36,7 +36,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      *
      * @return void
      */
-    public function definition() : void {
+    public function definition(): void {
         global $PAGE, $OUTPUT;
 
         $mform = &$this->_form;
@@ -75,7 +75,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addHelpButton('name', 'name', 'learningmap');
 
-        $mform->addElement('html',
+        $mform->addElement(
+            'html',
             $OUTPUT->render_from_template(
                 'mod_learningmap/inlinehelp',
                 ['usecaselink' => get_config('mod_learningmap', 'usecaselink')]
@@ -161,7 +162,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @param array $data form data
      * @return bool
      */
-    public function completion_rule_enabled($data) : bool {
+    public function completion_rule_enabled($data): bool {
         return (!empty($data['completiontype']) && $data['completiontype'] > 0);
     }
 
@@ -170,16 +171,14 @@ class mod_learningmap_mod_form extends moodleform_mod {
      *
      * @return array
      */
-    public function add_completion_rules() : array {
+    public function add_completion_rules(): array {
         $mform = $this->_form;
 
         $completionoptions = [
-            // When dropping support for Moodle 3.9 and removing deprecatedlib.php, these constants
-            // need to be changed to those from classes/completion/custom_completion.php.
-            LEARNINGMAP_NOCOMPLETION => get_string('nocompletion', 'learningmap'),
-            LEARNINGMAP_COMPLETION_WITH_ONE_TARGET => get_string('completion_with_one_target', 'learningmap'),
-            LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS => get_string('completion_with_all_targets', 'learningmap'),
-            LEARNINGMAP_COMPLETION_WITH_ALL_PLACES => get_string('completion_with_all_places', 'mod_learningmap'),
+            custom_completion::NOCOMPLETION => get_string('nocompletion', 'learningmap'),
+            custom_completion::COMPLETION_WITH_ONE_TARGET => get_string('completion_with_one_target', 'learningmap'),
+            custom_completion::COMPLETION_WITH_ALL_TARGETS => get_string('completion_with_all_targets', 'learningmap'),
+            custom_completion::COMPLETION_WITH_ALL_PLACES => get_string('completion_with_all_places', 'mod_learningmap'),
         ];
 
         $mform->addElement(
@@ -203,7 +202,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @param array $defaultvalues
      * @return void
      */
-    public function data_preprocessing(&$defaultvalues) : void {
+    public function data_preprocessing(&$defaultvalues): void {
         global $OUTPUT;
 
         // Initialize a new learningmap instance.
@@ -259,7 +258,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @param stdClass $data
      * @return void
      */
-    public function data_postprocessing($data) : void {
+    public function data_postprocessing($data): void {
         $mapworker = new mapworker(
             $data->introeditor['text'],
             json_decode($data->placestore, true)
