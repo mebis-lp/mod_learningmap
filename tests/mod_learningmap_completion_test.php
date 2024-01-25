@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace mod_learningmap;
+use mod_learningmap\completion\custom_completion;
 
 defined('MOODLE_INTERNAL') || die();
 require_once(__DIR__ . '/../lib.php');
@@ -97,7 +98,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
         global $DB;
         $this->groupmode = $groupmode;
         $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
+        $this->learningmap = $this->getDataGenerator()->create_module(
+            'learningmap',
             ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype,
             'groupmode' => ($groupmode ? SEPARATEGROUPS : NOGROUPS), ]
         );
@@ -156,8 +158,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype1_individual() : void {
-        $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ONE_TARGET, false, 7);
+    public function test_completiontype1_individual(): void {
+        $this->run_completion_test(custom_completion::COMPLETION_WITH_ONE_TARGET, false, 7);
     }
 
     /**
@@ -165,8 +167,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype2_individual() : void {
-        $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS, false, 8);
+    public function test_completiontype2_individual(): void {
+        $this->run_completion_test(custom_completion::COMPLETION_WITH_ALL_TARGETS, false, 8);
     }
 
     /**
@@ -174,8 +176,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype3_individual() : void {
-        $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES, false, 8);
+    public function test_completiontype3_individual(): void {
+        $this->run_completion_test(custom_completion::COMPLETION_WITH_ALL_PLACES, false, 8);
     }
 
     /**
@@ -183,8 +185,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype1_group() : void {
-        $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ONE_TARGET, true, 7);
+    public function test_completiontype1_group(): void {
+        $this->run_completion_test(custom_completion::COMPLETION_WITH_ONE_TARGET, true, 7);
     }
 
     /**
@@ -192,8 +194,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype2_group() : void {
-        $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_TARGETS, true, 8);
+    public function test_completiontype2_group(): void {
+        $this->run_completion_test(custom_completion::COMPLETION_WITH_ALL_TARGETS, true, 8);
     }
 
     /**
@@ -201,8 +203,8 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      *
      * @return void
      */
-    public function test_completiontype3_group() : void {
-        $this->run_completion_test(LEARNINGMAP_COMPLETION_WITH_ALL_PLACES, true, 8);
+    public function test_completiontype3_group(): void {
+        $this->run_completion_test(custom_completion::COMPLETION_WITH_ALL_PLACES, true, 8);
     }
 
     /**
@@ -213,7 +215,7 @@ class mod_learningmap_completion_test extends \advanced_testcase {
      * @param int $completedfrom Number of the activity to expect completion
      * @return void
      */
-    public function run_completion_test(int $type, bool $groupmode, int $completedfrom) : void {
+    public function run_completion_test(int $type, bool $groupmode, int $completedfrom): void {
         global $SESSION;
         $this->resetAfterTest();
         $this->setAdminUser();
@@ -275,7 +277,6 @@ class mod_learningmap_completion_test extends \advanced_testcase {
                     );
                 }
             }
-
         }
     }
 }

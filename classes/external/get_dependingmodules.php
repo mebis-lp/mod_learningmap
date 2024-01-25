@@ -49,7 +49,6 @@ use restricted_context_exception;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_dependingmodules extends external_api {
-
     /**
      * Returns description of method parameters for the get_dependingmodules webservice function.
      *
@@ -90,7 +89,7 @@ class get_dependingmodules extends external_api {
     public static function execute(int $cmid): array {
         $params = self::validate_parameters(self::execute_parameters(), ['cmId' => $cmid]);
         $cmid = $params['cmId'];
-        list($course, $cminfo) = get_course_and_cm_from_cmid($cmid);
+        [$course, $cminfo] = get_course_and_cm_from_cmid($cmid);
         $context = context_module::instance($cmid);
         self::validate_context($context);
         require_capability('mod/learningmap:view', $context);

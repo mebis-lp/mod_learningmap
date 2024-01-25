@@ -31,37 +31,37 @@ class mapworker {
      * Object to process the SVG
      * @var svgmap;
      */
-    protected $svgmap;
+    protected svgmap $svgmap;
     /**
      * Array containing the placestore
      * @var array
      */
-    protected $placestore;
+    protected array $placestore;
     /**
      * Course module object belonging to the map - only needed for completion
      * @var cm_info
      */
-    protected $cm;
+    protected \cm_info $cm;
     /**
      * Whether to prepare the code for edit mode
-     * @var boolean
+     * @var bool
      */
-    protected $edit;
+    protected bool $edit;
     /**
      * Stores the group id when using group mode. 0 if no group is used.
      * @var int
      */
-    protected $group;
+    protected int $group;
     /**
      * Activity worker to handle completion
      * @var activitymanager
      */
-    protected $activitymanager;
+    protected activitymanager $activitymanager;
     /**
      * Active places
      * @var array
      */
-    protected $active;
+    protected array $active;
 
     /**
      * Creates mapworker from SVG code
@@ -73,13 +73,17 @@ class mapworker {
      * @param int $group Group id to use (default 0 means no group)
      */
     public function __construct(string $svgcode, array $placestore, \cm_info $cm = null, bool $edit = false, int $group = 0) {
-        global $CFG, $USER;
-        $svgcode = preg_replace('/<text(.*)>(?!(<\!\[CDATA\[))(.*)<\/text>/',
+        global $USER;
+        $svgcode = preg_replace(
+            '/<text(.*)>(?!(<\!\[CDATA\[))(.*)<\/text>/',
             '<text$1><![CDATA[$3]]></text>',
-            $svgcode);
-        $svgcode = preg_replace('/<title(.*)>(?!(<\!\[CDATA\[))(.*)<\/title>/',
+            $svgcode
+        );
+        $svgcode = preg_replace(
+            '/<title(.*)>(?!(<\!\[CDATA\[))(.*)<\/title>/',
             '<title$1><![CDATA[$3]]></title>',
-            $svgcode);
+            $svgcode
+        );
         $this->edit = $edit;
         $placestore['editmode'] = $this->edit;
         $this->placestore = $placestore;
@@ -98,7 +102,7 @@ class mapworker {
      * @param array $placestoreoverride array of overrides for placestore
      * @return void
      */
-    public function replace_stylesheet(array $placestoreoverride = []) : void {
+    public function replace_stylesheet(array $placestoreoverride = []): void {
         $this->svgmap->replace_stylesheet($placestoreoverride);
     }
 
@@ -107,7 +111,7 @@ class mapworker {
      *
      * @return void
      */
-    public function replace_defs() : void {
+    public function replace_defs(): void {
         $this->svgmap->replace_defs();
     }
 
@@ -116,7 +120,7 @@ class mapworker {
      *
      * @return void
      */
-    public function remove_tags_before_svg() : void {
+    public function remove_tags_before_svg(): void {
         $this->svgmap->remove_tags_before_svg();
     }
 
@@ -124,7 +128,7 @@ class mapworker {
      * Process the map to show / hide paths and places
      * @return void
      */
-    public function process_map_objects() : void {
+    public function process_map_objects(): void {
         global $CFG, $USER;
         $this->active = [];
         $completedplaces = [];

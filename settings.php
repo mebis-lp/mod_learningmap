@@ -31,8 +31,8 @@ if ($ADMIN->fulltree) {
         get_string('usecaselink', 'learningmap'),
         '',
         'https://mebis.bycs.de/beitrag/lernlandkarten',
-        PARAM_URL)
-    );
+        PARAM_URL
+    ));
     $settings->add(new admin_setting_configtext(
         'mod_learningmap/allowedfilters',
         get_string('allowedfilters', 'learningmap'),

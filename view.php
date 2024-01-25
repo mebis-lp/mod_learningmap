@@ -27,7 +27,7 @@ require('../../config.php');
 require_once('lib.php');
 
 $id = required_param('id', PARAM_INT);
-list ($course, $cm) = get_course_and_cm_from_cmid($id, 'learningmap');
+ [$course, $cm] = get_course_and_cm_from_cmid($id, 'learningmap');
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
@@ -58,7 +58,9 @@ if (!empty($cm->groupmode)) {
     $OUTPUT->box($groupdropdown);
 }
 
-echo $OUTPUT->render_from_template('mod_learningmap/rendercontainer',
-    ['cmId' => $id, 'enableLiveUpdater' => false]);
+echo $OUTPUT->render_from_template(
+    'mod_learningmap/rendercontainer',
+    ['cmId' => $id, 'enableLiveUpdater' => false]
+);
 
 echo $OUTPUT->footer();

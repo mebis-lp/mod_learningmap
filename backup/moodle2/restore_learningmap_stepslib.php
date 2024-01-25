@@ -23,13 +23,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_learningmap_activity_structure_step extends restore_activity_structure_step {
-
     /**
      * List of elements that can be restored
      * @return array
      * @throws base_step_exception
      */
-    protected function define_structure() : array {
+    protected function define_structure(): array {
         $paths = [];
         $paths[] = new restore_path_element('learningmap', '/activity/learningmap');
         return $this->prepare_activity_structure($paths);
@@ -42,7 +41,7 @@ class restore_learningmap_activity_structure_step extends restore_activity_struc
      * @throws dml_exception
      * @throws restore_step_exception
      */
-    protected function process_learningmap($data) : void {
+    protected function process_learningmap($data): void {
         global $DB;
 
         $data = (object) $data;
@@ -57,7 +56,7 @@ class restore_learningmap_activity_structure_step extends restore_activity_struc
     /**
      * Extra actions to take once restore is complete.
      */
-    protected function after_execute() : void {
+    protected function after_execute(): void {
         $this->add_related_files('mod_learningmap', 'intro', null);
     }
 }

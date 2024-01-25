@@ -28,7 +28,7 @@ class backup_learningmap_activity_structure_step extends backup_activity_structu
      *
      * @return backup_nested_element
      */
-    protected function define_structure() : backup_nested_element {
+    protected function define_structure(): backup_nested_element {
         $learningmap = new backup_nested_element(
             'learningmap',
             ['id'],

@@ -23,7 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_learningmap_generator extends testing_module_generator {
-
     /**
      * Creates an instance of a learningmap. As unit tests do not support JS,
      * the SVG test data is static.
@@ -32,7 +31,7 @@ class mod_learningmap_generator extends testing_module_generator {
      * @param array|null $options
      * @return stdClass learningmap instance
      */
-    public function create_instance($record = null, array $options = null) : stdClass {
+    public function create_instance($record = null, array $options = null): stdClass {
         global $CFG;
 
         $record = (array)$record + [

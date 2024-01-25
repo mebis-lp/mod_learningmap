@@ -83,8 +83,10 @@ class activitymanager {
      */
     public function is_completed(cm_info $cm): bool {
         foreach ($this->members as $member) {
-            if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
-                $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
+            if (
+                $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
+                $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS
+            ) {
                 return true;
             }
         }
@@ -100,8 +102,8 @@ class activitymanager {
     public function get_completion_order(array $cms): array {
         if (count($cms) > 0 && intval(current($cms)) > 0) {
             $intcms = $cms;
-            $cms = array_map(function($value) {
-                $obj = new stdClass;
+            $cms = array_map(function ($value) {
+                $obj = new stdClass();
                 $obj->id = $value;
                 $obj->course = $this->course;
                 return $obj;
@@ -110,8 +112,10 @@ class activitymanager {
         $completiontime = [];
         foreach ($cms as $cm) {
             foreach ($this->members as $member) {
-                if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
-                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
+                if (
+                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
+                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS
+                ) {
                     $completed = $this->completion->get_data($cm, true, $member->id)->timemodified;
                     if (!isset($completiontime[$cm->id]) || $completed < $completiontime[$cm->id]) {
                         $completiontime[$cm->id] = $completed;

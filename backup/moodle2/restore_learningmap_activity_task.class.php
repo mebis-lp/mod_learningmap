@@ -16,7 +16,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 global $CFG;
-require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/restore_learningmap_stepslib.php');
+require_once($CFG->dirroot . '/mod/learningmap/backup/moodle2/restore_learningmap_stepslib.php');
 
 /**
  * Restore class for mod_learningmap
@@ -27,13 +27,12 @@ require_once($CFG->dirroot.'/mod/learningmap/backup/moodle2/restore_learningmap_
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_learningmap_activity_task extends restore_activity_task {
-
     /**
      * No specific settings for this activity
      *
      * @return void
      */
-    protected function define_my_settings() : void {
+    protected function define_my_settings(): void {
     }
 
     /**
@@ -41,7 +40,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      *
      * @return void
      */
-    protected function define_my_steps() : void {
+    protected function define_my_steps(): void {
         $this->add_step(new restore_learningmap_activity_structure_step('learningmap_structure', 'learningmap.xml'));
     }
 
@@ -52,7 +51,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      *
      * @return array
      */
-    public static function define_decode_contents() : array {
+    public static function define_decode_contents(): array {
         $contents = [];
         $contents[] = new restore_decode_content('learningmap', ['intro'], 'learningmap');
         return $contents;
@@ -63,7 +62,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      *
      * @return array
      */
-    public static function define_decode_rules() : array {
+    public static function define_decode_rules(): array {
         $rules = [];
         $rules[] = new restore_decode_rule('LEARNINGMAPVIEWBYID', '/mod/learningmap/view.php?id=$1', 'course_module');
         return $rules;
@@ -73,7 +72,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      * Update placestore to new module ids after restore is complete
      * @throws dml_exception
      */
-    public function after_restore() : void {
+    public function after_restore(): void {
         global $DB;
         $courseid = $this->get_courseid();
         $modinfo = get_fast_modinfo($courseid);
