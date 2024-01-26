@@ -21,7 +21,7 @@ use mod_learningmap\completion\custom_completion;
  * Unit test for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021-2023, ISB Bayern
+ * @copyright 2021-2024, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @group      mod_learningmap

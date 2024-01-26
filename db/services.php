@@ -18,7 +18,7 @@
  * mod_learningmap service definition.
  *
  * @package    mod_learningmap
- * @copyright  2023 ISB Bayern
+ * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

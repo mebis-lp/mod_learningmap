@@ -18,7 +18,7 @@
  * External function to retrieve the learningmap HTML code via ajax.
  *
  * @package    mod_learningmap
- * @copyright  2023 ISB Bayern
+ * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -43,7 +43,7 @@ use restricted_context_exception;
 /**
  * Class for external function to retrieve a given learningmap HTML code.
  *
- * @copyright  2023 ISB Bayern
+ * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

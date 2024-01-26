@@ -23,7 +23,7 @@ require_once(__DIR__ . '/../lib.php');
  * Test class with common test methods for mod_learningmap
  *
  * @package     mod_learningmap
- * @copyright   2021-2022, ISB Bayern
+ * @copyright 2021-2024, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
