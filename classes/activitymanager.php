@@ -78,13 +78,21 @@ class activitymanager {
     /**
      * Checks whether a given course module is completed (either by the user or at least one
      * of the users of the group, if group is set).
-     *
+     * Please be aware: If an activity has a passing grade set, the passing grade is only used
+     * to check completion when it is set as an completion requirement. Otherwise
      * @param \cm_info $cm course module to check
      */
     public function is_completed(cm_info $cm): bool {
         foreach ($this->members as $member) {
-            if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
-                $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
+            $completionstate = $this->completion->get_data($cm, true, $member->id)->completionstate;
+            if (
+                $completionstate == COMPLETION_COMPLETE ||
+                $completionstate == COMPLETION_COMPLETE_PASS ||
+                (
+                    intval($cm->completionpassgrade) == 0 &&
+                    $completionstate == COMPLETION_COMPLETE_FAIL
+                )
+            ) {
                 return true;
             }
         }
@@ -110,8 +118,14 @@ class activitymanager {
         $completiontime = [];
         foreach ($cms as $cm) {
             foreach ($this->members as $member) {
-                if ($this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
-                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS) {
+                if (
+                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE ||
+                    $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_PASS ||
+                    (
+                        intval($cm->completionpassgrade) == 0 &&
+                        $this->completion->get_data($cm, true, $member->id)->completionstate == COMPLETION_COMPLETE_FAIL
+                    )
+                ) {
                     $completed = $this->completion->get_data($cm, true, $member->id)->timemodified;
                     if (!isset($completiontime[$cm->id]) || $completed < $completiontime[$cm->id]) {
                         $completiontime[$cm->id] = $completed;

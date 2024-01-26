@@ -17,7 +17,11 @@
 namespace mod_learningmap;
 
 defined('MOODLE_INTERNAL') || die();
-require_once(__DIR__ . '/../lib.php');
+
+global $CFG;
+
+require_once($CFG->dirroot . '/mod/learningmap/lib.php');
+require_once($CFG->dirroot . '/mod/learningmap/tests/mod_learningmap_testcase.php');
 
 /**
  * Unit test for mod_learningmap
@@ -30,127 +34,7 @@ require_once(__DIR__ . '/../lib.php');
  * @group      mebis
  * @covers     \mod_learningmap\completion\custom_completion
  */
-class mod_learningmap_completion_test extends \advanced_testcase {
-    /**
-     * The course used for testing
-     *
-     * @var \stdClass
-     */
-    protected $course;
-    /**
-     * The learning map used for testing
-     *
-     * @var \stdClass
-     */
-    protected $learningmap;
-    /**
-     * The activities linked in the learningmap
-     *
-     * @var array
-     */
-    protected $activities;
-    /**
-     * The users used for testing
-     *
-     * @var array
-     */
-    protected $users;
-    /**
-     * The group used for testing
-     *
-     * @var \stdClass
-     */
-    protected $group;
-    /**
-     * Whether group mode is active
-     *
-     * @var boolean
-     */
-    protected $groupmode;
-    /**
-     * The modinfo of the course
-     *
-     * @var \course_modinfo|null
-     */
-    protected $modinfo;
-    /**
-     * The completion info of the course
-     *
-     * @var \completion_info
-     */
-    protected $completion;
-    /**
-     * The cm_info object belonging to the learning map (differs from the learningmap record)
-     *
-     * @var \cm_info
-     */
-    protected $cm;
-    /**
-     * Prepare testing environment
-     */
-    /**
-     * Prepare testing environment
-     * @param int $completiontype Type for automatic completion
-     * @param bool $groupmode Whether to use group mode (defaults to false)
-     */
-    public function prepare($completiontype, $groupmode = false): void {
-        global $DB;
-        $this->groupmode = $groupmode;
-        $this->course = $this->getDataGenerator()->create_course(['enablecompletion' => 1]);
-        $this->learningmap = $this->getDataGenerator()->create_module('learningmap',
-            ['course' => $this->course, 'completion' => 2, 'completiontype' => $completiontype,
-            'groupmode' => ($groupmode ? SEPARATEGROUPS : NOGROUPS)]
-        );
-
-        $this->activities = [];
-        for ($i = 0; $i < 9; $i++) {
-            $this->activities[] = $this->getDataGenerator()->create_module(
-                'page',
-                ['name' => 'A', 'content' => 'B', 'course' => $this->course, 'completion' => 2, 'completionview' => 1]
-            );
-            $this->learningmap->placestore = str_replace(99990 + $i, $this->activities[$i]->cmid, $this->learningmap->placestore);
-        }
-        $DB->set_field('learningmap', 'placestore', $this->learningmap->placestore, ['id' => $this->learningmap->id]);
-
-        $this->users[0] = $this->getDataGenerator()->create_user(
-            [
-                'email' => 'user1@example.com',
-                'username' => 'user1'
-            ]
-        );
-        $studentrole = $DB->get_record('role', ['shortname' => 'student']);
-        $this->getDataGenerator()->enrol_user($this->users[0]->id, $this->course->id, $studentrole->id);
-        if ($this->groupmode) {
-            $this->group = $this->getDataGenerator()->create_group(['courseid' => $this->course->id]);
-            $this->users[1] = $this->getDataGenerator()->create_user(
-                [
-                    'email' => 'user2@example.com',
-                    'username' => 'user2'
-                ]
-            );
-            $this->users[2] = $this->getDataGenerator()->create_user(
-                [
-                    'email' => 'user3@example.com',
-                    'username' => 'user3'
-                ]
-            );
-            $this->getDataGenerator()->enrol_user($this->users[1]->id, $this->course->id, $studentrole->id);
-            $this->getDataGenerator()->enrol_user($this->users[2]->id, $this->course->id, $studentrole->id);
-            $this->getDataGenerator()->create_group_member([
-                'userid' => $this->users[0]->id,
-                'groupid' => $this->group->id,
-            ]);
-            $this->getDataGenerator()->create_group_member([
-                'userid' => $this->users[1]->id,
-                'groupid' => $this->group->id,
-            ]);
-        }
-
-        $this->modinfo = get_fast_modinfo($this->course, $this->users[0]->id);
-        $this->completion = new \completion_info($this->modinfo->get_course());
-        $this->cm = $this->modinfo->get_cm($this->learningmap->cmid);
-    }
-
+class mod_learningmap_completion_test extends mod_learningmap_testcase {
     /**
      * Tests completiontype 1 in individual mode
      *
