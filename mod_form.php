@@ -163,7 +163,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @return bool
      */
     public function completion_rule_enabled($data): bool {
-        return (!empty($data['completiontype']) && $data['completiontype'] > 0);
+        return (!empty($data['completiontype' . $this->get_suffix()]));
     }
 
     /**
@@ -181,18 +181,20 @@ class mod_learningmap_mod_form extends moodleform_mod {
             custom_completion::COMPLETION_WITH_ALL_PLACES => get_string('completion_with_all_places', 'mod_learningmap'),
         ];
 
+        $completiontype = 'completiontype' . $this->get_suffix();
+
         $mform->addElement(
             'select',
-            'completiontype',
+            $completiontype,
             get_string('completiontype', 'learningmap'),
             $completionoptions,
             []
         );
 
-        $mform->setType('completiontype', PARAM_INT);
-        $mform->hideIf('completiontype', 'completion', 'neq', COMPLETION_TRACKING_AUTOMATIC);
+        $mform->setType($completiontype, PARAM_INT);
+        $mform->hideIf($completiontype, 'completion', 'neq', COMPLETION_TRACKING_AUTOMATIC);
 
-        return(['completiontype']);
+        return([$completiontype]);
     }
 
     /**
@@ -259,11 +261,27 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @return void
      */
     public function data_postprocessing($data): void {
-        $mapworker = new mapworker(
-            $data->introeditor['text'],
-            json_decode($data->placestore, true)
-        );
-        $mapworker->replace_stylesheet();
-        $data->introeditor['text'] = $mapworker->get_svgcode();
+        // As this form is also used for setting the default completion settings, there might not be an actual learningmap.
+        if (!empty($data->introeditor['text'] === '')) {
+            $mapworker = new mapworker(
+                $data->introeditor['text'],
+                json_decode($data->placestore, true)
+            );
+            $mapworker->replace_stylesheet();
+            $data->introeditor['text'] = $mapworker->get_svgcode();
+        }
+    }
+
+    /**
+     * Get the suffix to be added to the completion elements when creating them. This acts as a spare for
+     * compatibility with Moodle 4.1 and 4.2.
+     *
+     * @return string The suffix
+     */
+    public function get_suffix(): string {
+        if (function_exists('parent::get_suffix')) {
+            return parent::get_suffix();
+        }
+        return '';
     }
 }
