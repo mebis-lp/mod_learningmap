@@ -85,6 +85,7 @@ class autoupdate {
                         foreach ($placestore->places as $p) {
                             if ($p->linkedActivity == $data['objectid']) {
                                 $p->linkedActivity = null;
+                                cachemanager::remove_cmid($data['objectid']);
                                 $changed = true;
                             }
                         }
@@ -105,13 +106,7 @@ class autoupdate {
      */
     public static function reset_backlink_cache(\core\event\base $event): void {
         if (isset($data['courseid']) && $data['courseid'] > 0) {
-            $course = $data['courseid'];
-            $cache = \cache::make('mod_learningmap', 'backlinks');
-            $modinfo = get_fast_modinfo($course);
-            $cms = $modinfo->get_cms();
-            foreach ($cms as $cm) {
-                $cache->delete($cm->id);
-            }
+            cachemanager::reset_backlink_cache($data['courseid']);
         }
     }
 }

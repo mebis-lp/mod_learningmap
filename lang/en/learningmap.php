@@ -42,6 +42,7 @@ $string['completiondisabled'] = 'Completion tracking is disabled in course setti
 $string['completiontype'] = 'Type of completion';
 $string['editorhelp'] = 'How to use the editor';
 $string['editplace'] = 'Edit place';
+$string['fill_backlink_cache_task'] = 'Fill learningmap backlink cache';
 $string['freetype_required'] = 'FreeType extension to GD is required to run mod_learningmap.';
 $string['groupmode'] = 'Group mode';
 $string['groupmode_help'] = 'When group mode is active, it is sufficient that one member of the group has completed an activity to be able to have the connected places available.';
