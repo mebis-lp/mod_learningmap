@@ -215,8 +215,8 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
         // Learningmap is invisible for the user. Backlink should not be generated.
         $PAGE = new \moodle_page();
         $modinfo = get_fast_modinfo($this->courses[0]);
-        $PAGE->set_cm($modinfo->get_cm($this->activities[3][1]->cmid));
-        $PAGE->set_activity_record($this->activities[3][1]);
+        $PAGE->set_cm($modinfo->get_cm($this->activities[2][1]->cmid));
+        $PAGE->set_activity_record($this->activities[2][1]);
 
         $descriptionbefore = $PAGE->activityheader->export_for_template($OUTPUT)['description'];
         learningmap_before_http_headers();
