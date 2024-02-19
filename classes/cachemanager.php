@@ -26,32 +26,26 @@ namespace mod_learningmap;
  */
 class cachemanager {
     /**
-     * Resets and rebuilds the backlink cache for the whole instance.
+     * Reset the backlink cache for a course (includes rebuilding it) or the whole instance (if $courseid is 0).
      *
+     * @param int $courseid The id of the course (defaults to 0).
      * @return void
      */
-    public static function rebuild_backlink_cache(): void {
+    public static function reset_backlink_cache(int $courseid = 0): void {
         $cache = \cache::make('mod_learningmap', 'backlinks');
-        $cache->purge();
-        self::build_backlink_cache();
-    }
-
-    /**
-     * Reset the backlink cache for a course (includes rebuilding it).
-     *
-     * @param int $courseid The id of the course.
-     * @return void
-     */
-    public static function reset_backlink_cache(int $courseid): void {
-        $cache = \cache::make('mod_learningmap', 'backlinks');
-        $modinfo = get_fast_modinfo($courseid);
-        $cms = $modinfo->get_cms();
-        $cache->delete_many(array_keys($cms));
+        if (empty($courseid)) {
+            $cache->purge();
+        } else {
+            $modinfo = get_fast_modinfo($courseid);
+            $cms = $modinfo->get_cms();
+            $cache->delete_many(array_keys($cms));
+        }
         self::build_backlink_cache($courseid);
     }
 
     /**
      * Builds the backlink cache for a course or for the whole instance (e.g. after purging the cache).
+     * Building the cache for a course should only be used as a fallback if the cache is not filled for the whole instance.
      *
      * @param int $courseid Id of the course, if 0 the cache will be built for the whole instance.
      * @return void
@@ -61,14 +55,17 @@ class cachemanager {
         $backlinks = [];
         $cache = \cache::make('mod_learningmap', 'backlinks');
 
+        mtrace('Building backlink cache' . (!empty($courseid) ? ' for course ' . $courseid : '') . ' started...');
+
         $conditions = ['backlink' => 1];
         if (!empty($courseid)) {
             $conditions['course'] = $courseid;
         }
 
-        $records = $DB->get_records('learningmap', $conditions, '', 'id, placestore, backlink');
+        $records = $DB->get_recordset('learningmap', $conditions, '', 'id, placestore, backlink, course');
         foreach ($records as $record) {
-            $module = get_coursemodule_from_instance('learningmap', $record->id, 0, true);
+            $modinfo = get_fast_modinfo($record->course);
+            $module = $modinfo->instances['learningmap'][$record->id];
             $placestore = json_decode($record->placestore);
             $coursepageurl = course_get_format($module->course)->get_view_url($module->sectionnum);
             $coursepageurl->set_anchor('module-' . $module->id);
@@ -91,6 +88,8 @@ class cachemanager {
         if (empty($courseid)) {
             $cache->set('fillstate', time());
         }
+
+        mtrace('Building backlink cache finished.');
     }
 
     /**

@@ -344,8 +344,10 @@ function learningmap_before_http_headers() {
         $cachekey = $PAGE->cm->id;
         $backlinks = $cache->get($cachekey);
 
-        if ($backlinks === false) {
-            // If the cache is not yet filled, fill it for the current course.
+        if (!$backlinks) {
+            // If the cache is not yet filled, fill it for the current course. This is a fallback in
+            // case the task has not been executed yet or was not fast enough. Should only happen after
+            // cache purging.
             if (!$cache->get('fillstate')) {
                 cachemanager::build_backlink_cache($PAGE->course->id);
             }
@@ -355,15 +357,18 @@ function learningmap_before_http_headers() {
 
         $backlinktext = '';
 
-        if (!empty($backlinks)) {
-            $modinfo = get_fast_modinfo($PAGE->course);
-            foreach ($backlinks as $backlink) {
-                $cminfo = $modinfo->get_cm($backlink['cmid']);
-                if ($cminfo->available != 0 && $cminfo->uservisible) {
-                    $backlinktext .= $OUTPUT->render_from_template('learningmap/backtomap', $backlink);
-                }
+        if (empty($backlinks)) {
+            return;
+        }
+
+        $modinfo = get_fast_modinfo($PAGE->course);
+        foreach ($backlinks as $backlink) {
+            $cminfo = $modinfo->get_cm($backlink['cmid']);
+            if ($cminfo->available != 0 && $cminfo->uservisible) {
+                $backlinktext .= $OUTPUT->render_from_template('learningmap/backtomap', $backlink);
             }
         }
+
         if ($backlinktext) {
             $description = format_module_intro($PAGE->activityname, $PAGE->activityrecord, $PAGE->cm->id);
             $PAGE->activityheader->set_description($description . $backlinktext);

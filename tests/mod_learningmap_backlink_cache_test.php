@@ -25,34 +25,20 @@ use stdClass;
  * @copyright   2021-2024, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @group      mod_learningmap
- * @group      mebis
  * @covers     ::learningmap_before_http_headers()
  * @covers     \mod_learningmap\cachemanager
  */
 class mod_learningmap_backlink_cache_test extends \advanced_testcase {
-    /**
-     * Courses used for testing
-     * @var array
-     */
+    /** @var array $courses Courses used for testing */
     private array $courses;
 
-    /**
-     * Learning maps used for testing
-     * @var array
-     */
+    /** @var array $learningmaps Learning maps used for testing */
     private array $learningmaps;
 
-    /**
-     * Activities used for testing
-     * @var array
-     */
+    /** @var array $activities Activities used for testing */
     private array $activities;
 
-    /**
-     * User used for testing
-     * @var stdClass
-     */
+    /** @var stdClass $user User used for testing */
     private stdClass $user;
 
     /**
@@ -80,9 +66,11 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
         );
 
         $this->activities = [];
-        // Create activities for this test. The first 10 activities are in the first learning map, the next 10 in the second.
+        // Create activities for this test. The first 9 activities are in the first learning map, the next 9 in the second.
         for ($i = 0; $i < 27; $i++) {
-            $this->activities[] = $this->getDataGenerator()->create_module(
+            $learningmapnumber = (int)($i / 9);
+            $activitynumber = $i % 9;
+            $this->activities[$learningmapnumber][$activitynumber] = $this->getDataGenerator()->create_module(
                 'page',
                 [
                     'name' => 'A',
@@ -92,13 +80,13 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
                     'completionview' => COMPLETION_VIEW_REQUIRED,
                 ]
             );
-            $this->learningmaps[(int)($i / 9)]->placestore = str_replace(
-                99990 + ($i % 9),
-                $this->activities[$i]->cmid,
-                $this->learningmaps[(int)($i / 9)]->placestore
+            $this->learningmaps[$learningmapnumber]->placestore = str_replace(
+                99990 + $activitynumber,
+                $this->activities[$learningmapnumber][$activitynumber]->cmid,
+                $this->learningmaps[$learningmapnumber]->placestore
             );
         }
-        $this->activities[] = $this->getDataGenerator()->create_module(
+        $this->activities[3][0] = $this->getDataGenerator()->create_module(
             'page',
             [
                 'name' => 'A',
@@ -124,31 +112,6 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
     }
 
     /**
-     * Test the rebuild_backlink_cache() method.
-     *
-     * @return void
-     */
-    public function test_rebuild_backlink_cache(): void {
-        $this->resetAfterTest();
-        $cache = \cache::make('mod_learningmap', 'backlinks');
-        // Set invalid cache key.
-        $cache->set('test', 'test');
-        cachemanager::rebuild_backlink_cache();
-
-        $this->assertNotEquals(false, $cache->get('fillstate'));
-        for ($i = 0; $i < 28; $i++) {
-            // Only activities 0-8 and 18-26 have cached backlinks. Be aware that availability checking is not done here.
-            if ((int)($i / 9) % 2 == 0) {
-                $this->assertNotEquals(false, $cache->get($this->activities[$i]->cmid));
-            } else {
-                $this->assertEquals(false, $cache->get($this->activities[$i]->cmid));
-            }
-        }
-        // Invalid key should be deleted.
-        $this->assertEquals(false, $cache->get('test'));
-    }
-
-    /**
      * Test the reset_backlink_cache() method.
      *
      * @return void
@@ -161,14 +124,30 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
         $DB->set_field('learningmap', 'backlink', 0, ['id' => $this->learningmaps[0]->id]);
         cachemanager::reset_backlink_cache($this->courses[0]->id);
         $this->assertNotEquals(false, $cache->get('fillstate'));
-        // There are no backlinks anymore for the first learning map.
-        for ($i = 0; $i < 18; $i++) {
-            $this->assertEquals(false, $cache->get($this->activities[$i]->cmid));
+        // There are no backlinks anymore for the first learning map but still for the third one.
+        // The second learning map has still backlinks disabled.
+        for ($i = 0; $i < 9; $i++) {
+            $this->assertEquals(false, $cache->get($this->activities[0][$i]->cmid));
+            $this->assertEquals(false, $cache->get($this->activities[1][$i]->cmid));
+            $this->assertNotEquals(false, $cache->get($this->activities[2][$i]->cmid));
         }
-        // There are still cached backlinks for the third learning map.
-        for ($i = 18; $i < 26; $i++) {
-            $this->assertNotEquals(false, $cache->get($this->activities[$i]->cmid));
+
+        // Now reset the whole instance.
+
+        // Set invalid cache key.
+        $cache->set('test', 'test');
+        cachemanager::reset_backlink_cache();
+
+        $this->assertNotEquals(false, $cache->get('fillstate'));
+        for ($i = 0; $i < 9; $i++) {
+            // Only activities in first and third learning map have cached backlinks. Be aware that availability
+            // checking is not done here.
+            $this->assertNotEquals(false, $cache->get($this->activities[0][$i]->cmid));
+            $this->assertEquals(false, $cache->get($this->activities[1][$i]->cmid));
+            $this->assertNotEquals(false, $cache->get($this->activities[2][$i]->cmid));
         }
+        // Invalid key should be deleted.
+        $this->assertEquals(false, $cache->get('test'));
     }
 
     /**
@@ -200,8 +179,8 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
         $modinfo = get_fast_modinfo($this->courses[0]);
 
         // Test an activity that is part of the first learning map (with backlink enabled).
-        $PAGE->set_cm($modinfo->get_cm($this->activities[0]->cmid));
-        $PAGE->set_activity_record($this->activities[0]);
+        $PAGE->set_cm($modinfo->get_cm($this->activities[0][0]->cmid));
+        $PAGE->set_activity_record($this->activities[0][0]);
 
         $descriptionbefore = $PAGE->activityheader->export_for_template($OUTPUT)['description'];
         learningmap_before_http_headers();
@@ -212,8 +191,8 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
 
         // Test an activity that is part of the second learning map (with backlink disabled).
         $PAGE = new \moodle_page();
-        $PAGE->set_cm($modinfo->get_cm($this->activities[10]->cmid));
-        $PAGE->set_activity_record($this->activities[10]);
+        $PAGE->set_cm($modinfo->get_cm($this->activities[1][1]->cmid));
+        $PAGE->set_activity_record($this->activities[1][1]);
 
         $descriptionbefore = $PAGE->activityheader->export_for_template($OUTPUT)['description'];
         learningmap_before_http_headers();
@@ -224,8 +203,8 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
         // Test an activity that is part of the second course (without any learning maps).
         $PAGE = new \moodle_page();
         $modinfo = get_fast_modinfo($this->courses[1]);
-        $PAGE->set_cm($modinfo->get_cm($this->activities[27]->cmid));
-        $PAGE->set_activity_record($this->activities[27]);
+        $PAGE->set_cm($modinfo->get_cm($this->activities[3][0]->cmid));
+        $PAGE->set_activity_record($this->activities[3][0]);
 
         $descriptionbefore = $PAGE->activityheader->export_for_template($OUTPUT)['description'];
         learningmap_before_http_headers();
@@ -236,8 +215,8 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
         // Learningmap is invisible for the user. Backlink should not be generated.
         $PAGE = new \moodle_page();
         $modinfo = get_fast_modinfo($this->courses[0]);
-        $PAGE->set_cm($modinfo->get_cm($this->activities[18]->cmid));
-        $PAGE->set_activity_record($this->activities[18]);
+        $PAGE->set_cm($modinfo->get_cm($this->activities[3][1]->cmid));
+        $PAGE->set_activity_record($this->activities[3][1]);
 
         $descriptionbefore = $PAGE->activityheader->export_for_template($OUTPUT)['description'];
         learningmap_before_http_headers();

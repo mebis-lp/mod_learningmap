@@ -105,6 +105,7 @@ class autoupdate {
      * @return void
      */
     public static function reset_backlink_cache(\core\event\base $event): void {
+        $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
             cachemanager::reset_backlink_cache($data['courseid']);
         }
