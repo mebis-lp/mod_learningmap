@@ -50,6 +50,8 @@ class fill_backlink_cache extends \core\task\scheduled_task {
             return;
         }
 
+        mtrace('Building backlink cache started...');
         cachemanager::build_backlink_cache();
+        mtrace('Building backlink cache finished.');
     }
 }

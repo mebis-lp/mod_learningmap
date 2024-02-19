@@ -55,8 +55,6 @@ class cachemanager {
         $backlinks = [];
         $cache = \cache::make('mod_learningmap', 'backlinks');
 
-        mtrace('Building backlink cache' . (!empty($courseid) ? ' for course ' . $courseid : '') . ' started...');
-
         $conditions = ['backlink' => 1];
         if (!empty($courseid)) {
             $conditions['course'] = $courseid;
@@ -88,8 +86,6 @@ class cachemanager {
         if (empty($courseid)) {
             $cache->set('fillstate', time());
         }
-
-        mtrace('Building backlink cache finished.');
     }
 
     /**
