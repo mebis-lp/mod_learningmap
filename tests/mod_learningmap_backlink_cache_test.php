@@ -132,7 +132,8 @@ class mod_learningmap_backlink_cache_test extends \advanced_testcase {
             $this->assertNotEquals(false, $cache->get($this->activities[2][$i]->cmid));
         }
 
-        // Now reset the whole instance.
+        // Now reset the whole instance. Re-enable backlink for the first learning map.
+        $DB->set_field('learningmap', 'backlink', 1, ['id' => $this->learningmaps[0]->id]);
 
         // Set invalid cache key.
         $cache->set('test', 'test');
