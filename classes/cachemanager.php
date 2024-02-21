@@ -33,7 +33,9 @@ class cachemanager {
      */
     public static function reset_backlink_cache(int $courseid = 0): void {
         $cache = \cache::make('mod_learningmap', 'backlinks');
+
         if (empty($courseid)) {
+            // This also deletes the cache key 'fillstate', so the whole cache is invalidated.
             $cache->purge();
         } else {
             $modinfo = get_fast_modinfo($courseid);
@@ -84,6 +86,7 @@ class cachemanager {
         }
 
         if (empty($courseid)) {
+            // Finally set the flag to indicate that the cache is properly built.
             $cache->set('fillstate', time());
         }
     }

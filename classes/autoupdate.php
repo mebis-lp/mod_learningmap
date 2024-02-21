@@ -107,7 +107,11 @@ class autoupdate {
     public static function reset_backlink_cache(\core\event\base $event): void {
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
-            cachemanager::reset_backlink_cache($data['courseid']);
+            $modinfo = get_fast_modinfo($data['courseid']);
+            $cm = $modinfo->get_cm($data['objectid']);
+            if ($cm->modname === 'learningmap') {
+                cachemanager::reset_backlink_cache($data['courseid']);
+            }
         }
     }
 }
