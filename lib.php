@@ -334,6 +334,10 @@ function learningmap_reset_userdata($data) {
 function learningmap_before_http_headers() {
     global $PAGE, $OUTPUT;
 
+    if (get_config('mod_learningmap', 'backlinkallowed') == 0) {
+        return;
+    }
+
     if ($PAGE->context->contextlevel != CONTEXT_MODULE) {
         return '';
     }

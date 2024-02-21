@@ -108,9 +108,15 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->setType('showdescription', PARAM_INT);
         $mform->addHelpButton('showdescription', 'showdescription', 'learningmap');
 
-        $mform->addElement('checkbox', 'backlink', get_string('showbacklink', 'learningmap'));
-        $mform->setType('backlink', PARAM_INT);
-        $mform->addHelpButton('backlink', 'showbacklink', 'learningmap');
+        $backlinkallowed = get_config('mod_learningmap', 'backlinkallowed');
+
+        if ($backlinkallowed) {
+            $mform->addElement('checkbox', 'backlink', get_string('showbacklink', 'learningmap'));
+            $mform->setType('backlink', PARAM_INT);
+            $mform->addHelpButton('backlink', 'showbacklink', 'learningmap');
+        } else {
+            $mform->addElement('hidden', 'backlink', 0);
+        }
 
         $mform->addElement(
             'filemanager',

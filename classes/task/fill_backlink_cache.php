@@ -40,6 +40,10 @@ class fill_backlink_cache extends \core\task\scheduled_task {
      * Fill backlink cache.
      */
     public function execute() {
+        if (get_config('mod_learningmap', 'backlinkallowed') == 0) {
+            return;
+        }
+
         $cache = \cache::make('mod_learningmap', 'backlinks');
 
         $fillstate = $cache->get('fillstate');

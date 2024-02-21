@@ -32,6 +32,10 @@ class cachemanager {
      * @return void
      */
     public static function reset_backlink_cache(int $courseid = 0): void {
+        if (get_config('mod_learningmap', 'backlinkallowed') == 0) {
+            return;
+        }
+
         $cache = \cache::make('mod_learningmap', 'backlinks');
 
         if (empty($courseid)) {
@@ -54,6 +58,11 @@ class cachemanager {
      */
     public static function build_backlink_cache(int $courseid = 0) {
         global $DB;
+
+        if (get_config('mod_learningmap', 'backlinkallowed') == 0) {
+            return;
+        }
+
         $backlinks = [];
         $cache = \cache::make('mod_learningmap', 'backlinks');
 
