@@ -39,4 +39,10 @@ if ($ADMIN->fulltree) {
         get_string('allowedfilters_desc', 'learningmap'),
         ''
     ));
+    $settings->add(new admin_setting_configcheckbox(
+        'mod_learningmap/backlinkallowed',
+        get_string('backlinkallowed', 'learningmap'),
+        get_string('backlinkallowed_desc', 'learningmap'),
+        1
+    ));
 }

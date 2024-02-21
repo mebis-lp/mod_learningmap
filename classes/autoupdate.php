@@ -73,6 +73,7 @@ class autoupdate {
      */
     public static function update_from_delete_event(\core\event\base $event): void {
         global $DB;
+
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
             $modinfo = get_fast_modinfo($data['courseid']);
@@ -85,6 +86,7 @@ class autoupdate {
                         foreach ($placestore->places as $p) {
                             if ($p->linkedActivity == $data['objectid']) {
                                 $p->linkedActivity = null;
+                                cachemanager::remove_cmid($data['objectid']);
                                 $changed = true;
                             }
                         }
@@ -95,23 +97,28 @@ class autoupdate {
                 }
             }
         }
-        self::reset_backlink_cache($event);
+
+        // If the course module was a learningmap, reset the backlink cache of the whole course.
+        self::reset_backlink_cache_if_necessary($event);
     }
 
     /**
-     * Resets backlink cache of the whole course if a learningmap was created / updated / deleted.
+     * Resets backlink cache of the whole course if a learningmap was created / updated / deleted or if
+     * the course settings have changed (as course format may have changed).
      * @param \core\event\base $event
-     * @return void
+     * @return bool
      */
-    public static function reset_backlink_cache(\core\event\base $event): void {
+    public static function reset_backlink_cache_if_necessary(\core\event\base $event): bool {
+        $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
-            $course = $data['courseid'];
-            $cache = \cache::make('mod_learningmap', 'backlinks');
-            $modinfo = get_fast_modinfo($course);
-            $cms = $modinfo->get_cms();
-            foreach ($cms as $cm) {
-                $cache->delete($cm->id);
+            if (
+                ($data['objecttable'] == 'course' && in_array('format', $data['other']['updatedfields'])) ||
+                ($data['objecttable'] == 'course_modules' && $data['other']['modulename'] == 'learningmap')
+            ) {
+                cachemanager::reset_backlink_cache($data['courseid']);
+                return true;
             }
         }
+        return false;
     }
 }

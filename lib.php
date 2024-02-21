@@ -23,6 +23,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_learningmap\cachemanager;
+
 /**
  * Array with all features the plugin supports for advanced settings. Might be moved
  * to another place when in use somewhere else.
@@ -330,7 +332,11 @@ function learningmap_reset_userdata($data) {
  * @return void
  */
 function learningmap_before_http_headers() {
-    global $PAGE, $DB, $OUTPUT;
+    global $PAGE, $OUTPUT;
+
+    if (get_config('mod_learningmap', 'backlinkallowed') == 0) {
+        return;
+    }
 
     if ($PAGE->context->contextlevel != CONTEXT_MODULE) {
         return '';
@@ -338,47 +344,35 @@ function learningmap_before_http_headers() {
 
     try {
         $cache = cache::make('mod_learningmap', 'backlinks');
-        $cachekey = $PAGE->cm->id;
-        $key = $cache->get($cachekey);
-        $modinfo = get_fast_modinfo($PAGE->course);
 
-        if (!$key) {
-            $instances = $modinfo->get_instances_of('learningmap');
-            if (count($instances) > 0) {
-                $backlinks = [];
-                foreach ($instances as $i) {
-                    $record = $DB->get_record('learningmap', ['id' => $i->instance], 'name, placestore, backlink');
-                    if ($record->backlink == 1) {
-                        $placestore = json_decode($record->placestore);
-                        $coursepageurl = course_get_format($PAGE->course->id)->get_view_url($i->sectionnum);
-                        $coursepageurl->set_anchor('module-' . $i->id);
-                        foreach ($placestore->places as $place) {
-                            $url = !empty($i->showdescription) ?
-                                $coursepageurl->out() :
-                                new moodle_url('/mod/learningmap/view.php', ['id' => $i->id]);
-                            $backlinks[$place->linkedActivity][$i->id] = ['url' => $url, 'name' => $record->name, 'cmid' => $i->id];
-                        }
-                    }
-                }
-                foreach ($backlinks as $cmid => $backlink) {
-                    $cache->set($cmid, $backlink);
-                }
-            } else {
-                $cache->set($cachekey, []);
+        $cachekey = $PAGE->cm->id;
+        $backlinks = $cache->get($cachekey);
+
+        if (!$backlinks) {
+            // If the cache is not yet filled, fill it for the current course. This is a fallback in
+            // case the task has not been executed yet or was not fast enough. Should only happen after
+            // cache purging.
+            if (!$cache->get('fillstate')) {
+                cachemanager::build_backlink_cache($PAGE->course->id);
             }
-        } else {
-            $backlinks[$cachekey] = $key;
+            // Try again to get the backlinks.
+            $backlinks = $cache->get($cachekey);
         }
+
         $backlinktext = '';
 
-        if (!empty($backlinks[$PAGE->cm->id])) {
-            foreach ($backlinks[$PAGE->cm->id] as $backlink) {
-                $cminfo = $modinfo->get_cm($backlink['cmid']);
-                if ($cminfo->available != 0 && $cminfo->uservisible) {
-                    $backlinktext .= $OUTPUT->render_from_template('learningmap/backtomap', $backlink);
-                }
+        if (empty($backlinks)) {
+            return;
+        }
+
+        $modinfo = get_fast_modinfo($PAGE->course);
+        foreach ($backlinks as $backlink) {
+            $cminfo = $modinfo->get_cm($backlink['cmid']);
+            if ($cminfo->available != 0 && $cminfo->uservisible) {
+                $backlinktext .= $OUTPUT->render_from_template('learningmap/backtomap', $backlink);
             }
         }
+
         if ($backlinktext) {
             $description = format_module_intro($PAGE->activityname, $PAGE->activityrecord, $PAGE->cm->id);
             $PAGE->activityheader->set_description($description . $backlinktext);
