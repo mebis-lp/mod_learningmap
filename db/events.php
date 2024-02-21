@@ -42,6 +42,7 @@ $observers = [
         'eventname' => '\core\event\course_module_updated',
         'callback' => '\mod_learningmap\autoupdate::reset_backlink_cache_if_necessary',
     ],
+    // Necessary for updating the backlinks if the course format changes.
     [
         'eventname' => '\core\event\course_updated',
         'callback' => '\mod_learningmap\autoupdate::reset_backlink_cache_if_necessary',
