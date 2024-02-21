@@ -111,7 +111,8 @@ class autoupdate {
     public static function reset_backlink_cache_if_necessary(\core\event\base $event): bool {
         $data = $event->get_data();
         if (isset($data['courseid']) && $data['courseid'] > 0) {
-            if ($data['objecttable'] == 'course' ||
+            if (
+                $data['objecttable'] == 'course' ||
                 ($data['objecttable'] == 'course_modules' && $data['other']['modulename'] == 'learningmap')
             ) {
                 cachemanager::reset_backlink_cache($data['courseid']);
