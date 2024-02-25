@@ -115,6 +115,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 'completiondisabled' => $cm->get_course()->enablecompletion == 0,
                 'advancedfeatures' => $advancedfeatures,
                 'placefeatures' => $placefeatures,
+                'palette' => get_config('mod_learningmap', 'colorpalette'),
                 ]
             )
         );

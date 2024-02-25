@@ -55,6 +55,10 @@
     left: 0;
 }
 
+.learningmap-menu .learningmap-colorpicker {
+    display: none;
+}
+
 .card.learningmap-menu {
     position: absolute;
     z-index: 1;
@@ -95,9 +99,11 @@
     width: 2rem;
 }
 
-.learningmap-menubar svg {
-    width: 1.5rem;
-    height: 1.5rem;
+.learningmap-menubar #learningmap-place-settings-icon {
+    width: 90px;
+    height: 30px;
+    border: 1px solid black;
+    border-radius: .5rem;
 }
 
 .learningmap-editor-main {

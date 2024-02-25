@@ -123,6 +123,8 @@ export const init = () => {
         placestore.loadJSON(placestoreInput.value);
     }
 
+    updateColorPickers();
+
     // Mark all activities in the placestore as "used".
     updateActivities();
 
@@ -843,11 +845,20 @@ export const init = () => {
      * Calls updateCode() when completed.
      */
     function updateCSS() {
-        console.log('updateCSS');
         Templates.renderForPromise('mod_learningmap/cssskeleton', placestore.getPlacestore())
             .then(({html, js}) => {
                 Templates.replaceNode('#learningmap-svgstyle', html, js);
                 updateCode();
+                return true;
+            })
+            .catch(ex => displayException(ex));
+        let placestoretemp = placestore.getPlacestore();
+        placestoretemp.mapid = 'preview';
+        placestoretemp.cssid = 'learningmap-preview-svgstyle';
+        placestoretemp.editmode = false;
+        Templates.renderForPromise('mod_learningmap/cssskeleton', placestoretemp)
+            .then(({html, js}) => {
+                Templates.replaceNode('#learningmap-preview-svgstyle', html, js);
                 return true;
             })
             .catch(ex => displayException(ex));
@@ -970,7 +981,7 @@ export const init = () => {
         let otherMenus = document.querySelectorAll('.learningmap-menu');
         otherMenus.forEach(function(menu) {
             if (menu.id != 'learningmap-' + name + '-menu') {
-                hideMenu(menu.id.split('-')[1]);
+                menu.setAttribute('hidden', '');
             }
         });
     }
@@ -983,7 +994,9 @@ export const init = () => {
         let menu = document.getElementById('learningmap-' + name + '-menu');
         if (menu) {
             menu.removeAttribute('hidden');
+            updateColorPickers();
             hideOtherMenus(name);
+            hideContextMenu();
         }
     }
 
@@ -1003,18 +1016,35 @@ export const init = () => {
                     menuItem.checked = getCall.call(placestore);
                     menuItem.addEventListener('change', function() {
                         setCall.call(placestore, menuItem.checked);
+                        if (callback !== null) {
+                            callback();
+                        }
+                        updateCSS();
                     });
                 break;
                 default:
                     menuItem.value = getCall.call(placestore);
                     menuItem.addEventListener('change', function() {
                         setCall.call(placestore, menuItem.value);
+                        if (callback !== null) {
+                            callback();
+                        }
+                        updateCSS();
                     });
             }
-            if (callback !== null) {
-                callback();
-            }
-            updateCSS();
+
         }
+    }
+
+    /**
+     * Updates the color pickers to the current values from the placestore.
+     */
+    function updateColorPickers() {
+        let colorPickers = document.querySelectorAll('[id^="learningmap-place-settings-jscolor-"]');
+        colorPickers.forEach(function(colorpicker) {
+            if (colorpicker.jscolor) {
+                colorpicker.jscolor.fromString(placestore[colorpicker.id.split('jscolor-')[1]]);
+            }
+        });
     }
 };

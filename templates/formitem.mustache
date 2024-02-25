@@ -83,9 +83,14 @@
             <div class="row m-1">
                 <div class="col">
                     <label for="learningmap-place-settings-icon">{{#str}} places, learningmap {{/str}}</label>
-                    <svg id="learningmap-place-settings-icon" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full">
-                        <circle cx="10" cy="10" r="5"/>
-                    </svg>
+                    <div id="learningmap-place-settings-icon">
+                        <svg id="learningmap-svgmap-preview" -xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full">
+                            <style id="learningmap-preview-svgstyle">
+                            </style>
+                            <circle class="learningmap-place" cx="15" cy="15" r="10"/>
+                            <circle class="learningmap-place learningmap-visited" cx="40" cy="15" r="10"/>
+                        </svg>
+                    </div>
                 </div>
                 <div class="col-sm text-center">
                     <i class="fa fa-cog" id="learningmap-advanced-settings-icon"></i>

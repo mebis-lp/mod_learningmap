@@ -65,10 +65,10 @@
                 </div>
                 <div class="col">
                     {{#iscolor}}
-                        <button data-jscolor="{valueElement:'#learningmap-place-settings-{{name}}'}"></button>
+                        <button id="learningmap-place-settings-jscolor-{{name}}" data-jscolor="{value: '#ffffffff',valueElement:'#learningmap-place-settings-{{name}}',alphaChannel:true{{#palette}},palette:'{{palette}}', hideOnPaletteClick:true{{/palette}}}"></button>
                     {{/iscolor}}
                     <input
-                        {{#iscolor}}type="hidden"{{/iscolor}}
+                        {{#iscolor}}type="text" class="learningmap-colorpicker"{{/iscolor}}
                         {{^iscolor}}type="{{type}}"{{/iscolor}} id="learningmap-place-settings-{{name}}"/>
                 </div>
             </div>
