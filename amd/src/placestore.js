@@ -202,45 +202,6 @@ let placestore = {
         }
     },
     /**
-     * Sets the color of 'stroke', 'place' or 'visited'
-     * @param {*} type type of the color
-     * @param {*} color color in hex format
-     */
-    setColor: function(type, color) {
-        switch (type) {
-            case 'stroke':
-                this.strokecolor = color;
-                break;
-            case 'place':
-                this.placecolor = color;
-                break;
-            case 'visited':
-                this.visitedcolor = color;
-                break;
-            case 'text':
-                this.textcolor = color;
-                break;
-        }
-    },
-    /**
-     * Gets the color of 'stroke', 'place' or 'visited'
-     * @param {*} type type of the color
-     * @returns {string} color in hex format
-     */
-    getColor: function(type) {
-        switch (type) {
-            case 'stroke':
-                return this.strokecolor;
-            case 'place':
-                return this.placecolor;
-            case 'visited':
-                return this.visitedcolor;
-            case 'text':
-                return this.textcolor;
-        }
-        return null;
-    },
-    /**
      * Returns the current id
      * @returns {number}
      */
@@ -491,21 +452,47 @@ let placestore = {
             this.placesize = value;
         }
     },
+    /**
+     * Sets the color of places
+     * @param {*} color
+     */
     setPlaceColor: function(color) {
         this.placecolor = color;
     },
+    /**
+     * Returns the color of places
+     * @returns {string}
+     */
     getPlaceColor: function() {
         return this.placecolor;
     },
+    /**
+     * Sets the color of visited places
+     * @param {*} color
+     */
     setVisitedColor: function(color) {
         this.visitedcolor = color;
     },
+    /**
+     * Returns the color of visited places
+     * @returns {string}
+     */
     getVisitedColor: function() {
         return this.visitedcolor;
     },
+    /**
+     * Sets the color of strokes and the text
+     * @param {*} color
+     */
     setStrokeColor: function(color) {
         this.strokecolor = color;
+        // Until there is a separate text color, set it to the same color as the stroke.
+        this.textcolor = color;
     },
+    /**
+     * Returns the color of strokes
+     * @returns {string}
+     */
     getStrokeColor: function() {
         return this.strokecolor;
     },

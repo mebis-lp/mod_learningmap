@@ -47,24 +47,24 @@
     z-index: 1;
 }
 
-#learningmap-advanced-settings {
+#learningmap-advanced-settings-menu {
     right: 0;
 }
 
-#learningmap-place-settings {
+#learningmap-place-settings-menu {
     left: 0;
 }
 
-.card.learningmap-settings {
+.card.learningmap-menu {
     position: absolute;
     z-index: 1;
 }
 
-.learningmap-settings label {
+.learningmap-menu label {
     float: left;
 }
 
-.learningmap-settings label + a {
+.learningmap-menu label + a {
     position: absolute;
     right: 0;
 }
@@ -93,6 +93,11 @@
 
 .learningmap-menubar input[type="color"] {
     width: 2rem;
+}
+
+.learningmap-menubar svg {
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .learningmap-editor-main {

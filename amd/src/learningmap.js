@@ -57,7 +57,6 @@ export const init = () => {
     let activityStarting = document.getElementById('learningmap-activity-starting');
     let activityTarget = document.getElementById('learningmap-activity-target');
     let activityHiddenWarning = document.getElementById('learningmap-activity-hidden-warning');
-    let advancedSettingsIcon = document.getElementById('learningmap-advanced-settings-icon');
 
     // Hide tree view as there is no preview file we can attach to
     let treeView = document.querySelector('.fp-viewbar .fp-vb-tree');
@@ -127,38 +126,25 @@ export const init = () => {
     // Mark all activities in the placestore as "used".
     updateActivities();
 
-    // Attach listeners to the advanced settings div
-    if (advancedSettingsIcon) {
-        let advancedSettings = document.getElementById('learningmap-advanced-settings');
-        advancedSettingsIcon.addEventListener('click', function() {
-            if (advancedSettings.getAttribute('hidden') === null) {
-                hideAdvancedSettings();
-            } else {
-                advancedSettings.removeAttribute('hidden');
-                hideContextMenu();
-            }
-        });
-        let advancedSettingsClose = document.getElementById('learningmap-advanced-settings-close');
-        if (advancedSettingsClose) {
-            advancedSettingsClose.addEventListener('click', function() {
-                advancedSettings.setAttribute('hidden', '');
-            });
-        }
+    // Inititalize the menus.
+    initMenu('advanced-settings', [
+        {name: 'hidepaths', get: placestore.getHidePaths, set: placestore.setHidePaths},
+        {name: 'showall', get: placestore.getShowall, set: placestore.setShowall},
+        {name: 'slicemode', get: placestore.getSliceMode, set: placestore.setSliceMode},
+        {name: 'showwaygone', get: placestore.getShowWayGone, set: placestore.setShowWayGone},
+    ]);
 
-        advancedSettingsLogic('advanced', 'hidepaths', placestore.getHidePaths, placestore.setHidePaths);
-        advancedSettingsLogic('place', 'usecheckmark', placestore.getUseCheckmark, placestore.setUseCheckmark);
-        advancedSettingsLogic('place', 'hover', placestore.getHover, placestore.setHover);
-        advancedSettingsLogic('place', 'pulse', placestore.getPulse, placestore.setPulse);
-        advancedSettingsLogic('advanced', 'showall', placestore.getShowall, placestore.setShowall);
-        advancedSettingsLogic('place', 'hidestroke', placestore.getHideStroke, placestore.setHideStroke);
-        advancedSettingsLogic('place', 'showtext', placestore.getShowText, placestore.setShowText, fixPlaceLabels);
-        advancedSettingsLogic('advanced', 'slicemode', placestore.getSliceMode, placestore.setSliceMode);
-        advancedSettingsLogic('advanced', 'showwaygone', placestore.getShowWayGone, placestore.setShowWayGone);
-        advancedSettingsLogic('place', 'placesize', placestore.getPlaceSize, placestore.setPlaceSize, updatePlaceSize);
-        advancedSettingsLogic('place', 'placecolor', placestore.getPlaceColor, placestore.setPlaceColor);
-        advancedSettingsLogic('place', 'visitedcolor', placestore.getVisitedColor, placestore.setVisitedColor);
-        advancedSettingsLogic('place', 'strokecolor', placestore.getStrokeColor, placestore.setStrokeColor, null, 'text');
-    }
+    initMenu('place-settings', [
+        {name: 'usecheckmark', get: placestore.getUseCheckmark, set: placestore.setUseCheckmark},
+        {name: 'hover', get: placestore.getHover, set: placestore.setHover},
+        {name: 'pulse', get: placestore.getPulse, set: placestore.setPulse},
+        {name: 'hidestroke', get: placestore.getHideStroke, set: placestore.setHideStroke},
+        {name: 'showtext', get: placestore.getShowText, set: placestore.setShowText, callback: fixPlaceLabels},
+        {name: 'placesize', get: placestore.getPlaceSize, set: placestore.setPlaceSize, callback: updatePlaceSize},
+        {name: 'placecolor', get: placestore.getPlaceColor, set: placestore.setPlaceColor},
+        {name: 'visitedcolor', get: placestore.getVisitedColor, set: placestore.setVisitedColor},
+        {name: 'strokecolor', get: placestore.getStrokeColor, set: placestore.setStrokeColor},
+    ]);
 
     // Get SVG code from the (hidden) textarea field
     if (code && mapdiv) {
@@ -192,7 +178,7 @@ export const init = () => {
      */
     function showContextMenu(e) {
         unselectAll();
-        hideAdvancedSettings();
+        hideOtherMenus();
         // Check for the existence of the target (could have vanished since the event started).
         if (activitySetting && document.getElementById(e.target.id) !== null) {
             if (e.touches) {
@@ -214,7 +200,7 @@ export const init = () => {
                 updateActivities();
             } else {
                 hideContextMenu();
-                hideAdvancedSettings();
+                hideOtherMenus();
             }
         }
     }
@@ -560,7 +546,7 @@ export const init = () => {
      */
     function dblclickHandler(event) {
         hideContextMenu();
-        hideAdvancedSettings();
+        hideOtherMenus();
         unselectAll();
         if (event.target.classList.contains('learningmap-mapcontainer') ||
             event.target.classList.contains('learningmap-background-image')) {
@@ -703,7 +689,7 @@ export const init = () => {
     function clickHandler(event) {
         event.preventDefault();
         hideContextMenu();
-        hideAdvancedSettings();
+        hideOtherMenus();
         if (event.target.classList.contains('learningmap-place') && selectedElement === null) {
             if (firstPlace === null) {
                 firstPlace = event.target.id;
@@ -857,6 +843,7 @@ export const init = () => {
      * Calls updateCode() when completed.
      */
     function updateCSS() {
+        console.log('updateCSS');
         Templates.renderForPromise('mod_learningmap/cssskeleton', placestore.getPlacestore())
             .then(({html, js}) => {
                 Templates.replaceNode('#learningmap-svgstyle', html, js);
@@ -886,48 +873,6 @@ export const init = () => {
                 n.classList.remove('learningmap-used-activity');
             }
         });
-    }
-
-    /**
-     * Adds the event listener to advanced settings menu items
-     * @param {*} type Type of the item (describes the menu where it is located, e.g. advanced, place, ...)
-     * @param {*} name Name of the item
-     * @param {*} getCall Method of placestore to call to read value
-     * @param {*} setCall Method of placestore to call to save value
-     * @param {*} callback Additional callback after value is saved
-     * @param {*} secondValue Name of a second placestore value that has to be changed along. At this moment only supported for color types.
-     */
-    function advancedSettingsLogic(type, name, getCall, setCall, callback = null, secondValue = '') {
-        let settingItem = document.getElementById('learningmap-' + type + '-setting-' + name);
-        if (settingItem) {
-            switch (settingItem.attributes.type.nodeValue) {
-                case 'checkbox':
-                    settingItem.checked = getCall.call(placestore);
-                    settingItem.addEventListener('change', function() {
-                        setCall.call(placestore, settingItem.checked);
-                    });
-                break;
-                case 'color':
-                    settingItem.value = getCall.call(placestore);
-                    settingItem.addEventListener('change', function() {
-                        placestore.setColor(name, settingItem.value);
-                        if (secondValue != '') {
-                            placestore.setColor(secondValue, settingItem.value);
-                        }
-                    });
-                break;
-                default:
-                    settingItem.value = getCall.call(placestore);
-                    settingItem.addEventListener('change', function() {
-                        setCall.call(placestore, settingItem.value);
-                        
-                    });
-            }
-            if (callback !== null) {
-                callback();
-            }
-            updateCSS();
-        }
     }
 
     /**
@@ -967,10 +912,109 @@ export const init = () => {
     }
 
     /**
-     * Hides the advanced settings menu.
+     * Initializes a menu with the given features.
+     * @param {*} name Name of the menu
+     * @param {*} features Array with features to add to the menu
      */
-    function hideAdvancedSettings() {
-        let advancedSettings = document.getElementById('learningmap-advanced-settings');
-        advancedSettings.setAttribute('hidden', '');
+    function initMenu(name, features) {
+        let icon = document.getElementById('learningmap-' + name + '-icon');
+        if (icon) {
+            icon.addEventListener('click', function() {
+                if (menuIsHidden(name)) {
+                    showMenu(name);
+                } else {
+                    hideMenu(name);
+                }
+            });
+            let close = document.getElementById('learningmap-' + name + '-close');
+            if (close) {
+                close.addEventListener('click', function() {
+                    hideMenu(name);
+                });
+            }
+        }
+        features.forEach(function(feature) {
+            menuItemLogic(name, feature.name, feature.get, feature.set, feature.callback, feature.second);
+        });
+    }
+
+    /**
+     * Returns whether the menu is hidden or not.
+     * @param {*} name Name of the menu
+     * @returns {boolean}
+     */
+    function menuIsHidden(name) {
+        let menu = document.getElementById('learningmap-' + name + '-menu');
+        if (menu) {
+            return menu.getAttribute('hidden') !== null;
+        }
+        return false;
+    }
+
+    /**
+     * Hides the menu with the given name.
+     * @param {*} name Name of the menu
+     */
+    function hideMenu(name) {
+        let menu = document.getElementById('learningmap-' + name + '-menu');
+        if (menu) {
+            menu.setAttribute('hidden', '');
+        }
+    }
+
+    /**
+     * Hides all menus except the one with the given name.
+     * @param {*} name Name of the menu not to hide
+     */
+    function hideOtherMenus(name = '') {
+        let otherMenus = document.querySelectorAll('.learningmap-menu');
+        otherMenus.forEach(function(menu) {
+            if (menu.id != 'learningmap-' + name + '-menu') {
+                hideMenu(menu.id.split('-')[1]);
+            }
+        });
+    }
+
+    /**
+     * Shows the menu with the given name.
+     * @param {*} name Name of the menu
+     */
+    function showMenu(name) {
+        let menu = document.getElementById('learningmap-' + name + '-menu');
+        if (menu) {
+            menu.removeAttribute('hidden');
+            hideOtherMenus(name);
+        }
+    }
+
+    /**
+     * Adds the event listener to menu items
+     * @param {*} type Type of the item (describes the menu where it is located, e.g. advanced-settings, place-settings, ...)
+     * @param {*} name Name of the item
+     * @param {*} getCall Method of placestore to call to read value
+     * @param {*} setCall Method of placestore to call to save value
+     * @param {*} callback Additional callback after value is saved
+     */
+    function menuItemLogic(type, name, getCall, setCall, callback = null) {
+        let menuItem = document.getElementById('learningmap-' + type + '-' + name);
+        if (menuItem) {
+            switch (menuItem.attributes.type.nodeValue) {
+                case 'checkbox':
+                    menuItem.checked = getCall.call(placestore);
+                    menuItem.addEventListener('change', function() {
+                        setCall.call(placestore, menuItem.checked);
+                    });
+                break;
+                default:
+                    menuItem.value = getCall.call(placestore);
+                    menuItem.addEventListener('change', function() {
+                        setCall.call(placestore, menuItem.value);
+                    });
+            }
+            if (callback !== null) {
+                callback();
+            }
+            updateCSS();
+        }
     }
 };

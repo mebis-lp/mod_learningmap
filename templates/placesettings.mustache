@@ -49,7 +49,7 @@
         ]
     }
 }}
-<div id="learningmap-place-settings" class="card border border-dark learningmap-settings" hidden>
+<div id="learningmap-place-settings-menu" class="card border border-dark learningmap-menu" hidden>
     <div class="card-body">
         <div class="card-title alert alert-dark">{{#str}} placesettings, learningmap {{/str}}
             <button type="button" class="ml-2 mb-1 close" aria-label="Close" id="learningmap-place-settings-close">
@@ -60,16 +60,16 @@
             {{#placefeatures}}
             <div class="row border-top border-bottom border-light">
                 <div class="col-10">
-                    <label for="learningmap-place-setting-{{name}}">{{title}}</label>
+                    <label for="learningmap-place-settings-{{name}}">{{title}}</label>
                     {{>core/help_icon}}
                 </div>
                 <div class="col">
                     {{#iscolor}}
-                        <button data-jscolor="{valueElement:'#learningmap-place-setting-{{name}}'}"></button>
+                        <button data-jscolor="{valueElement:'#learningmap-place-settings-{{name}}'}"></button>
                     {{/iscolor}}
-                    <input 
+                    <input
                         {{#iscolor}}type="hidden"{{/iscolor}}
-                        {{^iscolor}}type="{{type}}"{{/iscolor}} id="learningmap-place-setting-{{name}}"/>
+                        {{^iscolor}}type="{{type}}"{{/iscolor}} id="learningmap-place-settings-{{name}}"/>
                 </div>
             </div>
             {{/placefeatures}}
