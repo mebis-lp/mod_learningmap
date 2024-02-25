@@ -2,8 +2,6 @@ import {exception as displayException} from 'core/notification';
 import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 
-const circleRadius = 10;
-
 // Constants for updatePathDeclaration.
 const targetPoints = {
     firstPoint: 1,
@@ -19,6 +17,9 @@ const pathTypes = {
 export const init = () => {
     // Load the needed template on startup for better execution speed.
     Templates.prefetchTemplates(['mod_learningmap/cssskeleton']);
+
+    // Size for the new circles. This will be overriden by placesize from the placestore.
+    var circleRadius = 10;
 
     // Variable for storing the mouse offset
     var offset;
@@ -144,21 +145,20 @@ export const init = () => {
             });
         }
 
-        advancedSettingsLogic('hidepaths', placestore.getHidePaths, placestore.setHidePaths);
-        advancedSettingsLogic('usecheckmark', placestore.getUseCheckmark, placestore.setUseCheckmark);
-        advancedSettingsLogic('hover', placestore.getHover, placestore.setHover);
-        advancedSettingsLogic('pulse', placestore.getPulse, placestore.setPulse);
-        advancedSettingsLogic('showall', placestore.getShowall, placestore.setShowall);
-        advancedSettingsLogic('hidestroke', placestore.getHideStroke, placestore.setHideStroke);
-        advancedSettingsLogic('showtext', placestore.getShowText, placestore.setShowText, fixPlaceLabels);
-        advancedSettingsLogic('slicemode', placestore.getSliceMode, placestore.setSliceMode);
-        advancedSettingsLogic('showwaygone', placestore.getShowWayGone, placestore.setShowWayGone);
+        advancedSettingsLogic('advanced', 'hidepaths', placestore.getHidePaths, placestore.setHidePaths);
+        advancedSettingsLogic('place', 'usecheckmark', placestore.getUseCheckmark, placestore.setUseCheckmark);
+        advancedSettingsLogic('place', 'hover', placestore.getHover, placestore.setHover);
+        advancedSettingsLogic('place', 'pulse', placestore.getPulse, placestore.setPulse);
+        advancedSettingsLogic('advanced', 'showall', placestore.getShowall, placestore.setShowall);
+        advancedSettingsLogic('place', 'hidestroke', placestore.getHideStroke, placestore.setHideStroke);
+        advancedSettingsLogic('place', 'showtext', placestore.getShowText, placestore.setShowText, fixPlaceLabels);
+        advancedSettingsLogic('advanced', 'slicemode', placestore.getSliceMode, placestore.setSliceMode);
+        advancedSettingsLogic('advanced', 'showwaygone', placestore.getShowWayGone, placestore.setShowWayGone);
+        advancedSettingsLogic('place', 'placesize', placestore.getPlaceSize, placestore.setPlaceSize, updatePlaceSize);
+        advancedSettingsLogic('place', 'placecolor', placestore.getPlaceColor, placestore.setPlaceColor);
+        advancedSettingsLogic('place', 'visitedcolor', placestore.getVisitedColor, placestore.setVisitedColor);
+        advancedSettingsLogic('place', 'strokecolor', placestore.getStrokeColor, placestore.setStrokeColor, null, 'text');
     }
-
-    // Attach listener to the color choosers
-    colorChooserLogic('stroke', 'text');
-    colorChooserLogic('place');
-    colorChooserLogic('visited');
 
     // Get SVG code from the (hidden) textarea field
     if (code && mapdiv) {
@@ -889,42 +889,44 @@ export const init = () => {
     }
 
     /**
-     * Adds the event listener to the color chooser buttons.
-     * @param {*} name name of the color
-     * @param {*} secondValue name of a second placestore value that has to be changed along
-     */
-    function colorChooserLogic(name, secondValue = '') {
-        let colorChooser = document.getElementById('learningmap-color-' + name);
-        if (colorChooser) {
-            colorChooser.addEventListener('change', function() {
-                placestore.setColor(name, colorChooser.value);
-                if (secondValue != '') {
-                    placestore.setColor(secondValue, colorChooser.value);
-                }
-                updateCSS();
-            });
-            colorChooser.value = placestore.getColor(name);
-        }
-    }
-
-    /**
      * Adds the event listener to advanced settings menu items
+     * @param {*} type Type of the item (describes the menu where it is located, e.g. advanced, place, ...)
      * @param {*} name Name of the item
      * @param {*} getCall Method of placestore to call to read value
      * @param {*} setCall Method of placestore to call to save value
      * @param {*} callback Additional callback after value is saved
+     * @param {*} secondValue Name of a second placestore value that has to be changed along. At this moment only supported for color types.
      */
-    function advancedSettingsLogic(name, getCall, setCall, callback = null) {
-        let settingItem = document.getElementById('learningmap-advanced-setting-' + name);
+    function advancedSettingsLogic(type, name, getCall, setCall, callback = null, secondValue = '') {
+        let settingItem = document.getElementById('learningmap-' + type + '-setting-' + name);
         if (settingItem) {
-            settingItem.checked = getCall.call(placestore);
-            settingItem.addEventListener('change', function() {
-                setCall.call(placestore, settingItem.checked);
-                if (callback !== null) {
-                    callback();
-                }
-                updateCSS();
-            });
+            switch (settingItem.attributes.type.nodeValue) {
+                case 'checkbox':
+                    settingItem.checked = getCall.call(placestore);
+                    settingItem.addEventListener('change', function() {
+                        setCall.call(placestore, settingItem.checked);
+                    });
+                break;
+                case 'color':
+                    settingItem.value = getCall.call(placestore);
+                    settingItem.addEventListener('change', function() {
+                        placestore.setColor(name, settingItem.value);
+                        if (secondValue != '') {
+                            placestore.setColor(secondValue, settingItem.value);
+                        }
+                    });
+                break;
+                default:
+                    settingItem.value = getCall.call(placestore);
+                    settingItem.addEventListener('change', function() {
+                        setCall.call(placestore, settingItem.value);
+                        
+                    });
+            }
+            if (callback !== null) {
+                callback();
+            }
+            updateCSS();
         }
     }
 
@@ -946,6 +948,20 @@ export const init = () => {
                 let placeNode = document.getElementById(place.id);
                 let textNode = text('text' + place.id, content, placeNode.cx.baseVal.value, placeNode.cy.baseVal.value);
                 placeNode.parentNode.appendChild(textNode);
+            }
+        }
+    }
+
+    /**
+     * Updates the size of the places.
+     */
+    function updatePlaceSize() {
+        circleRadius = placestore.getPlaceSize();
+        let places = placestore.getPlaces();
+        for (const place of places) {
+            let placeNode = document.getElementById(place.id);
+            if (placeNode) {
+                placeNode.setAttribute('r', circleRadius);
             }
         }
     }

@@ -48,16 +48,23 @@
 }
 
 #learningmap-advanced-settings {
-    position: absolute;
-    z-index: 1;
     right: 0;
 }
 
-#learningmap-advanced-settings label {
+#learningmap-place-settings {
+    left: 0;
+}
+
+.card.learningmap-settings {
+    position: absolute;
+    z-index: 1;
+}
+
+.learningmap-settings label {
     float: left;
 }
 
-#learningmap-advanced-settings label + a {
+.learningmap-settings label + a {
     position: absolute;
     right: 0;
 }
