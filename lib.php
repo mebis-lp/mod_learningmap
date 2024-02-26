@@ -32,7 +32,6 @@ use mod_learningmap\cachemanager;
 define('LEARNINGMAP_FEATURES', [
     'hidepaths' => 'checkbox',
     'showall' => 'checkbox',
-    'showtext' => 'checkbox',
     'slicemode' => 'checkbox',
     'showwaygone' => 'checkbox',
 ]);
@@ -46,6 +45,7 @@ define('LEARNINGMAP_PLACE_FEATURES', [
     'visitedcolor' => 'color',
     'strokecolor' => 'color',
     'placesize' => 'range',
+    'showtext' => 'checkbox',
     'hidestroke' => 'checkbox',
     'usecheckmark' => 'checkbox',
     'pulse' => 'checkbox',

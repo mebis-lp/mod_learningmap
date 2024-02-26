@@ -1014,7 +1014,7 @@ export const init = () => {
             switch (menuItem.attributes.type.nodeValue) {
                 case 'checkbox':
                     menuItem.checked = getCall.call(placestore);
-                    menuItem.addEventListener('change', function() {
+                    menuItem.addEventListener('input', function() {
                         setCall.call(placestore, menuItem.checked);
                         if (callback !== null) {
                             callback();
@@ -1024,7 +1024,7 @@ export const init = () => {
                 break;
                 default:
                     menuItem.value = getCall.call(placestore);
-                    menuItem.addEventListener('change', function() {
+                    menuItem.addEventListener('input', function() {
                         setCall.call(placestore, menuItem.value);
                         if (callback !== null) {
                             callback();
