@@ -116,6 +116,19 @@ class svgmap {
     }
 
     /**
+     * Helper function for upgrade.
+     *
+     * @return void
+     */
+    public function fix_svg(): void {
+        $placesgroup = $this->dom->getElementById('pathsGroup');
+        if ($placesgroup) {
+            $placesgroup->setAttribute('mask', 'url(#placemask)');
+        }
+        $this->save_svg_data();
+    }
+
+    /**
      * Removes tags before the SVG tag to avoid parsing problems
      *
      * @return void

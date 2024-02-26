@@ -16,8 +16,6 @@
 
 namespace mod_learningmap;
 
-use DOMElement;
-
 /**
  * Class for handling the content of the learningmap
  *
@@ -113,6 +111,15 @@ class mapworker {
      */
     public function replace_defs(): void {
         $this->svgmap->replace_defs();
+    }
+
+    /**
+     * Helper function for upgrade.
+     *
+     * @return void
+     */
+    public function fix_svg(): void {
+        $this->svgmap->fix_svg();
     }
 
     /**
