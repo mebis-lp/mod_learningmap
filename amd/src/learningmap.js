@@ -48,7 +48,7 @@ export const init = () => {
 
     // DOM nodes for the editor
     let mapdiv = document.getElementById('learningmap-editor-map');
-    let code = document.getElementById('id_introeditor_text');
+    let code = document.getElementById('id_svgcode');
 
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
@@ -230,7 +230,7 @@ export const init = () => {
         activitySetting.style.display = 'none';
     }
 
-    let backgroundfileNode = document.getElementById('id_introeditor_itemid_fieldset');
+    let backgroundfileNode = document.getElementById('id_backgroundfile_fieldset');
     if (backgroundfileNode) {
         let observer = new MutationObserver(refreshBackgroundImage);
         observer.observe(backgroundfileNode, {attributes: true, childList: true, subtree: true});

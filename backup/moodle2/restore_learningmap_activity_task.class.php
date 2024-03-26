@@ -53,7 +53,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
      */
     public static function define_decode_contents(): array {
         $contents = [];
-        $contents[] = new restore_decode_content('learningmap', ['intro'], 'learningmap');
+        $contents[] = new restore_decode_content('learningmap', ['intro', 'svgcode'], 'learningmap');
         return $contents;
     }
 
@@ -78,6 +78,7 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $modinfo = get_fast_modinfo($courseid);
 
         $item = $DB->get_record('learningmap', ['id' => $this->get_activityid()], '*', MUST_EXIST);
+        $cm = get_coursemodule_from_instance('learningmap', $item->id, $courseid);
 
         $placestore = json_decode($item->placestore);
 
@@ -99,25 +100,29 @@ class restore_learningmap_activity_task extends restore_activity_task {
         }
         $oldmapid = $placestore->mapid;
         $newmapid = uniqid();
-        $item->intro = str_replace('learningmap-svgmap-' . $oldmapid, 'learningmap-svgmap-' . $newmapid, $item->intro);
         $placestore->mapid = $newmapid;
 
-        if (!isset($placestore->version) || $placestore->version < 2024022102) {
-            $placestore->version = 2024022102;
+        if (!isset($placestore->version) || $placestore->version < 2024032402) {
+            $placestore->version = 2024032402;
             // Needs 1 as default value (otherwise all place strokes would be hidden).
             if (!isset($placestore->strokeopacity)) {
                 $placestore->strokeopacity = 1;
             }
-            $mapworker = new \mod_learningmap\mapworker($item->intro, (array)$placestore);
+            if (empty($item->svgcode)) {
+                $mapcode = $item->intro;
+                $item->intro = '';
+                $item->showmaponcoursepage = $cm->showdescription;
+            } else {
+                $mapcode = $item->svgcode;
+            }
+            $mapworker = new \mod_learningmap\mapworker($mapcode, (array)$placestore);
             $mapworker->replace_stylesheet();
             $mapworker->replace_defs();
-            $item->intro = $mapworker->get_svgcode();
+            $item->svgcode = $mapworker->get_svgcode();
         }
-
-        $json = json_encode($placestore);
-
-        $DB->set_field('learningmap', 'placestore', $json, ['id' => $this->get_activityid()]);
-        $DB->set_field('learningmap', 'intro', $item->intro, ['id' => $this->get_activityid()]);
-        $DB->set_field('learningmap', 'course', $courseid, ['id' => $this->get_activityid()]);
+        $item->svgcode = str_replace('learningmap-svgmap-' . $oldmapid, 'learningmap-svgmap-' . $newmapid, $item->svgcode);
+        $item->placestore = json_encode($placestore);
+        $item->course = $courseid;
+        $DB->update_record('learningmap', $item);
     }
 }

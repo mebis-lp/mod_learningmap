@@ -123,7 +123,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->setUser($this->user1);
         $placestore = json_decode($this->learningmap->placestore, true);
         $placestore['slicemode'] = true;
-        $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
+        $mapworker = new mapworker($this->learningmap->svgcode, $placestore, $this->cm, false);
         $mapworker->process_map_objects();
         // The values the overlay path description is expected to have.
         $expectedvalues = [
@@ -143,7 +143,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         for ($i = 0; $i < 8; $i++) {
             $activitycoursemodule = $this->modinfo->get_cm($this->activities[$i]->cmid);
             $this->completion->set_module_viewed($activitycoursemodule, $this->user1->id);
-            $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
+            $mapworker = new mapworker($this->learningmap->svgcode, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
             $overlay = $mapworker->get_attribute('learningmap-overlay', 'd');
             $this->assertEquals($expectedvalues[$i], $overlay);
@@ -160,7 +160,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->setAdminUser();
         $this->setUser($this->user1);
         $placestore = json_decode($this->learningmap->placestore, true);
-        $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
+        $mapworker = new mapworker($this->learningmap->svgcode, $placestore, $this->cm, false);
         $mapworker->process_map_objects();
         // Place p0 is a starting place, so it should be visible by default.
         $this->assertEquals(['p0'], $mapworker->get_active());
@@ -181,7 +181,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         for ($i = 0; $i < count($placestore['places']); $i++) {
             $acm = $this->modinfo->get_cm($placestore['places'][$i]['linkedActivity']);
             $this->completion->set_module_viewed($acm, $this->user1->id);
-            $mapworker = new mapworker($this->learningmap->intro, $placestore, $this->cm, false);
+            $mapworker = new mapworker($this->learningmap->svgcode, $placestore, $this->cm, false);
             $mapworker->process_map_objects();
             // Calling array_unique removes duplicate entries (e.g. for starting places).
             $active = array_unique($mapworker->get_active());
