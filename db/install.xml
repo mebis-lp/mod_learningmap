@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/learningmap/db" VERSION="20230619" COMMENT="XMLDB file for Moodle mod/learningmap"
+<XMLDB PATH="mod/learningmap/db" VERSION="20240324" COMMENT="XMLDB file for Moodle mod/learningmap"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -15,6 +15,8 @@
         <FIELD NAME="placestore" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
         <FIELD NAME="completiontype" TYPE="int" LENGTH="5" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="0 = no completion 1 = reaching one target place is necessary for completion 2 = reaching all target places is necessary for completion 3 = reaching all places is necessary for completion"/>
         <FIELD NAME="backlink" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false"/>
+        <FIELD NAME="svgcode" TYPE="text" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="showmaponcoursepage" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
