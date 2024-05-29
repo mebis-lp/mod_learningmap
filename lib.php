@@ -329,6 +329,9 @@ function learningmap_reset_userdata($data) {
 /**
  * Generate "back to map" buttons in activities linked to from the learning map.
  *
+ * Needs to be completely removed as soon as we do not support moodle 4.3 and below anymore. The logic has been moved to
+ * {@see \mod_learningmap\local\hook_callbacks::inject_backlinks_into_activity_header} from moodle 4.4 on.
+ *
  * @return void
  */
 function learningmap_before_http_headers() {

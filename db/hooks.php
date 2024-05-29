@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - https://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -12,21 +12,21 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for mod_learningmap
+ * Hook callbacks for mod_learningmap.
  *
  * @package     mod_learningmap
- * @copyright 2021-2024, ISB Bayern
- * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
+ * @copyright   2024, ISB Bayern
+ * @author      Philipp Memmel
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_learningmap';
-$plugin->release = '0.9.7';
-$plugin->version = 2024041500;
-$plugin->requires = 2020061500;
-$plugin->supported = [401, 404];
-$plugin->maturity = MATURITY_STABLE;
+$callbacks = [
+        [
+                'hook' => core\hook\output\before_http_headers::class,
+                'callback' => \mod_learningmap\local\hook_callbacks::class . '::inject_backlinks_into_activity_header',
+        ],
+];
