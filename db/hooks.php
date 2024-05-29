@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 $callbacks = [
         [
                 'hook' => core\hook\output\before_http_headers::class,
-                'callback' => \mod_learningmap\hook_callbacks::class . '::inject_backlinks_into_activity_header',
+                'callback' => \mod_learningmap\local\hook_callbacks::class . '::inject_backlinks_into_activity_header',
         ],
 ];

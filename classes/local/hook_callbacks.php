@@ -23,11 +23,12 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace mod_learningmap;
+namespace mod_learningmap\local;
 
 use cache;
 use core\hook\output\before_http_headers;
 use Exception;
+use mod_learningmap\cachemanager;
 
 /**
  * Hook callbacks for mod_learningmap.
