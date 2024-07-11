@@ -377,8 +377,8 @@ function learningmap_before_http_headers() {
         }
 
         if ($backlinktext) {
-            $description = format_module_intro($PAGE->activityname, $PAGE->activityrecord, $PAGE->cm->id);
-            $PAGE->activityheader->set_description($description . $backlinktext);
+            $activityheader = $PAGE->activityheader->export_for_template($OUTPUT);
+            $PAGE->activityheader->set_description($activityheader['description'] . $backlinktext);
         }
     } catch (Exception $e) {
         debugging($e->getMessage());

@@ -49,7 +49,7 @@ class hook_callbacks {
      * @param before_http_headers $beforehttpheadershook the hook object
      */
     public static function inject_backlinks_into_activity_header(before_http_headers $beforehttpheadershook): void {
-        global $PAGE;
+        global $OUTPUT, $PAGE;
 
         if (get_config('mod_learningmap', 'backlinkallowed') == 0) {
             return;
@@ -91,8 +91,8 @@ class hook_callbacks {
             }
 
             if ($backlinktext) {
-                $description = format_module_intro($PAGE->activityname, $PAGE->activityrecord, $PAGE->cm->id);
-                $PAGE->activityheader->set_description($description . $backlinktext);
+                $activityheader = $PAGE->activityheader->export_for_template($OUTPUT);
+                $PAGE->activityheader->set_description($activityheader['description'] . $backlinktext);
             }
         } catch (Exception $e) {
             debugging($e->getMessage());
