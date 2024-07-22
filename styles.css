@@ -94,6 +94,10 @@
     position: relative;
 }
 
+#page-mod-learningmap-mod #fitem_id_svgcode {
+    display: none;
+}
+
 .learningmap-used-activity {
     color: green;
 }

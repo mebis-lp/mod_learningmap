@@ -18,7 +18,7 @@
  * mod_learningmap data generator
  *
  * @package     mod_learningmap
- * @copyright 2021-2024, ISB Bayern
+ * @copyright   2021-2024, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,8 +36,10 @@ class mod_learningmap_generator extends testing_module_generator {
 
         $record = (array)$record + [
             'name' => 'test map',
-            'intro' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.svg'),
-            'introformat' => 1,
+            'intro' => 'test intro',
+            'introformat' => 0,
+            'svgcode' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.svg'),
+            'showmaponcoursepage' => 1,
             'placestore' => file_get_contents($CFG->dirroot . '/mod/learningmap/tests/generator/test.json'),
             'completiontype' => 2,
         ];

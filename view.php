@@ -27,7 +27,7 @@ require('../../config.php');
 require_once('lib.php');
 
 $id = required_param('id', PARAM_INT);
- [$course, $cm] = get_course_and_cm_from_cmid($id, 'learningmap');
+[$course, $cm] = get_course_and_cm_from_cmid($id, 'learningmap');
 
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
@@ -38,9 +38,7 @@ $map = $DB->get_record('learningmap', ['id' => $cm->instance], '*', MUST_EXIST);
 $PAGE->set_url(new moodle_url('/mod/learningmap/view.php', ['id' => $id]));
 $PAGE->set_title(get_string('pluginname', 'mod_learningmap') . ' ' . $map->name);
 $PAGE->set_heading($map->name);
-if ($CFG->branch >= 400) {
-    $PAGE->activityheader->set_description('');
-}
+
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
