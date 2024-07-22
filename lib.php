@@ -23,6 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use core\plugininfo\format;
 use mod_learningmap\cachemanager;
 
 /**
@@ -143,7 +144,7 @@ function learningmap_pluginfile($course, $cm, $context, $filearea, $args, $force
     $fullpath = "/$context->id/mod_learningmap/$filearea/" . implode('/', $args);
 
     $fs = get_file_storage();
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) || $file->is_directory()) {
+    if ((!$file = $fs->get_file_by_hash(sha1($fullpath))) || $file->is_directory()) {
         return false;
     }
 
@@ -186,24 +187,35 @@ function learningmap_get_coursemodule_info($cm): cached_cm_info {
  * @return void
  */
 function learningmap_cm_info_dynamic(cm_info $cm): void {
+    global $DB;
+    $showmaponcoursepage = $DB->get_field('learningmap', 'showmaponcoursepage', ['id' => $cm->instance]);
     // Decides whether to display the link.
-    if ($cm->showdescription == 1) {
+    if (!empty($showmaponcoursepage)) {
         $cm->set_no_view_link(true);
     }
 }
 
 /**
  * Generates course module info, especially the map (as intro).
- * If showdescription is not set, this function does nothing.
+ * If showdescription is set, this function outputs the intro and the map.
  *
  * @param cm_info $cm
  * @return void
  */
 function learningmap_cm_info_view(cm_info $cm): void {
-    global $CFG, $OUTPUT, $PAGE;
-    // Only show map on course page if showdescription is set.
-    if ($cm->showdescription == 1) {
-        $groupdropdown = '';
+    global $DB, $OUTPUT;
+
+    $learningmap = $DB->get_record('learningmap', ['id' => $cm->instance]);
+    $intro = '';
+    $groupdropdown = '';
+    $mapcontainer = '';
+
+    if (!empty($cm->showdescription) && !empty($learningmap->intro)) {
+        $intro = format_module_intro('learningmap', $learningmap, $cm->id);
+    }
+
+    // Only show map on course page if showmaponcoursepage is set.
+    if (!empty($learningmap->showmaponcoursepage)) {
         if (!empty($cm->groupmode)) {
             $groupdropdown = groups_print_activity_menu(
                 $cm,
@@ -223,30 +235,15 @@ function learningmap_cm_info_view(cm_info $cm): void {
             );
         }
 
-        $enableliveupdatercomponent = true;
-        if ($CFG->branch < 400) {
-            // Only in moodle <4.0 we call this separate manual completion watcher.
-            // From moodle 4.0 on this is handled by the mustache loader.
-            $PAGE->requires->js_call_amd(
-                'mod_learningmap/manual-completion-watch',
-                'init',
-                ['coursemodules' => learningmap_get_place_cm($cm)]
-            );
-            // Disable the live updater (a reactive component which only works with moodle >=4.0).
-            $enableliveupdatercomponent = false;
-        }
-        $content = $OUTPUT->render_from_template(
+        $mapcontainer = $OUTPUT->render_from_template(
             'mod_learningmap/rendercontainer',
-            ['cmId' => $cm->id, 'enableLiveUpdater' => $enableliveupdatercomponent]
+            ['cmId' => $cm->id, 'enableLiveUpdater' => true]
         );
 
-        $cm->set_content($groupdropdown . $content, true);
-        $cm->set_extra_classes('label'); // ToDo: Add extra CSS.
-        // This method check is needed to provide backwards compatibility to moodle versions below 4.0.
-        if (method_exists($cm, 'set_custom_cmlist_item')) {
-            $cm->set_custom_cmlist_item(true);
-        }
+        $cm->set_custom_cmlist_item(true);
     }
+
+    $cm->set_content($groupdropdown . $intro . $mapcontainer, true);
 }
 
 /**
@@ -274,19 +271,27 @@ function learningmap_get_place_cm(cm_info $cm): array {
  * @return string
  */
 function learningmap_get_learningmap(cm_info $cm): string {
-    global $DB, $OUTPUT, $PAGE;
+    global $DB, $OUTPUT;
 
     $context = context_module::instance($cm->id);
 
     $map = $DB->get_record("learningmap", ["id" => $cm->instance]);
 
+    if (empty($map->svgcode)) {
+        $mapcode = $map->intro;
+        $filearea = 'intro';
+    } else {
+        $mapcode = $map->svgcode;
+        $filearea = 'background';
+    }
+
     $svg = file_rewrite_pluginfile_URLS(
-        $map->intro,
+        $mapcode,
         'pluginfile.php',
         $context->id,
         'mod_learningmap',
-        'intro',
-        null
+        $filearea,
+        0
     );
 
     $placestore = json_decode($map->placestore, true);

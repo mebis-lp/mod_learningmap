@@ -37,7 +37,7 @@ function xmldb_learningmap_upgrade($oldversion) {
         if ($entries) {
             foreach ($entries as $entry) {
                 $placestore = json_decode($entry->placestore, true);
-                $placestore['version'] = 2024022102;
+                $placestore['version'] = 2024032401;
                 // Needs 1 as default value (otherwise all place strokes would be hidden).
                 if (!isset($placestore['strokeopacity'])) {
                     $placestore['strokeopacity'] = 1;
@@ -65,6 +65,36 @@ function xmldb_learningmap_upgrade($oldversion) {
         }
 
         upgrade_mod_savepoint(true, 2024022102, 'learningmap');
+    }
+
+    if ($oldversion < 2024072201) {
+        // Define field id to be added to learningmap.
+        $table = new xmldb_table('learningmap');
+        $field = new xmldb_field('svgcode', XMLDB_TYPE_TEXT, null, null, null, null, null, 'backlink');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('showmaponcoursepage', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'svgcode');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('introformat', XMLDB_TYPE_INTEGER, '4', null, null, null, '0', 'intro');
+
+        // Launch change of default for field introformat.
+        $dbman->change_field_default($table, $field);
+
+        // Move the learningmap content to the new database fields. This also handles moving the files to the new
+        // filearea 'background'.
+        \mod_learningmap\migrationhelper::update_learningmaps_to_use_svgcode();
+
+        // Learningmap savepoint reached.
+        upgrade_mod_savepoint(true, 2024072201, 'learningmap');
     }
 
     return true;
