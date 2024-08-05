@@ -212,8 +212,6 @@ class mod_learningmap_mod_form extends moodleform_mod {
     public function data_preprocessing(&$defaultvalues): void {
         global $OUTPUT;
 
-        $draftitemid = file_get_submitted_draft_itemid('backgroundfile');
-
         // Initialize a new learningmap instance.
         if (!$this->current->instance) {
             // Every map gets a unique id for applying CSS.
@@ -264,17 +262,20 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $mapworker->process_map_objects();
             $mapworker->replace_stylesheet();
             $defaultvalues['svgcode'] = $mapworker->get_svgcode();
+
+            $draftitemid = file_get_submitted_draft_itemid('backgroundfile');
+
+            $defaultvalues['svgcode'] = file_prepare_draft_area(
+                $draftitemid,
+                $context->id,
+                'mod_learningmap',
+                'background',
+                0,
+                ['subdirs' => 0, 'maxfiles' => 1],
+                $defaultvalues['svgcode']
+            );
+            $defaultvalues['backgroundfile'] = $draftitemid;
         }
-        $defaultvalues['svgcode'] = file_prepare_draft_area(
-            $draftitemid,
-            $context->id,
-            'mod_learningmap',
-            'background',
-            0,
-            ['subdirs' => 0, 'maxfiles' => 1],
-            $defaultvalues['svgcode']
-        );
-        $defaultvalues['backgroundfile'] = $draftitemid;
     }
 
     /**
@@ -294,16 +295,12 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $mapworker->replace_stylesheet();
             $data->svgcode = $mapworker->get_svgcode();
 
-            $data->svgcode = file_save_draft_area_files(
-                $data->backgroundfile,
-                $this->context->id,
-                'mod_learningmap',
-                'background',
-                0,
-                ['subdirs' => 0, 'maxfiles' => 1],
-                $data->svgcode
+            $data->svgcode = file_rewrite_urls_to_pluginfile(
+                $data->svgcode,
+                $data->backgroundfile
             );
         }
+        parent::data_postprocessing($data);
     }
 
     /**
