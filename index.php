@@ -20,7 +20,7 @@
  * @package     mod_learningmap
  * @copyright   2021-2024, ISB Bayern
  * @author      Stefan Hanauska <stefan.hanauska@csg-in.de>
- * @license     https://www.gnu.org/licenses/agpl-3.0.html GNU AGPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once("../../config.php");

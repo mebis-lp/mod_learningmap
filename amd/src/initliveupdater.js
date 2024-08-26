@@ -19,7 +19,7 @@
  * @module     mod_learningmap/initliveupdater
  * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import LiveUpdater from 'mod_learningmap/liveupdater';
 import {selectors} from 'mod_learningmap/renderer';

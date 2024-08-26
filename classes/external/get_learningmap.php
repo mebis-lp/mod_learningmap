@@ -20,7 +20,7 @@
  * @package    mod_learningmap
  * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace mod_learningmap\external;
@@ -45,7 +45,7 @@ use restricted_context_exception;
  *
  * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class get_learningmap extends external_api {
     /**

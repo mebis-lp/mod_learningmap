@@ -35,7 +35,7 @@ require_once($CFG->dirroot . '/mod/learningmap/tests/mod_learningmap_testcase.ph
  * @group      mebis
  * @covers     \mod_learningmap\completion\custom_completion
  */
-class mod_learningmap_completion_test extends mod_learningmap_testcase {
+final class mod_learningmap_completion_test extends mod_learningmap_testcase {
     /**
      * Tests completiontype 1 in individual mode
      *

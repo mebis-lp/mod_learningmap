@@ -28,7 +28,7 @@ use mod_learningmap\completion\custom_completion;
  * @group      mebis
  * @covers     \mod_learningmap\mapworker
  */
-class mod_learningmap_mapworker_test extends \advanced_testcase {
+final class mod_learningmap_mapworker_test extends \advanced_testcase {
     /**
      * The course used for testing
      *
@@ -110,6 +110,7 @@ class mod_learningmap_mapworker_test extends \advanced_testcase {
         $this->modinfo = get_fast_modinfo($this->course, $this->user1->id);
         $this->completion = new \completion_info($this->modinfo->get_course());
         $this->cm = $this->modinfo->get_cm($this->learningmap->cmid);
+        parent::setUp();
     }
 
     /**

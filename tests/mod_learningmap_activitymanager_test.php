@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/mod/learningmap/tests/mod_learningmap_testcase.ph
  * @group      mebis
  * @covers     \mod_learningmap\activitymanager
  */
-class mod_learningmap_activitymanager_test extends mod_learningmap_testcase {
+final class mod_learningmap_activitymanager_test extends mod_learningmap_testcase {
     /**
      * Activitymanager instance for testing.
      * @var activitymanager $activitymanager

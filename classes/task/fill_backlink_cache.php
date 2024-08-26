@@ -24,7 +24,7 @@ use mod_learningmap\cachemanager;
  * @package    mod_learningmap
  * @copyright  2021-2024, ISB Bayern
  * @author     Stefan Hanauska
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class fill_backlink_cache extends \core\task\scheduled_task {
     /**

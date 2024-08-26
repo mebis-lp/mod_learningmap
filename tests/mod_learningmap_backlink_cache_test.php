@@ -28,7 +28,7 @@ use stdClass;
  * @covers     ::learningmap_before_http_headers()
  * @covers     \mod_learningmap\cachemanager
  */
-class mod_learningmap_backlink_cache_test extends \advanced_testcase {
+final class mod_learningmap_backlink_cache_test extends \advanced_testcase {
     /** @var array $courses Courses used for testing */
     private array $courses;
 

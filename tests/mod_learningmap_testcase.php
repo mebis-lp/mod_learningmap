@@ -60,7 +60,7 @@ abstract class mod_learningmap_testcase extends \advanced_testcase {
 
     /**
      * Whether group mode is active
-     * @var boolean
+     * @var bool
      */
     protected $groupmode;
 

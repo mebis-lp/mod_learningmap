@@ -19,7 +19,7 @@
  * @module     mod_learningmap/liveupdater
  * @copyright 2021-2024, ISB Bayern
  * @author     Philipp Memmel
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import {BaseComponent} from 'core/reactive';
 import {refreshModule} from 'core_course/actions';

@@ -27,7 +27,7 @@ namespace mod_learningmap;
  * @group      mebis
  * @covers     \mod_learningmap_generator
  */
-class mod_learningmap_generation_test extends \advanced_testcase {
+final class mod_learningmap_generation_test extends \advanced_testcase {
     /**
      * Tests the data generator for this module
      *

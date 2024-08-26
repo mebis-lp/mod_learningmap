@@ -68,11 +68,11 @@ class mapworker {
      *
      * @param string $svgcode The SVG code to build the map from
      * @param array $placestore The placestore data to use while processing the map
-     * @param cm_info $cm The course module that belongs to the map (null by default)
+     * @param cm_info|null $cm The course module that belongs to the map (null by default)
      * @param bool $edit Whether the mapworker should prepare the map for edit mode (false by default)
      * @param int $group Group id to use (default 0 means no group)
      */
-    public function __construct(string $svgcode, array $placestore, \cm_info $cm = null, bool $edit = false, int $group = 0) {
+    public function __construct(string $svgcode, array $placestore, \cm_info|null $cm = null, bool $edit = false, int $group = 0) {
         global $USER;
         $svgcode = preg_replace(
             '/<text(.*)>(?!(<\!\[CDATA\[))(.*)<\/text>/',
