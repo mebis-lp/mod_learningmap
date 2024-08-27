@@ -23,7 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use core\plugininfo\format;
 use mod_learningmap\cachemanager;
 
 /**
@@ -50,7 +49,20 @@ define('LEARNINGMAP_FEATURES', [
  */
 function learningmap_add_instance($data): int {
     global $DB;
-    return $DB->insert_record("learningmap", $data);
+    $learningmapid = $DB->insert_record('learningmap', $data);
+
+    $context = context_module::instance($data->coursemodule);
+    if (!empty($data->backgroundfile)) {
+        file_save_draft_area_files(
+            $data->backgroundfile,
+            $context->id,
+            'mod_learningmap',
+            'background',
+            0,
+            ['subdirs' => 0, 'maxfiles' => 1]
+        );
+    }
+    return $learningmapid;
 }
 
 /**
@@ -62,6 +74,22 @@ function learningmap_add_instance($data): int {
 function learningmap_update_instance($data): int {
     global $DB;
     $data->id = $data->instance;
+
+    $context = context_module::instance($data->coursemodule);
+    if (!empty($data->backgroundfile)) {
+        // Delete old background files.
+        $fs = get_file_storage();
+        $fs->delete_area_files($context->id, 'mod_learningmap', 'background');
+        file_save_draft_area_files(
+            $data->backgroundfile,
+            $context->id,
+            'mod_learningmap',
+            'background',
+            0,
+            ['subdirs' => 0, 'maxfiles' => 1]
+        );
+    }
+
     return $DB->update_record("learningmap", $data);
 }
 
@@ -73,9 +101,7 @@ function learningmap_update_instance($data): int {
  */
 function learningmap_delete_instance($id): int {
     global $DB;
-
     return $DB->delete_records("learningmap", ["id" => $id]);
-    // ToDo: Check whether intro files are automatically deleted.
 }
 
 /**
