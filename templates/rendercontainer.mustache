@@ -32,11 +32,20 @@
     Example context (json):
     {
         "cmId": "123",
-        "enableLiveUpdater": true
+        "enableLiveUpdater": true,
+        "contentbeforemap": "<p>Some content before the map</p>",
+        "hascontentbeforemap": true
     }
 }}
-<div id="learningmap-render-container-{{cmId}}" class="learningmap-render-container">
-  {{> mod_learningmap/loadingplaceholder}}
+<div class="learningmap-container">
+  {{#hascontentbeforemap}}
+  <div class="learningmap-content-before-map">
+    {{{contentbeforemap}}}
+  </div>
+  {{/hascontentbeforemap}}
+  <div id="learningmap-render-container-{{cmId}}" class="learningmap-render-container">
+    {{> mod_learningmap/loadingplaceholder}}
+  </div>
 </div>
 {{#js}}
   require(['mod_learningmap/renderer'], function(renderer) {

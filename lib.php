@@ -235,15 +235,23 @@ function learningmap_cm_info_view(cm_info $cm): void {
             );
         }
 
+        $contentbeforemap = $groupdropdown . $intro;
+        $hascontentbeforemap = !empty($contentbeforemap);
+
         $mapcontainer = $OUTPUT->render_from_template(
             'mod_learningmap/rendercontainer',
-            ['cmId' => $cm->id, 'enableLiveUpdater' => true]
+            [
+                'cmId' => $cm->id,
+                'enableLiveUpdater' => true,
+                'contentbeforemap' => $contentbeforemap,
+                'hascontentbeforemap' => $hascontentbeforemap,
+            ]
         );
 
         $cm->set_custom_cmlist_item(true);
     }
 
-    $cm->set_content($groupdropdown . $intro . $mapcontainer, true);
+    $cm->set_content($mapcontainer, true);
 }
 
 /**

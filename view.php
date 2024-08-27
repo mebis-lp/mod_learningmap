@@ -58,7 +58,7 @@ if (!empty($cm->groupmode)) {
 
 echo $OUTPUT->render_from_template(
     'mod_learningmap/rendercontainer',
-    ['cmId' => $id, 'enableLiveUpdater' => false]
+    ['cmId' => $id, 'enableLiveUpdater' => false, 'contentbeforemap' => '', 'hascontentbeforemap' => false]
 );
 
 echo $OUTPUT->footer();
