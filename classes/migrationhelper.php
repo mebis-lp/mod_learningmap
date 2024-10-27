@@ -16,6 +16,8 @@
 
 namespace mod_learningmap;
 
+use cm_info;
+
 /**
  * This class provides helper functions for migration from learningmaps being stored in the intro field to the new column svgcode.
  *
@@ -115,5 +117,50 @@ class migrationhelper {
             self::move_files_to_background_filearea($learningmap->id);
         }
         $learningmaps->close();
+    }
+
+    /**
+     * Migrate the placestore of a learningmap instance to the new version.
+     *
+     * @param object $placestore The placestore object to migrate.
+     * @return object The migrated placestore object.
+     */
+    public static function migrate_placestore(object $placestore) {
+        $plugininfo = \core\plugin_manager::instance()->get_plugin_info('mod_learningmap');
+        $pluginversion = $plugininfo->versiondb;
+
+        if (!isset($placestore->version) || $placestore->version < 2024072201) {
+            $placestore->version = $pluginversion;
+            // Needs 1 as default value (otherwise all place strokes would be hidden).
+            if (!isset($placestore->strokeopacity)) {
+                $placestore->strokeopacity = 1;
+            }
+        }
+    }
+
+    /**
+     * Migrate a learningmap instance to the new version.
+     *
+     * @param object $learningmap The learningmap instance to migrate.
+     * @param object $placestore The placestore object to migrate.
+     * @param object $cm The course module object of the learningmap instance.
+     */
+    public static function migrate_learningmap(object $learningmap, object $placestore, object $cm) {
+        if (!isset($placestore->version) || $placestore->version < 2024072201) {
+            self::migrate_placestore($placestore);
+            if (empty($item->svgcode)) {
+                $mapcode = $learningmap->intro;
+                $learningmap->intro = '';
+                $learningmap->showmaponcoursepage = $cm->showdescription;
+                migrationhelper::move_files_to_background_filearea($learningmap->id);
+            } else {
+                $mapcode = $learningmap->svgcode;
+            }
+            $mapworker = new \mod_learningmap\mapworker($mapcode, (array)$placestore);
+            $mapworker->replace_stylesheet();
+            $mapworker->replace_defs();
+            $learningmap->svgcode = $mapworker->get_svgcode();
+        }
+        $placestore = self::migrate_placestore($placestore);
     }
 }

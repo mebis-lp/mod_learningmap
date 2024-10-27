@@ -104,25 +104,8 @@ class restore_learningmap_activity_task extends restore_activity_task {
         $newmapid = uniqid();
         $placestore->mapid = $newmapid;
 
-        if (!isset($placestore->version) || $placestore->version < 2024072201) {
-            $placestore->version = 2024072201;
-            // Needs 1 as default value (otherwise all place strokes would be hidden).
-            if (!isset($placestore->strokeopacity)) {
-                $placestore->strokeopacity = 1;
-            }
-            if (empty($item->svgcode)) {
-                $mapcode = $item->intro;
-                $item->intro = '';
-                $item->showmaponcoursepage = $cm->showdescription;
-                migrationhelper::move_files_to_background_filearea($item->id);
-            } else {
-                $mapcode = $item->svgcode;
-            }
-            $mapworker = new \mod_learningmap\mapworker($mapcode, (array)$placestore);
-            $mapworker->replace_stylesheet();
-            $mapworker->replace_defs();
-            $item->svgcode = $mapworker->get_svgcode();
-        }
+        migrationhelper::migrate_learningmap($item, $placestore, $cm);
+
         $item->svgcode = str_replace('learningmap-svgmap-' . $oldmapid, 'learningmap-svgmap-' . $newmapid, $item->svgcode);
         $item->placestore = json_encode($placestore);
         $item->course = $courseid;
