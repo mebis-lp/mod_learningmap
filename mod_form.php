@@ -114,7 +114,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $mform->addHelpButton('showmaponcoursepage', 'showmaponcoursepage', 'learningmap');
         }
 
-        $mform->setType('showmaponcoursepage', PARAM_INT);      
+        $mform->setType('showmaponcoursepage', PARAM_INT);
 
         $backlinkallowed = get_config('mod_learningmap', 'backlinkallowed');
 

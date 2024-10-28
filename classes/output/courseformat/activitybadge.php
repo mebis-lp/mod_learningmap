@@ -24,12 +24,14 @@ namespace mod_learningmap\output\courseformat;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class activitybadge extends \core_courseformat\output\activitybadge {
-
+    /**
+     * Updates the content of the activity badge.
+     */
     protected function update_content(): void {
         $course = $this->cminfo->get_course();
         if ($course->format == 'learningmap') {
             $courseformat = course_get_format($course);
-            if($courseformat->main_learningmap_exists()) {
+            if ($courseformat->main_learningmap_exists()) {
                 $mainlearningmap = $courseformat->get_main_learningmap();
                 if ($this->cminfo->id == $mainlearningmap->id) {
                     $this->content = get_string('mainlearningmap', 'format_learningmap');
