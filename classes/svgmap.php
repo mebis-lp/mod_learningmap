@@ -169,6 +169,18 @@ class svgmap {
     }
 
     /**
+     * Check if an element is a place
+     *
+     * @param string $id The id of the DOM element
+     * @return bool
+     */
+    public function is_place(string $id): bool {
+        $element = $this->dom->getElementById($id);
+        $classes = explode(' ', $element->getAttribute('class'));
+        return $element !== null && in_array('learningmap-place', $classes);
+    }
+
+    /**
      * Remove a place or path. If removing a place also the link and the connected paths are removed.
      *
      * @param string $id Id of a place or path
@@ -177,7 +189,7 @@ class svgmap {
     public function remove_place_or_path(string $id): void {
         $placeorpath = $this->dom->getElementById($id);
         if ($placeorpath) {
-            if ($placeorpath->nodeName == 'circle') {
+            if (self::is_place($id)) {
                 // Also remove connected paths for places.
                 foreach ($this->placestore['paths'] as $path) {
                     if ($path['sid'] == $id || $path['fid'] == $id) {

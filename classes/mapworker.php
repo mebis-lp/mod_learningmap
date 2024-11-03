@@ -229,7 +229,7 @@ class mapworker {
             // Make all completed places visible and set color for visited places.
             foreach ($completedplaces as $place) {
                 $this->svgmap->set_visited($place);
-                // If the option "usecheckmark" is selected, add the checkmark to the circle.
+                // If the option "usecheckmark" is selected, add the checkmark to the place.
                 if ($this->placestore['usecheckmark']) {
                     $this->svgmap->add_checkmark($place);
                 }
