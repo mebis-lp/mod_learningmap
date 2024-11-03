@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>amd/src/svg.js</location>
+        <name>SVG.js</name>
+        <version>3.2.4</version>
+        <license>MIT</license>
+    </library>
+</libraries>

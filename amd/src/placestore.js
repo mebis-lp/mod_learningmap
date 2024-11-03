@@ -50,14 +50,16 @@ let placestore = {
      * @param {*} id id of the place
      * @param {*} linkId id of the corresponding link
      * @param {*} linkedActivity course module id of linked activity
+     * @param {*} bbox bounding box of the place (including text)
      */
-    addPlace: function(id, linkId, linkedActivity = null) {
+    addPlace: function(id, linkId, linkedActivity = null, bbox = {}) {
         this.places.push({
             id: id,
             linkId: linkId,
             linkedActivity: linkedActivity,
             placecolor: null,
-            visitedcolor: null
+            visitedcolor: null,
+            bbox: bbox || {},
         });
         if (this.places.length == 1) {
             this.addStartingPlace(id);
@@ -472,6 +474,21 @@ let placestore = {
      */
     setShowWayGone: function(value) {
         this.showwaygone = value;
+    },
+    /**
+     * Sets the bbox of the place
+     * @param {*} id id of the place
+     * @param {*} bbox bounding box of the place (including text)
+     */
+    setBbox: function(id, bbox) {
+        let place = this.places.filter(
+            function(e) {
+                return id == e.id;
+            }
+        );
+        if (place.length > 0) {
+            place[0].bbox = bbox;
+        }
     },
 };
 
