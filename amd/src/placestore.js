@@ -5,11 +5,11 @@ let placestore = {
     paths: [],
     startingplaces: [],
     targetplaces: [],
-    placecolor: '#c01c28',
-    strokecolor: '#ffffff',
+    placecolor: '#c01c28ff',
+    strokecolor: '#ffffffff',
     strokeopacity: 1,
-    textcolor: '#ffffff',
-    visitedcolor: '#26a269',
+    textcolor: '#ffffffff',
+    visitedcolor: '#26a269ff',
     height: 100,
     width: 800,
     hidepaths: false,
@@ -22,6 +22,7 @@ let placestore = {
     showtext: false,
     slicemode: false,
     showwaygone: false,
+    placesize: 10,
     /**
      * Loads attributes from JSON into placestore
      * @param {*} json
@@ -201,45 +202,6 @@ let placestore = {
         }
     },
     /**
-     * Sets the color of 'stroke', 'place' or 'visited'
-     * @param {*} type type of the color
-     * @param {*} color color in hex format
-     */
-    setColor: function(type, color) {
-        switch (type) {
-            case 'stroke':
-                this.strokecolor = color;
-                break;
-            case 'place':
-                this.placecolor = color;
-                break;
-            case 'visited':
-                this.visitedcolor = color;
-                break;
-            case 'text':
-                this.textcolor = color;
-                break;
-        }
-    },
-    /**
-     * Gets the color of 'stroke', 'place' or 'visited'
-     * @param {*} type type of the color
-     * @returns {string} color in hex format
-     */
-    getColor: function(type) {
-        switch (type) {
-            case 'stroke':
-                return this.strokecolor;
-            case 'place':
-                return this.placecolor;
-            case 'visited':
-                return this.visitedcolor;
-            case 'text':
-                return this.textcolor;
-        }
-        return null;
-    },
-    /**
      * Returns the current id
      * @returns {number}
      */
@@ -304,6 +266,7 @@ let placestore = {
             showtext: this.showtext,
             slicemode: this.slicemode,
             showwaygone: this.showwaygone,
+            placesize: this.placesize,
         };
     },
     /**
@@ -442,7 +405,7 @@ let placestore = {
      * Returns an array with all place identifiers
      * @returns {array}
      */
-     getPlaces: function() {
+    getPlaces: function() {
         return this.places;
     },
     /**
@@ -472,6 +435,66 @@ let placestore = {
      */
     setShowWayGone: function(value) {
         this.showwaygone = value;
+    },
+    /**
+     * Returns the size of places
+     * @returns {number}
+     */
+    getPlaceSize: function() {
+        return this.placesize;
+    },
+    /**
+     * Sets the size of places
+     * @param {number} value
+     */
+    setPlaceSize: function(value) {
+        if (value > 0) {
+            this.placesize = value;
+        }
+    },
+    /**
+     * Sets the color of places
+     * @param {*} color
+     */
+    setPlaceColor: function(color) {
+        this.placecolor = color;
+    },
+    /**
+     * Returns the color of places
+     * @returns {string}
+     */
+    getPlaceColor: function() {
+        return this.placecolor;
+    },
+    /**
+     * Sets the color of visited places
+     * @param {*} color
+     */
+    setVisitedColor: function(color) {
+        this.visitedcolor = color;
+    },
+    /**
+     * Returns the color of visited places
+     * @returns {string}
+     */
+    getVisitedColor: function() {
+        return this.visitedcolor;
+    },
+    /**
+     * Sets the color of strokes and the text
+     * @param {*} color
+     */
+    setStrokeColor: function(color) {
+        this.strokecolor = color;
+        // Until there is a separate text color, set it to the same color as the stroke.
+        this.textcolor = color;
+    },
+    /**
+     * Returns the color of strokes
+     * @returns {string}
+     */
+    getStrokeColor: function() {
+        return this.strokecolor;
     },
 };
 

@@ -85,15 +85,29 @@ class mod_learningmap_mod_form extends moodleform_mod {
             )
         );
 
-        $features = [];
-        foreach (LEARNINGMAP_FEATURES as $feature) {
-            $features[] = [
+        $advancedfeatures = [];
+        foreach (LEARNINGMAP_FEATURES as $feature => $type) {
+            $advancedfeatures[] = [
                 'name' => $feature,
                 'title' => get_string($feature, 'learningmap'),
                 'text' => get_string($feature . '_help', 'learningmap'),
                 'alt' => get_string('help'),
+                'type' => $type,
             ];
         }
+
+        $placefeatures = [];
+        foreach (LEARNINGMAP_PLACE_FEATURES as $feature => $type) {
+            $placefeatures[] = [
+                'name' => $feature,
+                'title' => get_string($feature, 'learningmap'),
+                'text' => get_string($feature . '_help', 'learningmap'),
+                'alt' => get_string('help'),
+                'type' => $type,
+                'iscolor' => $type == 'color',
+            ];
+        }
+
         $mform->addElement(
             'html',
             $OUTPUT->render_from_template(
@@ -101,7 +115,9 @@ class mod_learningmap_mod_form extends moodleform_mod {
                 ['sections' => $activitysel,
                 'help' => $OUTPUT->help_icon('intro', 'learningmap', ''),
                 'completiondisabled' => $cm->get_course()->enablecompletion == 0,
-                'features' => $features,
+                'advancedfeatures' => $advancedfeatures,
+                'placefeatures' => $placefeatures,
+                'palette' => get_config('mod_learningmap', 'colorpalette'),
                 ]
             )
         );
@@ -143,6 +159,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
         $mform->closeHeaderBefore('header');
 
         $PAGE->requires->js_call_amd('mod_learningmap/learningmap', 'init');
+        $PAGE->requires->js_call_amd('mod_learningmap/jscolor');
 
         $this->standard_coursemodule_elements();
 
