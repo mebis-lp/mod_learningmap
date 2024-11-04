@@ -110,7 +110,7 @@ class mapworker {
      * @return void
      */
     public function replace_defs(): void {
-        $this->svgmap->replace_defs();
+        $this->svgmap->replace_defs(['mapid' => $this->placestore['mapid']]);
     }
 
     /**

@@ -284,6 +284,8 @@ class mod_learningmap_mod_form extends moodleform_mod {
             );
             $mapworker->process_map_objects();
             $mapworker->replace_stylesheet();
+            $mapworker->replace_defs();
+            $mapworker->fix_svg();
             $defaultvalues['svgcode'] = $mapworker->get_svgcode();
 
             $draftitemid = file_get_submitted_draft_itemid('backgroundfile');

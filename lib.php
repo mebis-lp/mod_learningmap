@@ -45,12 +45,24 @@ define('LEARNINGMAP_PLACE_FEATURES', [
     'placecolor' => 'color',
     'visitedcolor' => 'color',
     'strokecolor' => 'color',
+    'textcolor' => 'color',
+    'placeemoji' => 'emoji',
+    'visitedemoji' => 'emoji',
     'placesize' => 'range',
     'showtext' => 'checkbox',
     'hidestroke' => 'checkbox',
     'usecheckmark' => 'checkbox',
     'pulse' => 'checkbox',
     'hover' => 'checkbox',
+]);
+
+/**
+ * Array with all place types.
+ */
+define('LEARNINGMAP_PLACETYPES', [
+    'circle',
+    'square',
+    'emoji',
 ]);
 
 /**

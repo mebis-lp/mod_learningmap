@@ -3,6 +3,7 @@ import Templates from 'core/templates';
 import placestore from 'mod_learningmap/placestore';
 import svgjs from 'mod_learningmap/svg';
 import shapes from './shapes';
+import emojiPicker from 'core/emoji/picker';
 
 // Constants for updatePathDeclaration.
 const targetPoints = {
@@ -148,6 +149,7 @@ export const init = () => {
         {name: 'placecolor', get: placestore.getPlaceColor, set: placestore.setPlaceColor},
         {name: 'visitedcolor', get: placestore.getVisitedColor, set: placestore.setVisitedColor},
         {name: 'strokecolor', get: placestore.getStrokeColor, set: placestore.setStrokeColor},
+        {name: 'textcolor', get: placestore.getTextColor, set: placestore.setTextColor},
     ]);
 
     // Get SVG code from the (hidden) textarea field
@@ -308,7 +310,7 @@ export const init = () => {
             } else if (evt.target.nodeName == 'text') {
                 selectedElement = evt.target;
                 let svgel = getSVGShape(selectedElement);
-                let place = svgel.parent().findOne('.learningmap-place');
+                let place = findPlaceForText(selectedElement.id);
                 offset = getMousePosition(evt);
                 offset.x -= svgel.attr('dx') + place.cx();
                 offset.y -= svgel.attr('dy') + place.cy();
@@ -368,10 +370,9 @@ export const init = () => {
                             }
                         }
                     });
-                    placestore.setBbox(selectedElement.id, placeel.parent().bbox());
                 } else if (selectedElement.nodeName == 'text') {
                     let textel = getSVGShape(selectedElement);
-                    let place = textel.parent().findOne('.learningmap-place');
+                    let place = findPlaceForText(selectedElement.id);
                     // Calculate the delta from the current mouse position to the corresponding place.
                     // coord: current mouse position
                     // offset: delta from the mouse position to the coordinates of the text node
@@ -380,7 +381,6 @@ export const init = () => {
                     // We cannot use the dx() and dy() functions of the text node, because they are not
                     // setting the attributes dx and dy.
                     textel.attr({dx: dx, dy: dy});
-                    placestore.setBbox(place.node.id, textel.parent().bbox());
                 } else if (selectedElement.nodeName == 'path') {
                     selectedElement.setAttribute(
                         'd',
@@ -624,11 +624,10 @@ export const init = () => {
      * @param {*} child child item to set the link on
      * @param {*} id id of the link
      * @param {*} title title of the link
-     * @param {*} text text to describe the link
      * @returns {any}
      */
-    function link(child, id, title = null, text = null) {
-        return mapsvg.link('').id(id).add(child).add(title).add(text);
+    function link(child, id, title = null) {
+        return mapsvg.link('').id(id).add(child).add(title);
     }
 
     /**
@@ -637,7 +636,8 @@ export const init = () => {
      * @param {*} event event causing the command
      */
     function addPlace(event) {
-        let placesgroup = mapsvg.findOne('#placesGroup');
+        let placesgroup = mapsvg.findOne('.learningmap-places-group');
+        let textgroup = mapsvg.findOne('.learningmap-text-group');
         let placeId = 'p' + placestore.getId();
         let linkId = 'a' + placestore.getId();
         var CTM = event.target.getScreenCTM();
@@ -647,12 +647,13 @@ export const init = () => {
         let cx = (event.clientX - CTM.e) / CTM.a;
         let cy = (event.clientY - CTM.f) / CTM.d;
         let svglink = link(
-            shapes.emoji(mapsvg, cx, cy, circleRadius, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
+            shapes.circle(mapsvg, cx, cy, circleRadius, 'learningmap-place learningmap-draggable learningmap-emptyplace', placeId),
             linkId,
-            title('title' + placeId),
-            text('text' + placeId, '', cx, cy)
+            title('title' + placeId)
         );
         svglink.addTo(placesgroup);
+        let textNode = text('text' + placeId, '', cx, cy);
+        textNode.addTo(textgroup);
         placestore.addPlace(placeId, linkId, null, svglink.bbox());
     }
 
@@ -716,7 +717,7 @@ export const init = () => {
     function addPath(fid, sid) {
         let pid = 'p' + fid + '_' + sid;
         if (document.getElementById(pid) === null) {
-            let pathsgroup = mapsvg.findOne('#pathsGroup');
+            let pathsgroup = mapsvg.findOne('.learningmap-pathsgroup');
             let first = mapsvg.findOne('#p' + fid);
             let second = mapsvg.findOne('#p' + sid);
             if (pathsgroup && first && second) {
@@ -745,6 +746,10 @@ export const init = () => {
         removePathsTouchingPlace(event.target.id);
         placestore.removePlace(event.target.id);
         place.parent().remove();
+        let textNode = document.getElementById('text' + event.target.id);
+        if (textNode) {
+            textNode.remove();
+        }
 
         updateCode();
     }
@@ -862,6 +867,7 @@ export const init = () => {
     function fixPlaceLabels() {
         let options = Array.from(activitySelector.getElementsByTagName('option'));
         let places = placestore.getPlaces();
+        let textgroup = mapsvg.findOne('.learningmap-text-group');
         for (const place of places) {
             if (document.getElementById('text' + place.id) === null) {
                 let content = '';
@@ -873,7 +879,10 @@ export const init = () => {
                 }
                 let placeNode = mapsvg.findOne('#' + place.id);
                 let textNode = text('text' + place.id, content, placeNode.cx(), placeNode.cy());
-                textNode.addTo(placeNode.parent());
+                textNode.addTo(textgroup);
+            } else {
+                let textNode = mapsvg.findOne('#text' + place.id);
+                textNode.addTo(textgroup);
             }
         }
     }
@@ -1023,5 +1032,15 @@ export const init = () => {
                 colorpicker.jscolor.fromString(placestore[colorpicker.id.split('jscolor-')[1]]);
             }
         });
+    }
+
+    /**
+     * Returns the place that belongs to the given text id.
+     * @param {*} textId
+     * @returns
+     */
+    function findPlaceForText(textId) {
+        let placename = textId.replace('text', '');
+        return mapsvg.findOne('#' + placename);
     }
 };

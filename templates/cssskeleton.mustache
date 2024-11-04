@@ -52,6 +52,11 @@
 }}
 <style id="{{^cssid}}learningmap-svgstyle{{/cssid}}{{#cssid}}{{cssid}}{{/cssid}}" type="text/css">
 
+#learningmap-svgmap-{{mapid}} {
+    user-select: none;
+    link-decoration: none;
+}
+
 #learningmap-svgmap-{{mapid}} .learningmap-place {
     fill: {{ placecolor }};
     stroke-width: 3px;
@@ -96,7 +101,7 @@
     {{/hidepaths}}
 }
 
-#learningmap-svgmap-{{mapid}} text:not(.learningmap-place) {
+#learningmap-svgmap-{{mapid}} .learningmap-text-group {
     fill: {{ textcolor }};
     stroke: none;
     font-family: FreeSans;

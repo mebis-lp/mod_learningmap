@@ -488,8 +488,6 @@ let placestore = {
      */
     setStrokeColor: function(color) {
         this.strokecolor = color;
-        // Until there is a separate text color, set it to the same color as the stroke.
-        this.textcolor = color;
     },
     /**
      * Returns the color of strokes
@@ -499,19 +497,18 @@ let placestore = {
         return this.strokecolor;
     },
     /**
-     * Sets the bbox of the place
-     * @param {*} id id of the place
-     * @param {*} bbox bounding box of the place (including text)
+     * Returns the color of the text
+     * @returns {string}
      */
-    setBbox: function(id, bbox) {
-        let place = this.places.filter(
-            function(e) {
-                return id == e.id;
-            }
-        );
-        if (place.length > 0) {
-            place[0].bbox = bbox;
-        }
+    getTextColor: function() {
+        return this.textcolor;
+    },
+    /**
+     * Sets the color of the text
+     * @param {*} color
+     */
+    setTextColor: function(color) {
+        this.textcolor = color;
     },
 };
 
