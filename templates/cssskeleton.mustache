@@ -136,15 +136,15 @@
 }
 
 {{#hover}}
-#learningmap-svgmap-{{mapid}} .learningmap-place:hover,
-#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited):hover {
+#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-reachable:hover,
+#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-reachable:not(.learningmap-visited):hover {
     animation: none;
     stroke-width: 5px;
     stroke-opacity: 1;
 }
 {{/hover}}
 {{#pulse}}
-#learningmap-svgmap-{{mapid}} .learningmap-place:not(.learningmap-visited) {
+#learningmap-svgmap-{{mapid}} .learningmap-place.learningmap-reachable:not(.learningmap-visited) {
     animation: pulse 1.5s infinite;
     stroke-opacity: 1;
 }
