@@ -52,6 +52,14 @@
 }}
 <style id="learningmap-svgstyle" type="text/css">
 
+#learningmap-svgmap-{{mapid}} a:focus-visible {
+  outline: 4px solid blue;
+}
+
+#learningmap-svgmap-{{mapid}} a:focus-visible .learningmap-place {
+  animation: none;
+}
+
 #learningmap-svgmap-{{mapid}} .learningmap-place {
     fill: {{ placecolor }};
     stroke-width: 3px;
