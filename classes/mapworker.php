@@ -72,7 +72,13 @@ class mapworker {
      * @param bool $edit Whether the mapworker should prepare the map for edit mode (false by default)
      * @param int $group Group id to use (default 0 means no group)
      */
-    public function __construct(string $svgcode, array $placestore, \cm_info|null $cm = null, bool $edit = false, int $group = 0) {
+    public function __construct(
+        string $svgcode,
+        array $placestore,
+        \cm_info $cm = null, // phpcs:ignore
+        bool $edit = false,
+        int $group = 0
+    ) {
         global $USER;
         $svgcode = preg_replace(
             '/<text(.*)>(?!(<\!\[CDATA\[))(.*)<\/text>/',
