@@ -36,6 +36,6 @@ class helper {
         $showmaponcoursepage = $DB->get_field('learningmap', 'showmaponcoursepage', ['id' => $cm->instance]);
         [$course, ] = get_course_and_cm_from_cmid($cm->id);
         $courseformat = $course->format;
-        return !empty($showmaponcoursepage) && $courseformat != 'learningmap';
+        return !empty($showmaponcoursepage) && $courseformat !== 'learningmap';
     }
 }
