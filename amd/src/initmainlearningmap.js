@@ -19,7 +19,7 @@
  * @module     mod_learningmap/initmainlearningmap
  * @copyright  2024 ISB Bayern
  * @author     Stefan Hanauska <stefan.hanauska@csg-in.de>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import MainLearningmap from 'mod_learningmap/mainlearningmap';
 import {getCurrentCourseEditor} from 'core_courseformat/courseeditor';
