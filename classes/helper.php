@@ -26,10 +26,11 @@ namespace mod_learningmap;
 class helper {
     /**
      * Returns whether the map should be shown on the course page.
-     * If course format is format_learningmap the setting in the database is ignored.
      *
-     * @param cm_info $cm
-     * @return bool
+     * If course format format_learningmap is being used the module setting will be ignored.
+     *
+     * @param cm_info $cm the coursemodule info object
+     * @return bool the "showoncoursemap" setting of the coursemodule, or false if current course format is format_learningmap
      */
     public static function show_map_on_course_page($cm): bool {
         global $DB;
