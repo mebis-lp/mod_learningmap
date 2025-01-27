@@ -81,12 +81,15 @@ export const init = () => {
             if (activitySelector.value) {
                 let text = document.getElementById('text' + elementForActivitySelector);
                 if (text) {
-                    text.textContent = activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent;
+                    text.textContent = wrapInCdata(
+                        activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent
+                    );
                 }
                 let title = document.getElementById('title' + elementForActivitySelector);
                 if (title) {
-                    title.textContent =
-                        activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent;
+                    title.textContent = wrapInCdata(
+                        activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent
+                    );
                 }
                 document.getElementById(elementForActivitySelector).classList.remove('learningmap-emptyplace');
             } else {
@@ -605,7 +608,7 @@ export const init = () => {
         // Default value for delta: Circle radius * 1.5 (as a padding)
         text.setAttribute('dx', circleRadius * 1.5);
         text.setAttribute('dy', circleRadius * 1.5);
-        text.textContent = content;
+        text.textContent = wrapInCdata(content);
         return text;
     }
 
@@ -956,5 +959,14 @@ export const init = () => {
     function hideAdvancedSettings() {
         let advancedSettings = document.getElementById('learningmap-advanced-settings');
         advancedSettings.setAttribute('hidden', '');
+    }
+
+    /**
+     * Wraps content in a CDATA tag
+     * @param {string} data Content to wrap
+     * @returns {string} Wrapped content
+     */
+    function wrapInCdata(data) {
+        return '<![CDATA[' + data + ']]>';
     }
 };
