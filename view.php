@@ -42,6 +42,11 @@ $PAGE->set_heading($map->name);
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
 
+// This is is a workaround to redirect to the course page if editing mode is turned on.
+if ($course->format === 'learningmap') {
+    $PAGE->set_url(new moodle_url('/course/view.php', ['id' => $course->id]));
+}
+
 echo $OUTPUT->header();
 
 if (!empty($cm->groupmode)) {
