@@ -106,8 +106,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
             )
         );
 
+        $learningmapformat = $this->_course->format === 'learningmap';
+
         // If using learningmap course format, the map is never shown on the course page.
-        if ($this->_course->format === 'learningmap') {
+        if ($learningmapformat) {
             $mform->addElement('hidden', 'showmaponcoursepage', 0);
         } else {
             $mform->addElement('advcheckbox', 'showmaponcoursepage', get_string('showmaponcoursepage', 'learningmap'));
@@ -122,6 +124,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $mform->addElement('advcheckbox', 'backlink', get_string('showbacklink', 'learningmap'));
             $mform->setType('backlink', PARAM_INT);
             $mform->addHelpButton('backlink', 'showbacklink', 'learningmap');
+            $mform->setDefault('backlink', $learningmapformat);
         } else {
             $mform->addElement('hidden', 'backlink', 0);
         }
