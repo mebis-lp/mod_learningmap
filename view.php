@@ -29,18 +29,23 @@ require_once('lib.php');
 $id = required_param('id', PARAM_INT);
 [$course, $cm] = get_course_and_cm_from_cmid($id, 'learningmap');
 
+$PAGE->set_url(new moodle_url('/mod/learningmap/view.php', ['id' => $id]));
+
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 require_capability('mod/learningmap:view', $context);
-
 $map = $DB->get_record('learningmap', ['id' => $cm->instance], '*', MUST_EXIST);
 
-$PAGE->set_url(new moodle_url('/mod/learningmap/view.php', ['id' => $id]));
 $PAGE->set_title(get_string('pluginname', 'mod_learningmap') . ' ' . $map->name);
 $PAGE->set_heading($map->name);
 
 $completion = new completion_info($course);
 $completion->set_module_viewed($cm);
+
+// This is is a workaround to redirect to the course page if editing mode is turned on.
+if ($course->format === 'learningmap') {
+    $PAGE->set_url(new moodle_url('/course/view.php', ['id' => $course->id]));
+}
 
 echo $OUTPUT->header();
 

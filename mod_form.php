@@ -106,9 +106,17 @@ class mod_learningmap_mod_form extends moodleform_mod {
             )
         );
 
-        $mform->addElement('advcheckbox', 'showmaponcoursepage', get_string('showmaponcoursepage', 'learningmap'));
+        $learningmapformat = $this->_course->format === 'learningmap';
+
+        // If using learningmap course format, the map is never shown on the course page.
+        if ($learningmapformat) {
+            $mform->addElement('hidden', 'showmaponcoursepage', 0);
+        } else {
+            $mform->addElement('advcheckbox', 'showmaponcoursepage', get_string('showmaponcoursepage', 'learningmap'));
+            $mform->addHelpButton('showmaponcoursepage', 'showmaponcoursepage', 'learningmap');
+        }
+
         $mform->setType('showmaponcoursepage', PARAM_INT);
-        $mform->addHelpButton('showmaponcoursepage', 'showmaponcoursepage', 'learningmap');
 
         $backlinkallowed = get_config('mod_learningmap', 'backlinkallowed');
 
@@ -116,6 +124,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
             $mform->addElement('advcheckbox', 'backlink', get_string('showbacklink', 'learningmap'));
             $mform->setType('backlink', PARAM_INT);
             $mform->addHelpButton('backlink', 'showbacklink', 'learningmap');
+            $mform->setDefault('backlink', $learningmapformat);
         } else {
             $mform->addElement('hidden', 'backlink', 0);
         }
@@ -146,7 +155,7 @@ class mod_learningmap_mod_form extends moodleform_mod {
 
         $this->standard_coursemodule_elements();
 
-        $this->add_action_buttons(true, false, null);
+        $this->add_action_buttons(true, null, null);
 
         $mform->addHelpButton('groupmode', 'groupmode', 'learningmap');
     }
