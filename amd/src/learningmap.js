@@ -50,6 +50,9 @@ export const init = () => {
     let mapdiv = document.getElementById('learningmap-editor-map');
     let code = document.getElementById('id_svgcode');
 
+    let svgdoc = new DOMParser().parseFromString(code.value, 'image/svg+xml');
+    let svgnode = svgdoc.querySelector('svg');
+
     // DOM nodes for the activity selector
     let activitySetting = document.getElementById('learningmap-activity-setting');
     let activitySelector = document.getElementById('learningmap-activity-selector');
@@ -81,15 +84,15 @@ export const init = () => {
             if (activitySelector.value) {
                 let text = document.getElementById('text' + elementForActivitySelector);
                 if (text) {
-                    text.textContent = wrapInCdata(
+                    text.replaceChildren(svgdoc.createCDATASection(
                         activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent
-                    );
+                    ));
                 }
                 let title = document.getElementById('title' + elementForActivitySelector);
                 if (title) {
-                    title.textContent = wrapInCdata(
+                    title.replaceChildren(svgdoc.createCDATASection(
                         activitySelector.querySelector('option[value="' + activitySelector.value + '"]').textContent
-                    );
+                    ));
                 }
                 document.getElementById(elementForActivitySelector).classList.remove('learningmap-emptyplace');
             } else {
@@ -165,7 +168,7 @@ export const init = () => {
 
     // Get SVG code from the (hidden) textarea field
     if (code && mapdiv) {
-        mapdiv.innerHTML = code.value;
+        mapdiv.replaceChildren(svgnode);
     }
     // Reload background image to get the correct width and height values
     refreshBackgroundImage();
@@ -173,8 +176,7 @@ export const init = () => {
     updateCode();
 
     // Enable dragging of places
-    let svg = document.getElementById('learningmap-svgmap-' + placestore.getMapid());
-    makeDraggable(svg);
+    makeDraggable(svgnode);
 
     // Refresh stylesheet values from placestore
     updateCSS();
@@ -608,7 +610,8 @@ export const init = () => {
         // Default value for delta: Circle radius * 1.5 (as a padding)
         text.setAttribute('dx', circleRadius * 1.5);
         text.setAttribute('dy', circleRadius * 1.5);
-        text.textContent = wrapInCdata(content);
+        let textcontent = svgdoc.createCDATASection(content);
+        text.replaceChildren(textcontent);
         return text;
     }
 
@@ -847,7 +850,7 @@ export const init = () => {
                 let height = parseInt(background.getBBox().height);
                 let width = background.getBBox().width;
                 placestore.setBackgroundDimensions(width, height);
-                svg.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
+                svgnode.setAttribute('viewBox', '0 0 ' + placestore.width + ' ' + placestore.height);
                 background.setAttribute('width', width);
                 background.setAttribute('height', height);
                 updateCode();
@@ -959,14 +962,5 @@ export const init = () => {
     function hideAdvancedSettings() {
         let advancedSettings = document.getElementById('learningmap-advanced-settings');
         advancedSettings.setAttribute('hidden', '');
-    }
-
-    /**
-     * Wraps content in a CDATA tag
-     * @param {string} data Content to wrap
-     * @returns {string} Wrapped content
-     */
-    function wrapInCdata(data) {
-        return '<![CDATA[' + data + ']]>';
     }
 };
