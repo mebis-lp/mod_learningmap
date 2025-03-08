@@ -33,6 +33,7 @@ $functions = [
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'mod/learningmap:view',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
     'mod_learningmap_get_dependingmodules' => [
         'classname'   => 'mod_learningmap\external\get_dependingmodules',
@@ -41,5 +42,6 @@ $functions = [
         'type'        => 'read',
         'ajax' => true,
         'capabilities' => 'mod/learningmap:view',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
     ],
 ];

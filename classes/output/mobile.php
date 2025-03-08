@@ -34,7 +34,7 @@ class mobile {
         global $OUTPUT;
 
         $cm = get_coursemodule_from_id('learningmap', $args['cmid']);
-        
+
         require_login($cm->course, false, $cm);
         $context = context_module::instance($cm->id);
         require_capability('mod/learningmap:view', $context);
