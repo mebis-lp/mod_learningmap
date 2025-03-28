@@ -151,8 +151,6 @@ class mod_learningmap_mod_form extends moodleform_mod {
 
         $mform->closeHeaderBefore('header');
 
-        $PAGE->requires->js_call_amd('mod_learningmap/learningmap', 'init');
-
         $this->standard_coursemodule_elements();
 
         $this->add_action_buttons(true, null, null);
@@ -166,6 +164,12 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @return void
      */
     public function definition_after_data() {
+        global $PAGE;
+        $data = $this->get_data();
+        // Only load the javascript for the map editor if the general part of the form is shown.
+        if (empty($data->showonly) || $data->showonly == 'general') {
+            $PAGE->requires->js_call_amd('mod_learningmap/learningmap', 'init');
+        }
         $this->_form->_elements[$this->_form->_elementIndex['groupmode']]->removeOption(VISIBLEGROUPS);
         parent::definition_after_data();
     }
@@ -295,8 +299,10 @@ class mod_learningmap_mod_form extends moodleform_mod {
      * @return void
      */
     public function data_postprocessing($data): void {
-        // As this form is also used for setting the default completion settings, there might not be an actual learningmap.
-        if (!empty($data->svgcode)) {
+        // Only change anything to the SVG code if the general part of the form is shown and
+        // there is actual svgcode (which is not the case if the form is used for changing
+        // default completion settings).
+        if (!empty($data->svgcode) && (empty($data->showonly) || $data->showonly == 'general')) {
             $mapworker = new mapworker(
                 $data->svgcode,
                 json_decode($data->placestore, true)
