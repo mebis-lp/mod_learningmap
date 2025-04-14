@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_learningmap';
 $plugin->release = '0.9.9.1';
-$plugin->version = 2025022701;
-$plugin->requires = 2020061500;
-$plugin->supported = [401, 405];
+$plugin->version = 2025041400;
+$plugin->requires = 2022112800; // Moodle 4.1
+$plugin->supported = [401, 500];
 $plugin->maturity = MATURITY_STABLE;
