@@ -59,7 +59,7 @@ class hook_callbacks {
             return;
         }
 
-        if ($PAGE->context->contextlevel != CONTEXT_MODULE) {
+        if ($PAGE->context->contextlevel != CONTEXT_MODULE || $PAGE->pagelayout == 'admin') {
             return;
         }
 
