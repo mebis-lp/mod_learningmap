@@ -91,6 +91,12 @@ function learningmap_update_instance($data): int {
         );
     }
 
+    // Don't save changes to svgcode and placestore if the general part of the editing form was not shown.
+    if (!empty($data->showonly) && $data->showonly != 'general') {
+        unset($data->svgcode);
+        unset($data->placestore);
+    }
+
     return $DB->update_record("learningmap", $data);
 }
 
