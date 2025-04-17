@@ -59,7 +59,7 @@ class hook_callbacks {
             return;
         }
 
-        if ($PAGE->context->contextlevel != CONTEXT_MODULE) {
+        if ($PAGE->context->contextlevel != CONTEXT_MODULE || $PAGE->pagelayout == 'admin') {
             return;
         }
 
@@ -96,7 +96,7 @@ class hook_callbacks {
 
             if ($backlinktext) {
                 $activityheader = $PAGE->activityheader->export_for_template($OUTPUT);
-                $PAGE->activityheader->set_description($activityheader['description'] . $backlinktext);
+                $PAGE->activityheader->set_description(($activityheader['description'] ?? '') . $backlinktext);
             }
         } catch (Exception $e) {
             debugging($e->getMessage());
