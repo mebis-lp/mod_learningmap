@@ -64,6 +64,9 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         if ($map->completiontype > self::NOCOMPLETION) {
             $user = \core_user::get_user($this->userid);
+            if (!$user) {
+                return COMPLETION_INCOMPLETE;
+            }
             $group = (empty($this->cm->groupmode) ? 0 : groups_get_activity_group($this->cm, true));
             $this->activitymanager = new activitymanager($this->cm->get_course(), $user, $group);
 
